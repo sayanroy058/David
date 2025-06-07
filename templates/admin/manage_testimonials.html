@@ -1,0 +1,73 @@
+
+{% extends 'admin/base_admin.html' %}
+{% block title %}Manage Testimonials | Easy2Learning Admin{% endblock %}
+
+{% block content %}
+<div style="max-width: 800px; margin: 40px auto; padding: 30px; background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); font-family: 'Arial', sans-serif;">
+  
+  <h2 style="color: #333333; margin-bottom: 25px; text-align: center; font-weight: 600; border-bottom: 2px solid #D4AF37; padding-bottom: 15px;">Manage Testimonials</h2>
+  
+  <form method="POST" enctype="multipart/form-data" style="display: flex; flex-direction: column;">
+    {{ form.hidden_tag() }}
+
+    <div style="margin-bottom: 20px;">
+      <label for="{{ form.name.id }}" style="display: block; margin-bottom: 8px; color: #333; font-weight: 600;">{{ form.name.label.text }}</label>
+      {{ form.name(style="width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px;") }}
+    </div>
+
+    <div style="margin-bottom: 20px;">
+      <label for="{{ form.role.id }}" style="display: block; margin-bottom: 8px; color: #333; font-weight: 600;">{{ form.role.label.text }}</label>
+      {{ form.role(style="width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px;") }}
+    </div>
+
+    <div style="margin-bottom: 20px;">
+      <label for="{{ form.message.id }}" style="display: block; margin-bottom: 8px; color: #333; font-weight: 600;">{{ form.message.label.text }}</label>
+      {{ form.message(style="width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; resize: vertical;") }}
+    </div>
+
+    <div style="margin-bottom: 25px;">
+      <label for="{{ form.image.id }}" style="display: block; margin-bottom: 8px; color: #333; font-weight: 600;">{{ form.image.label.text }}</label>
+      {{ form.image(style="font-size: 14px;") }}
+    </div>
+
+    <div style="text-align: right;">
+      {{ form.submit(style="background-color: #333333; color: #D4AF37; border: none; padding: 12px 30px; font-size: 15px; font-weight: 600; border-radius: 4px; cursor: pointer; transition: 0.3s; box-shadow: 0 2px 5px rgba(0,0,0,0.2);") }}
+    </div>
+  </form>
+
+  <hr style="margin: 40px 0;">
+
+  <h3 style="color: #333333; font-size: 18px; font-weight: 600; margin-bottom: 20px;">Existing Testimonials</h3>
+  <ul style="list-style: none; padding: 0;">
+    {% for t in testimonials %}
+      <li style="background-color: #f9f9f9; padding: 15px 20px; border-radius: 6px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+        <strong style="color: #D4AF37;">{{ t.name }}</strong>
+        <span style="color: #999; font-size: 13px;">({{ t.role }})</span>
+        <p style="margin-top: 5px; color: #555; font-size: 14px;">{{ t.message[:120] }}{% if t.message|length > 120 %}...{% endif %}</p>
+      </li>
+    {% else %}
+      <li style="color: #888; font-style: italic;">No testimonials added yet.</li>
+    {% endfor %}
+  </ul>
+</div>
+
+<style>
+  @media (max-width: 768px) {
+    div[style*="max-width: 800px"] {
+      padding: 20px;
+      width: 90%;
+    }
+  }
+
+  input:focus, textarea:focus {
+    outline: none;
+    border-color: #D4AF37 !important;
+    box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2) !important;
+  }
+
+  input[type="submit"]:hover {
+    background-color: #444444 !important;
+    transform: translateY(-2px);
+  }
+</style>
+{% endblock %}

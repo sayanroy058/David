@@ -1,0 +1,121 @@
+{% extends 'admin/base_admin.html' %}
+{% block title %}Admin Login | Easy2Learning{% endblock %}
+
+{% block extra_css %}
+<style>
+  .admin-login-container {
+    max-width: 500px;
+    margin: 60px auto;
+    padding: 40px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  }
+  .admin-header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  .admin-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 40px;
+  }
+  .form-group {
+    margin-bottom: 20px;
+  }
+  .form-control {
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+  }
+  .form-control:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+  }
+  .admin-btn {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    width: 100%;
+    margin-top: 10px;
+    transition: all 0.3s ease;
+  }
+  .admin-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  }
+  .alert {
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="admin-login-container">
+  <div class="admin-header">
+    <div class="admin-icon">
+      <i class="bi bi-shield-lock"></i>
+    </div>
+    <h2>Admin Login</h2>
+    <p class="text-muted">Access the administration dashboard</p>
+  </div>
+  
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+  
+  <form method="POST" action="{{ url_for('admin.login') }}">
+    {{ form.hidden_tag() }}
+    
+    <div class="form-group">
+      <label for="email" class="form-label">Email Address</label>
+      {{ form.email(class="form-control", placeholder="Enter your email") }}
+      {% if form.email.errors %}
+        <div class="text-danger">
+          {% for error in form.email.errors %}
+            <small>{{ error }}</small>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+    
+    <div class="form-group">
+      <label for="password" class="form-label">Password</label>
+      {{ form.password(class="form-control", placeholder="Enter your password") }}
+      {% if form.password.errors %}
+        <div class="text-danger">
+          {% for error in form.password.errors %}
+            <small>{{ error }}</small>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+    
+    <div class="form-group">
+      {{ form.submit(class="admin-btn") }}
+    </div>
+    
+    <div class="text-center mt-3">
+      <p class="mb-0">Don't have an admin account? <a href="{{ url_for('admin.register') }}">Register</a></p>
+    </div>
+  </form>
+</div>
+{% endblock %}

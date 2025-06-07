@@ -1,0 +1,1533 @@
+{% extends 'base_new.html' %}
+
+{% block title %}
+  Home
+{% endblock %}
+
+{% block extra_css %}
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Main Theme Colors */
+:root {
+  --primary-yellow: #ffc107;
+  --primary-yellow-hover: #ffca2c;
+  --dark-grey: #333333;
+  --dark-grey-lighter: #4a4a4a;
+  --text-light: #f8f9fa;
+  --text-dark: #212529;
+  --accent-blue: #0d6efd;
+}
+
+/* Global Styles & Reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  line-height: 1.6;
+  color: var(--text-dark);
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* Texture Background */
+.bg-texture {
+  background-color: var(--dark-grey);
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* Text Styling */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+
+h1 {
+  font-size: 2.5rem;
+}
+
+h2 {
+  font-size: 2rem;
+  position: relative;
+  display: inline-block;
+  padding-bottom: 0.5rem;
+}
+
+h2::after {
+  content: '';
+  position: absolute;
+  width: 60%;
+  height: 4px;
+  background: var(--primary-yellow);
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 2px;
+}
+
+/* Buttons */
+.btn {
+  display: inline-block;
+  font-weight: 600;
+  text-align: center;
+  vertical-align: middle;
+  user-select: none;
+  border: 1px solid transparent;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  background-color: var(--primary-yellow);
+  color: var(--text-dark);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-yellow-hover);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* ======================
+   HERO SECTION STYLES
+   ====================== */
+
+/* Main Hero Container */
+.hero-section {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 500px;
+  overflow: hidden;
+}
+
+/* Hero Background Image */
+.hero-image {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.hero-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  animation: zoomEffect 20s infinite alternate;
+}
+
+/* Responsive adjustment for smaller screens */
+@media (max-width: 767px) {
+  .hero-image img {
+    object-fit: contain;
+    background-color: #000; /* optional: prevents white space */
+  }
+}
+
+/* Content Overlay */
+.hero-content {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(1px);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-light, #ffffff);
+}
+
+/* Hero Typography */
+.hero-content h1 {
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 1.5rem;
+  animation: fadeInDown 1s ease forwards;
+  opacity: 0;
+  transform: translateY(-20px);
+}
+
+.hero-content p {
+  font-size: clamp(1rem, 2.5vw, 1.25rem);
+  line-height: 1.6;
+  max-width: 600px;
+  margin: 0 auto 2rem;
+  animation: fadeInUp 1s ease 0.3s forwards;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+/* Call-to-action button (if needed) */
+.hero-content .cta-button {
+  display: inline-block;
+  padding: 1rem 2rem;
+  background: var(--primary-color, #007bff);
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  animation: fadeIn 1s ease 0.6s forwards;
+  opacity: 0;
+}
+
+.hero-content .cta-button:hover {
+  background: var(--primary-color-dark, #0056b3);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 123, 255, 0.3);
+}
+
+/* ======================
+   ANIMATIONS
+   ====================== */
+
+@keyframes fadeInDown {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes zoomEffect {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.1);
+  }
+}
+
+/* ======================
+   FALLBACK IMAGE STYLES
+   ====================== */
+
+.hero-image img:not([src]),
+.hero-image img[src=""],
+.hero-image img[src*="undefined"] {
+  background-color: var(--dark-grey-lighter, #4a5568);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial, sans-serif' font-size='16' fill='%23a0aec0'%3EHero Image%3C/text%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 200px 200px;
+}
+
+/* ======================
+   RESPONSIVE BREAKPOINTS
+   ====================== */
+
+/* Large Desktop */
+@media (min-width: 1200px) {
+  .hero-section {
+    height: 90vh;
+  }
+
+  .hero-content {
+    padding: 3rem;
+  }
+}
+
+/* Desktop */
+@media (min-width: 992px) and (max-width: 1199px) {
+  .hero-section {
+    height: 85vh;
+  }
+}
+
+/* Tablet */
+@media (max-width: 991px) {
+  .hero-section {
+    height: auto;
+    min-height: 600px;
+  }
+
+  .hero-content {
+    padding: 2rem 1.5rem;
+  }
+
+  .hero-content h1 {
+    margin-bottom: 1rem;
+  }
+
+  .hero-content p {
+    margin-bottom: 1.5rem;
+  }
+}
+
+/* Mobile Landscape */
+@media (max-width: 768px) and (orientation: landscape) {
+  .hero-section {
+    height: auto;
+    min-height: 400px;
+  }
+
+  .hero-content h1 {
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+  }
+}
+
+/* Mobile Portrait */
+@media (max-width: 767px) {
+  .hero-section {
+    height: auto;
+    min-height: 500px;
+  }
+
+  .hero-content {
+    padding: 1.5rem 1rem;
+  }
+
+  .hero-content h1 {
+    margin-bottom: 1rem;
+  }
+
+  .hero-content p {
+    margin-bottom: 1.5rem;
+  }
+
+  .hero-content .cta-button {
+    padding: 0.875rem 1.5rem;
+    font-size: 0.95rem;
+  }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+  .hero-section {
+    height: auto;
+    min-height: 450px;
+  }
+
+  .hero-content {
+    padding: 1rem 0.75rem;
+  }
+
+  .hero-content h1 {
+    margin-bottom: 0.75rem;
+  }
+
+  .hero-content p {
+    margin-bottom: 1rem;
+  }
+}
+
+/* Very Small Screens */
+@media (max-width: 320px) {
+  .hero-section {
+    min-height: 400px;
+  }
+
+  .hero-content {
+    padding: 1rem 0.5rem;
+  }
+}
+
+/* ======================
+   ACCESSIBILITY & PERFORMANCE
+   ====================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-image img {
+    animation: none;
+  }
+
+  .hero-content h1,
+  .hero-content p,
+  .hero-content .cta-button {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-contrast: high) {
+  .hero-content {
+    background: rgba(0, 0, 0, 0.8);
+  }
+
+  .hero-content .cta-button {
+    border: 2px solid currentColor;
+  }
+}
+
+@media print {
+  .hero-section {
+    height: auto;
+    min-height: 300px;
+    page-break-inside: avoid;
+  }
+
+  .hero-image img {
+    animation: none;
+  }
+
+  .hero-content {
+    background: rgba(0, 0, 0, 0.1);
+    color: #000;
+  }
+}
+
+
+/* Popular Courses Section */
+.courses-section {
+  background-color: #f8f9fa;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffc107' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  padding: 5rem 1rem;
+}
+
+.course-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+.course-card {
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-top: 5px solid var(--primary-yellow);
+  position: relative;
+}
+
+.course-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
+.course-card::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, var(--primary-yellow) 0%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.course-card:hover::before {
+  opacity: 0.1;
+}
+
+.course-content {
+  padding: 1.5rem;
+}
+
+.course-title {
+  color: var(--dark-grey);
+  margin-bottom: 0.75rem;
+  font-size: 1.25rem;
+}
+
+.course-description {
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+/* About Us Section */
+.about-section {
+  padding: 5rem 1rem;
+  background-color: white;
+}
+
+.about-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Teachers Section */
+.teachers-section {
+  padding: 5rem 1rem;
+  background-color: #f8f9fa;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23333333' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+.teachers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.teacher-card {
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-align: center;
+  padding: 2rem;
+}
+
+.teacher-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
+.teacher-image {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin: 0 auto 1rem;
+  border: 4px solid red;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Default teacher image fallback */
+.teacher-image:not([src]),
+.teacher-image[src=""],
+.teacher-image[src*="undefined"] {
+  background-color: var(--dark-grey-lighter);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Ccircle cx='60' cy='60' r='50' fill='%23e0e0e0'/%3E%3Cpath d='M60 30 C 45 30, 35 45, 35 60 C 35 75, 45 80, 60 80 C 75 80, 85 75, 85 60 C 85 45, 75 30, 60 30 Z' fill='%23bdbdbd'/%3E%3Ccircle cx='60' cy='45' r='15' fill='%23e0e0e0'/%3E%3Cpath d='M40 100 C 40 85, 80 85, 80 100' fill='%23bdbdbd'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.teacher-name {
+  color: var(--dark-grey);
+  margin-bottom: 0.25rem;
+  font-size: 1.25rem;
+}
+
+.teacher-title {
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+/* Newsletter Section */
+.newsletter-section {
+  padding: 5rem 1rem;
+  background-color: var(--dark-grey);
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.newsletter-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffc107' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  z-index: 0;
+  opacity: 0.05;
+}
+
+.newsletter-content {
+  position: relative;
+  z-index: 1;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.newsletter-form {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 2rem;
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.max-w-6xl {
+  max-width: 72rem;
+}
+
+.max-w-2xl {
+  max-width: 42rem;
+}
+
+.max-w-3xl {
+  max-width: 48rem;
+}
+
+.newsletter-button:hover {
+  background-color: var(--primary-yellow-hover);
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Animations */
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes zoomEffect {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.1);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2rem;
+  }
+  
+  h2 {
+    font-size: 1.75rem;
+  }
+  
+  .hero-section {
+    height: 60vh;
+  }
+  
+  .newsletter-form {
+    flex-direction: column;
+  }
+  
+  .newsletter-button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 576px) {
+  h1 {
+    font-size: 1.75rem;
+  }
+  
+  h2 {
+    font-size: 1.5rem;
+  }
+  
+  .course-grid,
+  .teachers-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .hero-section {
+    height: 50vh;
+  }
+}
+@media (max-width: 768px) {
+  .hero-section {
+    flex-direction: column;
+    padding: 40px 20px;
+  }
+
+  .hero-content h1 {
+    font-size: 2rem;
+  }
+
+  .hero-content p {
+    font-size: 1rem;
+  }
+
+  .hero-image img {
+    object-fit: contain;
+    background-color: #000;
+  }
+}
+@keyframes float {
+  0%   { transform: translateY(0px); }
+  100% { transform: translateY(30px); }
+}
+
+@keyframes expandWidth {
+  from { width: 0; }
+  to   { width: 100px; }
+}
+
+@keyframes slideInLeft {
+  from { transform: translateX(-100px); opacity: 0; }
+  to   { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100px); opacity: 0; }
+  to   { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
+
+@keyframes zoomScale {
+  0%   { transform: scale(1); }
+  100% { transform: scale(1.05); }
+}
+
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Slider Section -->
+<section style="position: relative; overflow: hidden; min-height: 500px; display: flex; align-items: center; background: linear-gradient(135deg, rgba(228,114,27,0.95) 0%, rgba(245,229,87,0.85) 100%); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+
+  <!-- Background Texture Overlay -->
+  <div style="position: absolute; inset: 0; background-image: url('data:image/svg+xml;base64,...'); opacity: 0.1; z-index: 1;"></div>
+
+  <!-- Floating Circles -->
+  <div style="position: absolute; width: 400px; height: 400px; border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%); top: -100px; right: -100px; z-index: 1; animation: float 17s infinite alternate ease-in-out;"></div>
+  <div style="position: absolute; width: 300px; height: 300px; border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%); bottom: -50px; left: -50px; z-index: 1; animation: float 13s infinite alternate-reverse ease-in-out;"></div>
+
+  <!-- Carousel Container -->
+  <div id="heroCarousel" class="carousel slide w-100" data-bs-ride="carousel" style="position: relative; z-index: 2;">
+    <div class="carousel-inner">
+      {% for slide in hero_slides %}
+      <div class="carousel-item {% if loop.index == 1 %}active{% endif %}">
+        <div style="display: flex; flex-wrap: wrap; align-items: center; padding: 60px 20px; max-width: 1400px; margin: auto;">
+          
+          <!-- Text Content -->
+          <div style="flex: 1 1 500px; color: #fff; animation: slideInLeft 1s ease-out; padding: 20px;">
+            <h1 style="font-size: 3rem; font-weight: 700; margin-bottom: 20px; line-height: 1.2; text-shadow: 0 2px 10px rgba(0,0,0,0.1); position: relative;">
+              {{ slide.title }}
+              <span style="position: absolute; bottom: -10px; left: 0; width: 100px; height: 4px; background: #fff; border-radius: 2px; animation: expandWidth 1.2s ease-out forwards;"></span>
+            </h1>
+
+            <p style="font-size: 1.125rem; max-width: 600px; margin-bottom: 30px; line-height: 1.6; text-shadow: 0 1px 5px rgba(0,0,0,0.1); opacity: 0; animation: fadeIn 1s ease-out 0.4s forwards;">
+              {{ slide.description }}
+            </p>
+
+            {% if slide.button_text %}
+            <button style="background-color: #fff; color: #2980b9; border: none; padding: 12px 30px; border-radius: 30px; font-weight: 600; font-size: 16px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 5px 15px rgba(0,0,0,0.1); opacity: 0; animation: fadeIn 1s ease-out 0.6s forwards;"
+              onclick="window.location.href='#';"
+              onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.15)'; this.style.backgroundColor='#f8f9fa';"
+              onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 5px 15px rgba(0,0,0,0.1)'; this.style.backgroundColor='#fff';">
+              {{ slide.button_text }}
+            </button>
+            {% endif %}
+          </div>
+
+          <!-- Image -->
+          <div style="flex: 1 1 500px; position: relative; min-height: 400px; overflow: hidden; clip-path: polygon(10% 0%, 100% 0%, 100% 100%, 0% 100%); animation: slideInRight 1s ease-out;">
+            <img src="{{ url_for('static', filename=slide.image) }}" alt="{{ slide.title }}" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; animation: zoomScale 20s infinite alternate linear;">
+          </div>
+
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Carousel Controls -->
+    <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+  </div>
+</section>
+
+
+
+<!-- Popular Courses Section -->
+<section style="text-align: center; padding: 40px 20px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #f9f9f9 0%, #f0f4f8 100%); position: relative; overflow: hidden;">
+  <div style="max-width: 1000px; margin: 0 auto; position: relative; z-index: 2;">
+    <h2 style="margin-bottom: 30px; font-size: 32px; color: #2c3e50; font-weight: 600; position: relative; display: inline-block; animation: fadeInDown 0.8s ease-out;">Popular Courses
+      <span style="position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); width: 60px; height: 3px; background: linear-gradient(to right, #3498db, #2ecc71); border-radius: 2px; animation: expandWidth 1s ease-out forwards;"></span>
+    </h2>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+      {% for course in courses %}
+        <div style="border: none; border-radius: 10px; overflow: hidden; background-color: #fff; box-shadow: 0 8px 20px rgba(0,0,0,0.06); transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1); cursor: pointer; position: relative; opacity: 0; animation: fadeIn 0.6s ease-out forwards; animation-delay: calc(0.1s * {{ loop.index }}); transform: translateY(20px);"
+             onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 12px 25px rgba(52, 152, 219, 0.12)'; this.querySelector('.course-title-underline').style.width='60%';"
+             onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.06)'; this.querySelector('.course-title-underline').style.width='30px';">
+          
+          <div style="position: relative; overflow: hidden; height: 160px;">
+            {% if course.image %}
+              <img src="{{ url_for('static', filename='uploads/courses/' + course.image) if course.image else url_for('static', filename='uploads/default_course.jpg') }}" alt="{{ course.title }}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+            {% else %}
+              <img src="{{ url_for('static', filename='uploads/default_course.jpg') }}" alt="Default Image" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+            {% endif %}
+            <div style="position: absolute; top: 10px; right: 10px; background-color: rgba(46, 204, 113, 0.9); color: white; font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 20px; letter-spacing: 0.5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">POPULAR</div>
+          </div>
+          
+          <div style="padding: 18px; text-align: left;">
+            <h3 style="margin: 0 0 12px; font-size: 18px; color: #2c3e50; position: relative; padding-bottom: 8px;">{{ course.title }}
+              <span class="course-title-underline" style="position: absolute; bottom: 0; left: 0; width: 30px; height: 2px; background-color: #3498db; transition: width 0.3s ease;"></span>
+            </h3>
+            <p style="margin: 0; color: #7f8c8d; font-size: 14px; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; height: 42px;">{{ course.description }}</p>
+            <div style="margin-top: 15px; display: flex; justify-content: space-between; align-items: center;">
+              <span style="background-color: #f1f9ff; color: #3498db; padding: 4px 10px; border-radius: 15px; font-size: 12px; font-weight: 500;">Online</span>
+              <a href="{{ url_for('enroll_course', course_id=course.id) }}" style="background: linear-gradient(to right, #3498db, #2980b9); color: white; border: none; padding: 6px 14px; border-radius: 5px; font-weight: 500; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 3px 6px rgba(52, 152, 219, 0.2); text-decoration: none; display: inline-block;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 5px 10px rgba(52, 152, 219, 0.3)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 3px 6px rgba(52, 152, 219, 0.2)';">Enroll Now</a>
+            </div>
+          </div>
+        </div>
+      {% else %}
+        <div style="grid-column: 1 / -1; padding: 40px 20px; background-color: rgba(255,255,255,0.7); border-radius: 10px; border: 2px dashed #e0e0e0; animation: pulse 2s infinite;">
+          <img src="{{ url_for('static', filename='images/empty-courses.svg') }}" alt="No Courses" style="width: 100px; margin-bottom: 15px; opacity: 0.6;">
+          <p style="font-size: 18px; color: #7f8c8d; margin: 0;">No courses available at the moment. Check back soon!</p>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+  
+  <!-- Background animation elements -->
+  <div style="position: absolute; width: 200px; height: 200px; border-radius: 50%; background: linear-gradient(45deg, rgba(52, 152, 219, 0.05), rgba(46, 204, 113, 0.05)); top: -100px; right: -50px; z-index: 1; animation: float 15s infinite alternate ease-in-out;"></div>
+  <div style="position: absolute; width: 150px; height: 150px; border-radius: 50%; background: linear-gradient(45deg, rgba(155, 89, 182, 0.05), rgba(231, 76, 60, 0.05)); bottom: -60px; left: -30px; z-index: 1; animation: float 12s infinite alternate-reverse ease-in-out;"></div>
+  
+  <style>
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes expandWidth {
+      from { width: 0; }
+      to { width: 60px; }
+    }
+    
+    @keyframes float {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      50% { transform: translate(15px, 15px) rotate(3deg); }
+      100% { transform: translate(-15px, 8px) rotate(-3deg); }
+    }
+    
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(52, 152, 219, 0.4); }
+      70% { box-shadow: 0 0 0 8px rgba(52, 152, 219, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(52, 152, 219, 0); }
+    }
+  </style>
+</section>
+
+<!-- Enhanced About Us Section -->
+
+<section id="about" class="about-section" >
+        <!-- Background elements -->
+        <div class="bg-pattern"></div>
+        <div class="floating-shape shape-1"></div>
+        <div class="floating-shape shape-2"></div>
+        <div class="floating-shape shape-3"></div>
+        
+        <!-- Main container -->
+        <div class="container">
+            <!-- Header section -->
+            <div class="section-header">
+                <h2 class="section-title">
+                    About Us
+                    <span class="title-underline"></span>
+                </h2>
+                <p class="section-subtitle">
+                    Empowering students through innovative education and industry-relevant skills development
+                </p>
+            </div>
+            
+            <!-- Main content -->
+            <div class="main-content">
+                <!-- Mission card -->
+                <div class="mission-card">
+                    <div class="card-accent"></div>
+                    <h3 class="mission-title">Our Mission</h3>
+                    <p class="mission-text">
+                        We are committed to providing quality education through modern pedagogy and industry-relevant curriculum. Our programs are designed to empower students with skills and confidence needed to excel in today's competitive world.
+                    </p>
+                    <p class="mission-text">
+                        Through innovative teaching methods and cutting-edge resources, we strive to create an engaging learning environment that inspires curiosity, critical thinking, and lifelong learning.
+                    </p>
+                    <button class="cta-button">
+                        Learn More About Us <span style="margin-left: 8px;">→</span>
+                    </button>
+                </div>
+                
+                <!-- Stats grid -->
+                <div class="stats-grid">
+                    <!-- Years Experience -->
+                    <div class="stat-card">
+                        <div class="stat-icon icon-blue">
+                            <svg style="width: 40px; height: 40px; fill: #3498db;" viewBox="0 0 24 24">
+                                <path d="M12,3L1,9L12,15L21,10.09V17H23V9M5,13.18V17.18L12,21L19,17.18V13.18L12,17L5,13.18Z"></path>
+                            </svg>
+                        </div>
+                        <div class="stat-number">15+</div>
+                        <div class="stat-label">Years Experience</div>
+                    </div>
+                    
+                    <!-- Students Enrolled -->
+                    <div class="stat-card">
+                        <div class="stat-icon icon-green">
+                            <svg style="width: 40px; height: 40px; fill: #2ecc71;" viewBox="0 0 24 24">
+                                <path d="M12,5.5A3.5,3.5 0 0,1 15.5,9A3.5,3.5 0 0,1 12,12.5A3.5,3.5 0 0,1 8.5,9A3.5,3.5 0 0,1 12,5.5M5,8C5.56,8 6.08,8.15 6.53,8.42C6.38,9.85 6.8,11.27 7.66,12.38C7.16,13.34 6.16,14 5,14A3,3 0 0,1 2,11A3,3 0 0,1 5,8M19,8A3,3 0 0,1 22,11A3,3 0 0,1 19,14C17.84,14 16.84,13.34 16.34,12.38C17.2,11.27 17.62,9.85 17.47,8.42C17.92,8.15 18.44,8 19,8M5.5,18.25C5.5,16.18 8.41,14.5 12,14.5C15.59,14.5 18.5,16.18 18.5,18.25V20H5.5V18.25M0,20V18.5C0,17.11 1.89,15.94 4.45,15.6C3.86,16.28 3.5,17.22 3.5,18.25V20H0M24,20H20.5V18.25C20.5,17.22 20.14,16.28 19.55,15.6C22.11,15.94 24,17.11 24,18.5V20Z"></path>
+                            </svg>
+                        </div>
+                        <div class="stat-number">5,000+</div>
+                        <div class="stat-label">Students Enrolled</div>
+                    </div>
+                    
+                    <!-- Courses Available -->
+                    <div class="stat-card">
+                        <div class="stat-icon icon-purple">
+                            <svg style="width: 40px; height: 40px; fill: #9b59b6;" viewBox="0 0 24 24">
+                                <path d="M21,4H3A2,2 0 0,0 1,6V19A2,2 0 0,0 3,21H21A2,2 0 0,0 23,19V6A2,2 0 0,0 21,4M21,19H3V6H21V19M6,8H18V10H6V8M6,11H18V13H6V11M6,14H13V16H6V14Z"></path>
+                            </svg>
+                        </div>
+                        <div class="stat-number">50+</div>
+                        <div class="stat-label">Courses Available</div>
+                    </div>
+                    
+                    <!-- Expert Instructors -->
+                    <div class="stat-card">
+                        <div class="stat-icon icon-orange">
+                            <svg style="width: 40px; height: 40px; fill: #e67e22;" viewBox="0 0 24 24">
+                                <path d="M20 17C21.1 17 22 16.1 22 15V4C22 2.9 21.1 2 20 2H9.46C9.81 2.61 10 3.3 10 4H20V15H11V18C11 18.34 10.94 18.68 10.83 19H20C21.1 19 22 18.1 22 17V6C22 4.9 21.1 4 20 4H12L10 2H4C2.9 2 2 2.9 2 4V15C2 16.1 2.9 17 4 17H7.17C7.06 17.32 7 17.66 7 18V20.17L8.83 22H20C21.1 22 22 21.1 22 20V19H10.83L9 17.17V17H20Z"></path>
+                            </svg>
+                        </div>
+                        <div class="stat-number">30+</div>
+                        <div class="stat-label">Expert Instructors</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <style>
+             /* Keyframe animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes expandWidth {
+            from { width: 0; }
+            to { width: 100px; }
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Main section styling */
+        .about-section {
+            position: relative;
+            padding: 100px 20px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #f1f2f6 100%);
+            overflow: hidden;
+            min-height: 100vh;
+        }
+
+        /* Background pattern */
+        .bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCI+CjxyZWN0IHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgZmlsbD0ibm9uZSI+PC9yZWN0Pgo8Y2lyY2xlIGN4PSIyIiBjeT0iMiIgcj0iMSIgZmlsbD0iIzMzMzMzMzEwIj48L2NpcmNsZT4KPC9zdmc+');
+            opacity: 0.4;
+            z-index: 1;
+        }
+
+        /* Floating shapes */
+        .floating-shape {
+            position: absolute;
+            border-radius: 50%;
+            z-index: 1;
+            animation: float 20s infinite alternate ease-in-out;
+        }
+
+        .shape-1 {
+            width: 500px;
+            height: 500px;
+            background: linear-gradient(45deg, rgba(52, 152, 219, 0.05), rgba(46, 204, 113, 0.05));
+            top: -250px;
+            right: -100px;
+        }
+
+        .shape-2 {
+            width: 400px;
+            height: 400px;
+            background: linear-gradient(45deg, rgba(155, 89, 182, 0.05), rgba(231, 76, 60, 0.05));
+            bottom: -200px;
+            left: -100px;
+            animation-delay: -2s;
+            animation-direction: reverse;
+        }
+
+        .shape-3 {
+            width: 250px;
+            height: 250px;
+            background: linear-gradient(45deg, rgba(241, 196, 15, 0.05), rgba(230, 126, 34, 0.05));
+            top: 40%;
+            right: 10%;
+            animation-delay: 2s;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Header */
+        .section-header {
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto 60px;
+        }
+
+        .section-title {
+            font-size: clamp(32px, 5vw, 48px);
+            color: #2c3e50;
+            font-weight: 800;
+            margin-bottom: 25px;
+            position: relative;
+            display: inline-block;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .title-underline {
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 5px;
+            background: linear-gradient(to right, #3498db, #2ecc71);
+            border-radius: 4px;
+            animation: expandWidth 1s ease-out forwards;
+        }
+
+        .section-subtitle {
+            font-size: clamp(16px, 3vw, 20px);
+            color: #4a5568;
+            line-height: 1.8;
+            opacity: 0;
+            animation: fadeIn 0.8s ease-out 0.3s forwards;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Main content grid */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        /* Mission card */
+        .mission-card {
+            position: relative;
+            background-color: white;
+            border-radius: 20px;
+            padding: 50px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+            transform: translateY(20px);
+            opacity: 0;
+            animation: slideInUp 0.8s ease-out 0.3s forwards;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .mission-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.12);
+        }
+
+        .card-accent {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 10px;
+            background: linear-gradient(to right, #3498db, #2ecc71);
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+        }
+
+        .mission-title {
+            font-size: clamp(24px, 4vw, 28px);
+            color: #2c3e50;
+            font-weight: 600;
+            margin-bottom: 25px;
+        }
+
+        .mission-text {
+            font-size: clamp(16px, 2.5vw, 18px);
+            color: #4a5568;
+            line-height: 1.8;
+            margin-bottom: 25px;
+        }
+
+        .cta-button {
+            background: linear-gradient(to right, #3498db, #2980b9);
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 15px rgba(52, 152, 219, 0.2);
+            animation: fadeIn 0.6s ease-out 1.2s forwards;
+            opacity: 0;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(52, 152, 219, 0.3);
+        }
+
+        /* Stats grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            text-align: center;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:nth-child(1) { animation: slideInUp 0.6s ease-out 0.6s forwards; }
+        .stat-card:nth-child(2) { animation: slideInUp 0.6s ease-out 0.8s forwards; }
+        .stat-card:nth-child(3) { animation: slideInUp 0.6s ease-out 1s forwards; }
+        .stat-card:nth-child(4) { animation: slideInUp 0.6s ease-out 1.2s forwards; }
+
+        .stat-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(52, 152, 219, 0.15);
+        }
+
+        .stat-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+
+        .stat-number {
+            font-weight: 700;
+            color: #2c3e50;
+            font-size: clamp(28px, 5vw, 36px);
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #64748b;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        /* Icon colors */
+        .icon-blue { background-color: rgba(52, 152, 219, 0.1); }
+        .icon-green { background-color: rgba(46, 204, 113, 0.1); }
+        .icon-purple { background-color: rgba(155, 89, 182, 0.1); }
+        .icon-orange { background-color: rgba(230, 126, 34, 0.1); }
+
+        /* Responsive design */
+        @media (min-width: 768px) {
+            .about-section {
+                padding: 120px 40px;
+            }
+            
+            .mission-card {
+                padding: 60px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1.2fr 1fr;
+                gap: 60px;
+                align-items: center;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                margin-top: 0;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .container {
+                padding: 0 20px;
+            }
+        }
+
+        /* Reduce motion for accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+    </section>
+    <!-- New testimonial slider section -->
+    <div style="margin-top: 80px; background: linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(248,249,250,0.8) 100%); border-radius: 20px; padding: 50px; box-shadow: 0 15px 40px rgba(0,0,0,0.08); opacity: 0; animation: fadeIn 0.8s ease-out 1.4s forwards;">
+     <div style="display: flex; overflow-x: hidden; position: relative; padding: 20px 0;">
+  {% for testimonial in testimonials %}
+  <div style="min-width: 100%; padding: 0 20px; transition: transform 0.5s ease; animation: testimonialSlide 15s infinite;">
+    <div style="background-color: white; border-radius: 15px; padding: 30px; box-shadow: 0 10px 20px rgba(0,0,0,0.05); position: relative;">
+      <div style="position: absolute; top: -20px; left: 30px; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; background: linear-gradient(to right, #3498db, #2980b9); border-radius: 50%;">
+        <svg style="width: 25px; height: 25px; fill: white;" viewBox="0 0 24 24">
+          <path d="M9.07,1.82C9.83,1.64 10.62,2 11,2.64C..."></path>
+        </svg>
+      </div>
+      <p style="font-size: 18px; color: #4a5568; line-height: 1.8; margin: 25px 0; font-style: italic;">
+        "{{ testimonial.message }}"
+      </p>
+      <div style="display: flex; align-items: center;">
+        <div style="width: 60px; height: 60px; border-radius: 50%; background-color: #dfe6e9; overflow: hidden; margin-right: 15px;">
+          <img src="{{ url_for('static', filename='uploads/' + testimonial.image) if testimonial.image else '/api/placeholder/60/60' }}" alt="Student" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+        <div>
+          <h4 style="margin: 0 0 5px 0; font-size: 18px; color: #2c3e50; font-weight: 600;">{{ testimonial.name }}</h4>
+          <p style="margin: 0; font-size: 14px; color: #7f8c8d;">{{ testimonial.role }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+  </div>
+  
+  <style>
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes expandWidth {
+      from { width: 0; }
+      to { width: 100px; }
+    }
+    
+    @keyframes float {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      50% { transform: translate(20px, 20px) rotate(5deg); }
+      100% { transform: translate(-20px, 10px) rotate(-5deg); }
+    }
+    
+    @keyframes testimonialSlide {
+      0%, 25% { transform: translateX(0); }
+      33%, 58% { transform: translateX(-100%); }
+      66%, 91% { transform: translateX(-200%); }
+      100% { transform: translateX(0); }
+    }
+    
+    @media (max-width: 1200px) {
+      .about-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</section>
+
+<!-- Newsletter Section -->
+<section class="newsletter-section" style="
+  background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiB2aWV3Qm94PSIwIDAgMTAwIDEwMCI+CiAgPGcgZmlsbD0icmdiYSgyNTUsIDI1NSwgMjU1LCAwLjA1KSI+CiAgICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSIxIiAvPgogICAgPGNpcmNsZSBjeD0iNzUiIGN5PSIyNSIgcj0iMC43IiAvPgogICAgPGNpcmNsZSBjeD0iMjUiIGN5PSI3NSIgcj0iMC42IiAvPgogICAgPGNpcmNsZSBjeD0iNzUiIGN5PSI3NSIgcj0iMC44IiAvPgogICAgPGNpcmNsZSBjeD0iMjUiIGN5PSIyNSIgcj0iMC43IiAvPgogICAgPGNpcmNsZSBjeD0iMTUiIGN5PSI0NSIgcj0iMC42IiAvPgogICAgPGNpcmNsZSBjeD0iODUiIGN5PSI0NSIgcj0iMC41IiAvPgogICAgPGNpcmNsZSBjeD0iMTAiIGN5PSIxMCIgcj0iMC44IiAvPgogICAgPGNpcmNsZSBjeD0iOTAiIGN5PSIxMCIgcj0iMC42IiAvPgogICAgPGNpcmNsZSBjeD0iMTAiIGN5PSI5MCIgcj0iMC43IiAvPgogICAgPGNpcmNsZSBjeD0iOTAiIGN5PSI5MCIgcj0iMC44IiAvPgogICAgPGNpcmNsZSBjeD0iMzAiIGN5PSI1MCIgcj0iMC43IiAvPgogICAgPGNpcmNsZSBjeD0iNzAiIGN5PSI1MCIgcj0iMC42IiAvPgogICAgPGNpcmNsZSBjeD0iNTAiIGN5PSIzMCIgcj0iMC41IiAvPgogICAgPGNpcmNsZSBjeD0iNTAiIGN5PSI3MCIgcj0iMC44IiAvPgogIDwvZz4KPC9zdmc+'), #333333;
+  padding: 40px 0;
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px;
+  margin: 40px 20px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+">
+  <!-- Animated stars overlay -->
+  <div style="
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 20% 20%, rgba(255, 215, 0, 0.15) 0%, transparent 25%),
+               radial-gradient(circle at 80% 80%, rgba(255, 215, 0, 0.1) 0%, transparent 25%);
+    animation: starsGlow 8s infinite alternate ease-in-out;
+  "></div>
+
+  <!-- Yellow accent shapes - reduced size -->
+  <div style="
+    position: absolute;
+    top: -30px;
+    left: -30px;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, transparent 70%);
+    animation: rotate 30s linear infinite;
+  "></div>
+  
+  <div style="
+    position: absolute;
+    bottom: -40px;
+    right: -40px;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: linear-gradient(225deg, rgba(255, 215, 0, 0.15) 0%, transparent 70%);
+    animation: rotate 25s linear infinite reverse;
+  "></div>
+
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-5" style="position: relative; z-index: 10;">
+        <h2 style="
+          color: #FFD700;
+          font-size: 1.8rem;
+          font-weight: 700;
+          margin-bottom: 0.8rem;
+          text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+          position: relative;
+        ">Subscribe to Our Newsletter</h2>
+        
+        <p style="
+          color: #ffffff;
+          font-size: 0.95rem;
+          margin-bottom: 0;
+          opacity: 0.9;
+        ">Get updates, new courses, and career advice.</p>
+      </div>
+      
+      <div class="col-lg-7" style="position: relative; z-index: 10;">
+        <form method="POST" action="/subscribe" class="newsletter-form d-flex" style="
+          position: relative;
+          margin: 15px 0;
+        ">
+          <input type="email" name="email" placeholder="Enter your email" required style="
+            flex: 1;
+            padding: 12px 18px;
+            border: none;
+            border-radius: 30px 0 0 30px;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: #333333;
+            font-size: 0.95rem;
+            outline: none;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+          " 
+          onmouseover="this.style.boxShadow='0 5px 15px rgba(0, 0, 0, 0.3)'" 
+          onmouseout="this.style.boxShadow='0 3px 10px rgba(0, 0, 0, 0.2)'">
+          
+          <button type="submit" style="
+            border: none;
+            background: linear-gradient(90deg, #FFD700, #E6C200);
+            color: #333333;
+            font-weight: 600;
+            padding: 0 25px;
+            border-radius: 0 30px 30px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            position: relative;
+          "
+          onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 5px 15px rgba(255, 215, 0, 0.4)'" 
+          onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+            <span style="position: relative; z-index: 2;">Subscribe</span>
+            <span style="
+              position: absolute;
+              top: 0;
+              left: -100%;
+              width: 100%;
+              height: 100%;
+              background: linear-gradient(90deg, #E6C200, #FFD700);
+              transition: all 0.5s ease;
+              z-index: 1;
+            " 
+            id="buttonHover"></span>
+          </button>
+        </form>
+        
+        <!-- Newsletter benefits - simplified to save space -->
+        <div style="
+          display: flex;
+          gap: 15px;
+          flex-wrap: wrap;
+          font-size: 0.8rem;
+        ">
+          <div style="
+            display: flex;
+            align-items: center;
+            color: #ffffff;
+            opacity: 0.8;
+          ">
+            <i class="bi bi-shield-check" style="color: #FFD700; margin-right: 5px; font-size: 0.9rem;"></i>
+            No spam
+          </div>
+          <div style="
+            display: flex;
+            align-items: center;
+            color: #ffffff;
+            opacity: 0.8;
+          ">
+            <i class="bi bi-envelope" style="color: #FFD700; margin-right: 5px; font-size: 0.9rem;"></i>
+            Weekly updates
+          </div>
+          <div style="
+            display: flex;
+            align-items: center;
+            color: #ffffff;
+            opacity: 0.8;
+          ">
+            <i class="bi bi-x-circle" style="color: #FFD700; margin-right: 5px; font-size: 0.9rem;"></i>
+            Unsubscribe anytime
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Add animation styles -->
+  <style>
+    @keyframes rotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    @keyframes starsGlow {
+      0% { opacity: 0.5; }
+      50% { opacity: 1; }
+      100% { opacity: 0.5; }
+    }
+    
+    /* Button hover effect */
+    button:hover #buttonHover {
+      left: 0;
+    }
+  </style>
+</section>
+
+<!-- Teacher Details Section -->
+<section id ="team" class="teachers-section">
+  <div class="container mx-auto text-center">
+    <h2 class="mb-12">Meet Our Teachers</h2>
+    <div class="teachers-grid max-w-6xl mx-auto">
+      {% for teacher in teachers %}
+        <div class="teacher-card">
+          {% if teacher.photo %}
+            <img class="teacher-image" src="{{ url_for('static', filename='uploads/' ~ teacher.photo.split('/')[-1]) }}" alt="{{ teacher.name }}">
+          {% else %}
+            <div class="teacher-image"></div>
+          {% endif %}
+          <h3 class="teacher-name">{{ teacher.name }}</h3>
+          <p class="teacher-title">{{ teacher.title }}</p>
+        </div>
+      {% else %}
+        <div class="col-span-full text-center py-8">
+          <p>Our teaching staff will be updated soon!</p>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+
+{% endblock %}

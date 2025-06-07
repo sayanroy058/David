@@ -1,0 +1,85 @@
+{% extends 'base_new.html' %}
+{% block title %}Manage Categories | Easy2Learning{% endblock %}
+
+{% block content %}
+<div style="max-width: 700px; margin: 40px auto; padding: 30px; background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); font-family: 'Arial', sans-serif;">
+  <h2 style="color: #333333; margin-bottom: 25px; text-align: center; font-weight: 600; border-bottom: 2px solid #D4AF37; padding-bottom: 15px;">Manage Categories</h2>
+
+  <!-- Add Category Form -->
+  <form method="POST" action="{{ url_for('add_category') }}" style="margin-bottom: 30px;">
+    {{ category_form.hidden_tag() }}
+
+    <div style="margin-bottom: 20px;">
+      <label for="{{ category_form.name.id }}" style="display: block; margin-bottom: 8px; color: #333; font-weight: 600; font-size: 14px;">
+        {{ category_form.name.label.text }}
+      </label>
+      {{ category_form.name(style="width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; box-sizing: border-box;") }}
+    </div>
+
+    <div style="text-align: right;">
+      {{ category_form.submit(class="btn", style="background-color: #333333; color: #D4AF37; border: none; padding: 10px 25px; font-weight: 600; font-size: 14px; border-radius: 4px; cursor: pointer; transition: 0.3s;") }}
+    </div>
+  </form>
+
+  <!-- Add Subcategory Form -->
+  <h3 style="color: #333333; margin-top: 40px; margin-bottom: 20px; font-weight: 600;">Add Subcategory</h3>
+
+  <form method="POST" action="{{ url_for('add_subcategory') }}">
+    {{ subcategory_form.hidden_tag() }}
+
+    <div style="margin-bottom: 20px;">
+      <label for="{{ subcategory_form.name.id }}" style="display: block; margin-bottom: 8px; color: #333; font-weight: 600; font-size: 14px;">
+        {{ subcategory_form.name.label.text }}
+      </label>
+      {{ subcategory_form.name(style="width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; box-sizing: border-box;") }}
+    </div>
+
+    <div style="margin-bottom: 20px;">
+      <label for="{{ subcategory_form.category_id.id }}" style="display: block; margin-bottom: 8px; color: #333; font-weight: 600; font-size: 14px;">
+        {{ subcategory_form.category_id.label.text }}
+      </label>
+      {{ subcategory_form.category_id(style="width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; box-sizing: border-box;") }}
+    </div>
+
+    <div style="text-align: right;">
+      {{ subcategory_form.submit(class="btn", style="background-color: #333333; color: #D4AF37; border: none; padding: 10px 25px; font-weight: 600; font-size: 14px; border-radius: 4px; cursor: pointer; transition: 0.3s;") }}
+    </div>
+  </form>
+
+  <!-- Category List -->
+  <h4 style="margin-top: 50px; font-size: 18px; font-weight: 600; border-top: 1px solid #eee; padding-top: 25px; color: #333;">All Categories & Subcategories</h4>
+  <ul style="list-style-type: none; padding-left: 0; font-size: 15px;">
+    {% for cat in categories %}
+      <li style="margin-bottom: 15px;">
+        <strong style="color: #D4AF37;">{{ cat.name }}</strong>
+        <ul style="margin-top: 5px; margin-left: 20px; list-style-type: disc; color: #555;">
+          {% for sub in cat.subcategories %}
+            <li>{{ sub.name }}</li>
+          {% endfor %}
+        </ul>
+      </li>
+    {% endfor %}
+  </ul>
+</div>
+
+<!-- Custom Styles -->
+<style>
+  @media (max-width: 768px) {
+    div[style*="max-width: 700px"] {
+      width: 90%;
+      padding: 20px;
+    }
+  }
+
+  input:focus, select:focus {
+    outline: none;
+    border-color: #D4AF37 !important;
+    box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2) !important;
+  }
+
+  .btn:hover {
+    background-color: #444444 !important;
+    transform: translateY(-2px);
+  }
+</style>
+{% endblock %}

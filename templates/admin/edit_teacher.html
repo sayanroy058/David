@@ -1,0 +1,46 @@
+{% extends 'admin/base_admin.html' %}
+{% block title %}Edit Teacher{% endblock %}
+{% block content %}
+  <div class="container mt-5" style="max-width: 600px;">
+    <div class="card shadow-sm border-0 rounded-4">
+      <div class="card-body p-5">
+        <h2 class="card-title mb-4 text-center fw-bold">Edit Teacher</h2>
+        <form method="POST" enctype="multipart/form-data" action="{{ url_for('admin.edit_teacher', teacher_id=teacher.id) }}">
+          {{ form.hidden_tag() }}
+
+          <div class="mb-4">
+            {{ form.name.label(class="form-label fw-semibold") }}
+            {{ form.name(class="form-control form-control-lg", placeholder="Enter teacher's full name", value=teacher.name) }}
+            {% if form.name.errors %}
+              <div class="form-text text-danger">{{ form.name.errors[0] }}</div>
+            {% endif %}
+          </div>
+
+          <div class="mb-4">
+            {{ form.title.label(class="form-label fw-semibold") }}
+            {{ form.title(class="form-control form-control-lg", placeholder="Enter professional title", value=teacher.title) }}
+            {% if form.title.errors %}
+              <div class="form-text text-danger">{{ form.title.errors[0] }}</div>
+            {% endif %}
+          </div>
+
+          <div class="mb-4">
+            {{ form.image.label(class="form-label fw-semibold") }}
+            <div class="mb-2">
+              <img src="{{ url_for('static', filename='uploads/teachers/' + teacher.photo) }}" alt="{{ teacher.name }}" class="img-thumbnail" style="height: 100px; width: 100px; object-fit: cover;">
+            </div>
+            {{ form.image(class="form-control form-control-lg", type="file") }}
+            <div class="form-text">Leave empty to keep current image</div>
+            {% if form.image.errors %}
+              <div class="form-text text-danger">{{ form.image.errors[0] }}</div>
+            {% endif %}
+          </div>
+
+          <div class="d-grid">
+            <button type="submit" class="btn btn-primary btn-lg fw-semibold shadow-sm">Update Teacher</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}

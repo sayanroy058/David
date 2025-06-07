@@ -1,0 +1,424 @@
+{% extends 'admin/base_admin.html' %}
+{% block title %}Admin Dashboard | Easy2Learning{% endblock %}
+
+{% block extra_css %}
+<style>
+  .admin-dashboard {
+    padding: 30px 0;
+  }
+  .dashboard-header {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    padding: 30px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  }
+  .stat-card {
+    background-color: white;
+    border-radius: 10px;
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+    height: 100%;
+  }
+  .stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+  }
+  .stat-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    margin-bottom: 15px;
+  }
+  .stat-users {
+    background-color: rgba(102, 126, 234, 0.1);
+    color: #667eea;
+  }
+  .stat-courses {
+    background-color: rgba(244, 226, 29, 0.1);
+    color: #F4E21D;
+  }
+  .stat-books {
+    background-color: rgba(46, 204, 113, 0.1);
+    color: #2ecc71;
+  }
+  .stat-orders {
+    background-color: rgba(231, 76, 60, 0.1);
+    color: #e74c3c;
+  }
+  .stat-value {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 5px;
+  }
+  .stat-label {
+    color: #718096;
+    font-size: 14px;
+  }
+  .action-card {
+    background-color: white;
+    border-radius: 10px;
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+  }
+  .action-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #edf2f7;
+  }
+  .action-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #2d3748;
+    margin: 0;
+  }
+  .action-btn {
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 14px;
+    transition: all 0.3s ease;
+  }
+  .action-btn:hover {
+    transform: translateY(-2px);
+  }
+  .action-btn-primary {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+  }
+  .action-btn-secondary {
+    background-color: white;
+    color: #667eea;
+    border: 1px solid #667eea;
+  }
+  .table-responsive {
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .admin-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .admin-table th {
+    background-color: #f8fafc;
+    padding: 12px 15px;
+    text-align: left;
+    font-weight: 600;
+    color: #4a5568;
+    font-size: 14px;
+  }
+  .admin-table td {
+    padding: 12px 15px;
+    border-top: 1px solid #edf2f7;
+    color: #2d3748;
+    font-size: 14px;
+  }
+  .admin-table tr:hover {
+    background-color: #f8fafc;
+  }
+  .badge {
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .badge-success {
+    background-color: rgba(46, 204, 113, 0.1);
+    color: #2ecc71;
+  }
+  .badge-warning {
+    background-color: rgba(241, 196, 15, 0.1);
+    color: #f1c40f;
+  }
+  .badge-danger {
+    background-color: rgba(231, 76, 60, 0.1);
+    color: #e74c3c;
+  }
+  .nav-tabs {
+    border-bottom: 1px solid #edf2f7;
+    margin-bottom: 20px;
+  }
+  .nav-tabs .nav-link {
+    border: none;
+    color: #718096;
+    padding: 10px 20px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+  .nav-tabs .nav-link:hover {
+    color: #667eea;
+  }
+  .nav-tabs .nav-link.active {
+    color: #667eea;
+    border-bottom: 2px solid #667eea;
+    background-color: transparent;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="admin-dashboard">
+  <div class="container">
+    <!-- Dashboard Header -->
+    <div class="dashboard-header">
+      <div class="row align-items-center">
+        <div class="col-md-6">
+          <h2 class="mb-1">Admin Dashboard</h2>
+          <p class="mb-0">Welcome back, {{ admin.name }}</p>
+        </div>
+        <div class="col-md-6 text-md-end">
+          <div class="d-flex justify-content-md-end gap-2 flex-wrap">
+            <a href="/add-book" class="btn action-btn action-btn-primary me-2 mb-2">
+              <i class="bi bi-plus-circle me-2"></i>Add Book
+            </a>
+            <a href="{{ url_for('admin.add_course') }}" class="btn action-btn action-btn-primary me-2 mb-2">
+              <i class="bi bi-plus-circle me-2"></i>Add Course
+            </a>
+            <a href="{{ url_for('admin.manage_teachers') }}" class="btn action-btn action-btn-primary me-2 mb-2">
+              <i class="bi bi-person-plus me-2"></i>Manage Teachers
+            </a>
+            <a href="{{ url_for('admin.manage_certifications') }}" class="btn action-btn action-btn-primary mb-2">
+              <i class="bi bi-award me-2"></i>Manage Certifications
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Stats Row -->
+    <div class="row mb-4">
+      <div class="col-md-3 mb-4 mb-md-0">
+        <div class="stat-card">
+          <div class="stat-icon stat-users">
+            <i class="bi bi-people"></i>
+          </div>
+          <div class="stat-value">{{ stats.users }}</div>
+          <div class="stat-label">Total Users</div>
+        </div>
+      </div>
+      
+      <div class="col-md-3 mb-4 mb-md-0">
+        <div class="stat-card">
+          <div class="stat-icon stat-courses">
+            <i class="bi bi-journal-bookmark"></i>
+          </div>
+          <div class="stat-value">{{ stats.courses }}</div>
+          <div class="stat-label">Active Courses</div>
+        </div>
+      </div>
+      
+      <div class="col-md-3 mb-4 mb-md-0">
+        <div class="stat-card">
+          <div class="stat-icon stat-books">
+            <i class="bi bi-book"></i>
+          </div>
+          <div class="stat-value">{{ stats.books }}</div>
+          <div class="stat-label">Books Available</div>
+        </div>
+      </div>
+      
+      <div class="col-md-3">
+        <div class="stat-card">
+          <div class="stat-icon stat-orders">
+            <i class="bi bi-cart-check"></i>
+          </div>
+          <div class="stat-value">{{ stats.orders }}</div>
+          <div class="stat-label">Total Orders</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="row">
+      <!-- Left Column -->
+      <div class="col-lg-8">
+        <!-- Recent Orders -->
+        <div class="action-card">
+          <div class="action-header">
+            <h3 class="action-title">Recent Orders</h3>
+            <a href="#" class="action-btn action-btn-secondary">View All</a>
+          </div>
+          
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Order ID</th>
+                  <th>User</th>
+                  <th>Amount</th>
+                  <th>Date</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for order in recent_orders %}
+                <tr>
+                  <td>#{{ order.id }}</td>
+                  <td>{{ order.user_email }}</td>
+                  <td>${{ "%.2f"|format(order.amount) }}</td>
+                  <td>{{ order.date }}</td>
+                  <td>
+                    <span class="badge badge-{{ order.status_class }}">{{ order.status }}</span>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        
+        <!-- User Management -->
+        <div class="action-card">
+          <div class="action-header">
+            <h3 class="action-title">User Management</h3>
+            <a href="#" class="action-btn action-btn-secondary">View All Users</a>
+          </div>
+          
+          <ul class="nav nav-tabs" id="userTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="all-users-tab" data-bs-toggle="tab" data-bs-target="#all-users" type="button" role="tab">All Users</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="certificates-tab" data-bs-toggle="tab" data-bs-target="#certificates" type="button" role="tab">Certificates</button>
+            </li>
+          </ul>
+          
+          <div class="tab-content" id="userTabsContent">
+            <div class="tab-pane fade show active" id="all-users" role="tabpanel">
+              <div class="table-responsive">
+                <table class="admin-table">
+                  <thead>
+                    <tr>
+                      <th>User ID</th>
+                      <th>Email</th>
+                      <th>Phone</th>
+                      <th>Courses</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for user in users %}
+                    <tr>
+                      <td>#{{ user.id }}</td>
+                      <td>{{ user.email }}</td>
+                      <td>{{ user.phone or 'N/A' }}</td>
+                      <td>{{ user.enrolled_courses|length if user.enrolled_courses else 0 }}</td>
+                      <td>
+                        <div class="d-flex gap-2">
+                          <a href="{{ url_for('admin.view_user', user_id=user.id) }}" class="btn btn-sm btn-outline-primary">View</a>
+                          <a href="{{ url_for('admin.edit_user', user_id=user.id) }}" class="btn btn-sm btn-outline-success">Edit</a>
+                        </div>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            
+            <div class="tab-pane fade" id="certificates" role="tabpanel">
+              <div class="mb-4 p-3 border rounded bg-light">
+                <h5 class="mb-3">Upload Certificate for User</h5>
+                <form method="POST" action="{{ url_for('admin.upload_certificate') }}" enctype="multipart/form-data">
+                  {{ certificate_form.hidden_tag() }}
+                  <div class="row g-3">
+                    <div class="col-md-4">
+                      <label for="{{ certificate_form.user_email.id }}" class="form-label">User Email</label>
+                      {{ certificate_form.user_email(class="form-select") }}
+                    </div>
+                    <div class="col-md-3">
+                      <label for="{{ certificate_form.course_id.id }}" class="form-label">Course ID</label>
+                      {{ certificate_form.course_id(class="form-control", placeholder="Course ID") }}
+                    </div>
+                    <div class="col-md-3">
+                      <label for="{{ certificate_form.certificate.id }}" class="form-label">Certificate File</label>
+                      {{ certificate_form.certificate(class="form-control") }}
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                      {{ certificate_form.submit(class="btn action-btn action-btn-primary w-100") }}
+                    </div>
+                  </div>
+                </form>
+              </div>
+              
+              <div class="table-responsive mt-4">
+                <table class="admin-table">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>User</th>
+                      <th>Course</th>
+                      <th>Upload Date</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for cert in recent_certificates %}
+                    <tr>
+                      <td>#{{ cert.id }}</td>
+                      <td>{{ cert.user.email }}</td>
+                      <td>{{ cert.course.title }}</td>
+                      <td>{{ cert.upload_date.strftime('%Y-%m-%d') }}</td>
+                      <td>
+                        <div class="d-flex gap-2">
+                          <a href="{{ url_for('admin.view_certificate', certificate_id=cert.id) }}" class="btn btn-sm btn-outline-primary">View</a>
+                          <a href="{{ url_for('admin.delete_certificate', certificate_id=cert.id) }}" class="btn btn-sm btn-outline-danger">Delete</a>
+                        </div>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Right Column -->
+      <div class="col-lg-4">
+        <!-- Quick Actions -->
+        <div class="action-card">
+          <div class="action-header">
+            <h3 class="action-title">Quick Actions</h3>
+          </div>
+          
+          <div class="d-grid gap-3">
+            <a href="{{ url_for('admin.manage_books') }}" class="btn action-btn action-btn-primary">
+              <i class="bi bi-book-half me-2"></i>Manage Books
+            </a>
+            <a href="{{ url_for('admin.upload_certificate') }}" class="btn action-btn action-btn-primary">
+              <i class="bi bi-file-earmark-check me-2"></i>Upload Certificate
+            </a>
+            <a href="/manage-categories" class="btn action-btn action-btn-primary">
+              <i class="bi bi-file-earmark-check me-2"></i>Manage Category
+            </a>
+            <a href="{{ url_for('admin_jobs') }}" class="btn action-btn action-btn-primary">
+              <i class="bi bi-file-earmark-check me-2"></i>Manage career
+            </a>
+            <a href="{{ url_for('manage_testimonials') }}" class="btn action-btn action-btn-primary">
+              <i class="bi bi-file-earmark-check me-2"></i>Manage Testimonials
+            </a>
+            <a href="{{ url_for('admin_hero_slider') }}" class="btn action-btn action-btn-primary">
+              <i class="bi bi-file-earmark-check me-2"></i>Manage Hero Slides
+            </a>
+          </div>
+        </div>
+        
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

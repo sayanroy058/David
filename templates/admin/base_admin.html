@@ -1,0 +1,23 @@
+{% extends 'base_new.html' %}
+
+{% block extra_css %}
+{{ super() }}
+<style>
+  /* Admin-specific styles can go here */
+</style>
+{% endblock %}
+
+{% block navbar_auth %}
+  {% if session.get('admin_id') %}
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url_for('admin.dashboard') }}"><i class="bi bi-person-check-fill"></i> {{ session.admin_name }}</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link btn btn-outline-danger ms-lg-3" href="{{ url_for('admin.logout') }}"><i class="bi bi-box-arrow-right"></i> Logout</a>
+    </li>
+  {% else %}
+    <li class="nav-item">
+      <a class="nav-link btn btn-primary ms-lg-3" href="{{ url_for('admin.login') }}"><i class="bi bi-person-circle"></i> Login</a>
+    </li>
+  {% endif %}
+{% endblock %}

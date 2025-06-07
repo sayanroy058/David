@@ -1,0 +1,181 @@
+{% extends 'admin/base_admin.html' %}
+{% block title %}Admin Registration | Easy2Learning{% endblock %}
+
+{% block extra_css %}
+<style>
+  .admin-register-container {
+    max-width: 600px;
+    margin: 60px auto;
+    padding: 40px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  }
+  .admin-header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  .admin-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 40px;
+  }
+  .form-group {
+    margin-bottom: 20px;
+  }
+  .form-control {
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+  }
+  .form-control:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+  }
+  .admin-btn {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    width: 100%;
+    margin-top: 10px;
+    transition: all 0.3s ease;
+  }
+  .admin-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  }
+  .alert {
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+  }
+  .security-note {
+    background-color: #f8f9fa;
+    border-left: 4px solid #667eea;
+    padding: 15px;
+    margin-top: 20px;
+    border-radius: 5px;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="admin-register-container">
+  <div class="admin-header">
+    <div class="admin-icon">
+      <i class="bi bi-person-plus"></i>
+    </div>
+    <h2>Admin Registration</h2>
+    <p class="text-muted">Create a new administrator account</p>
+  </div>
+  
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+  
+  <form method="POST" action="{{ url_for('admin.register') }}">
+    {{ form.hidden_tag() }}
+    
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="name" class="form-label">Full Name</label>
+          {{ form.name(class="form-control", placeholder="Enter your full name") }}
+          {% if form.name.errors %}
+            <div class="text-danger">
+              {% for error in form.name.errors %}
+                <small>{{ error }}</small>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </div>
+      </div>
+      
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="email" class="form-label">Email Address</label>
+          {{ form.email(class="form-control", placeholder="Enter your email") }}
+          {% if form.email.errors %}
+            <div class="text-danger">
+              {% for error in form.email.errors %}
+                <small>{{ error }}</small>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="password" class="form-label">Password</label>
+          {{ form.password(class="form-control", placeholder="Create a strong password") }}
+          {% if form.password.errors %}
+            <div class="text-danger">
+              {% for error in form.password.errors %}
+                <small>{{ error }}</small>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </div>
+      </div>
+      
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="confirm_password" class="form-label">Confirm Password</label>
+          {{ form.confirm_password(class="form-control", placeholder="Confirm your password") }}
+          {% if form.confirm_password.errors %}
+            <div class="text-danger">
+              {% for error in form.confirm_password.errors %}
+                <small>{{ error }}</small>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label for="admin_code" class="form-label">Admin Security Code</label>
+      {{ form.admin_code(class="form-control", placeholder="Enter the admin security code") }}
+      {% if form.admin_code.errors %}
+        <div class="text-danger">
+          {% for error in form.admin_code.errors %}
+            <small>{{ error }}</small>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+    
+    <div class="security-note">
+      <h6><i class="bi bi-shield-lock me-2"></i>Security Note</h6>
+      <p class="small mb-0">Admin accounts have full access to the system. Registration requires a valid admin security code provided by the system administrator.</p>
+    </div>
+    
+    <div class="form-group mt-4">
+      {{ form.submit(class="admin-btn") }}
+    </div>
+    
+    <div class="text-center mt-3">
+      <p class="mb-0">Already have an admin account? <a href="{{ url_for('admin.login') }}">Login</a></p>
+    </div>
+  </form>
+</div>
+{% endblock %}

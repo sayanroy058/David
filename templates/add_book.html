@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Book</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg,rgb(249, 244, 244) 0%,rgb(246, 244, 244) 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: linear-gradient(145deg, #f5f5f5 0%, #e8e8e8 100%);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #DAA520 0%, #B8860B 100%);
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255, 255, 255, 0.1) 10px,
+                rgba(255, 255, 255, 0.1) 20px
+            );
+            animation: shimmer 3s linear infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .header h2 {
+            color: #2c2c2c;
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 2;
+            margin: 0;
+        }
+
+        form {
+            padding: 40px;
+            background: transparent;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .form-group {
+            flex: 1;
+            min-width: 280px;
+            position: relative;
+        }
+
+        .form-group.full-width {
+            flex: 100%;
+            min-width: 100%;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            color: #2c2c2c;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+            position: relative;
+        }
+
+        label::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 30px;
+            height: 3px;
+            background: linear-gradient(90deg, #DAA520, #B8860B);
+            border-radius: 2px;
+        }
+
+        input[type="text"], 
+        input[type="number"], 
+        input[type="file"], 
+        textarea, 
+        select {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #fff;
+            color: #2c2c2c;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        input[type="text"]:focus, 
+        input[type="number"]:focus, 
+        input[type="file"]:focus, 
+        textarea:focus, 
+        select:focus {
+            outline: none;
+            border-color: #DAA520;
+            box-shadow: 0 0 0 4px rgba(218, 165, 32, 0.2), inset 0 2px 4px rgba(0, 0, 0, 0.05);
+            transform: translateY(-2px);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+            font-family: inherit;
+        }
+
+        input[type="file"] {
+            padding: 12px;
+            background: linear-gradient(145deg, #f8f8f8, #e8e8e8);
+            cursor: pointer;
+        }
+
+        input[type="file"]::-webkit-file-upload-button {
+            background: linear-gradient(135deg, #DAA520, #B8860B);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-right: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        input[type="file"]::-webkit-file-upload-button:hover {
+            background: linear-gradient(135deg, #B8860B, #8B6914);
+            transform: translateY(-1px);
+        }
+
+        .submit-btn {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #DAA520 0%, #B8860B 100%);
+            color: #2c2c2c;
+            border: none;
+            padding: 18px 40px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(218, 165, 32, 0.3);
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(218, 165, 32, 0.4);
+            background: linear-gradient(135deg, #B8860B 0%, #8B6914 100%);
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(218, 165, 32, 0.3);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                border-radius: 15px;
+            }
+
+            .header {
+                padding: 20px;
+            }
+
+            .header h2 {
+                font-size: 2rem;
+            }
+
+            form {
+                padding: 25px;
+            }
+
+            .form-row {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .form-group {
+                min-width: 100%;
+            }
+
+            input[type="text"], 
+            input[type="number"], 
+            input[type="file"], 
+            textarea, 
+            select {
+                padding: 12px 15px;
+            }
+
+            .btn {
+                padding: 15px 30px;
+                font-size: 1.1rem;
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h2 {
+                font-size: 1.5rem;
+            }
+
+            form {
+                padding: 20px;
+            }
+
+            input[type="text"], 
+            input[type="number"], 
+            input[type="file"], 
+            textarea, 
+            select {
+                padding: 10px 12px;
+            }
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #2c2c2c;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #DAA520, #B8860B);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #B8860B, #8B6914);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>Add a New Book</h2>
+        </div>
+        
+        <form method="POST" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+            
+            <div class="form-row">
+                <div class="form-group">
+                    {{ form.title.label }}
+                    {{ form.title() }}
+                </div>
+                <div class="form-group">
+                    {{ form.author.label }}
+                    {{ form.author() }}
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group full-width">
+                    {{ form.description.label }}
+                    {{ form.description(rows=4) }}
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    {{ form.category.label }}
+                    {{ form.category() }}
+                </div>
+                <div class="form-group">
+                    {{ form.subject.label }}
+                    {{ form.subject() }}
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    {{ form.quantity.label }}
+                    {{ form.quantity() }}
+                </div>
+                <div class="form-group">
+                    {{ form.original_price.label }}
+                    {{ form.original_price() }}
+                </div>
+                <div class="form-group">
+                    {{ form.price.label }}
+                    {{ form.price() }}
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group full-width">
+                    {{ form.images.label }}
+                    {{ form.images(multiple=True) }}
+                </div>
+            </div>
+            
+            <div class="submit-btn">
+                {{ form.submit(class="btn btn-primary") }}
+            </div>
+        </form>
+    </div>
+</body>
+</html>

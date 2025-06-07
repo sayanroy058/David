@@ -1,0 +1,291 @@
+{% extends 'base_new.html' %}
+{% block title %}Checkout | Easy2Learning{% endblock %}
+
+{% block extra_css %}
+<style>
+  .checkout-container {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 30px;
+  }
+  .checkout-header {
+    margin-bottom: 30px;
+    text-align: center;
+  }
+  .checkout-step {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    padding: 25px;
+    margin-bottom: 25px;
+  }
+  .step-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  .step-number {
+    background: linear-gradient(135deg,rgb(222, 201, 41),rgb(244, 226, 29));
+    color: white;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-right: 15px;
+  }
+  .step-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #333;
+  }
+  .order-summary-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+  }
+  .order-summary-item:last-child {
+    border-bottom: none;
+  }
+  .payment-option {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  .payment-option:hover, .payment-option.selected {
+    border-color: rgb(222, 201, 41);
+    background-color: rgba(244, 226, 29, 0.05);
+  }
+  .payment-option.selected {
+    box-shadow: 0 0 0 1px rgb(222, 201, 41);
+  }
+  .razorpay-btn {
+    background: linear-gradient(135deg,rgb(222, 201, 41),rgb(244, 226, 29));
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  .razorpay-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(222, 201, 41, 0.3);
+  }
+  .book-image {
+    width: 60px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 5px;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="checkout-container">
+  <div class="checkout-header">
+    <h2>Secure Checkout</h2>
+    <p class="text-muted">Complete your purchase securely</p>
+  </div>
+
+  <div class="row">
+    <!-- Left Column - Checkout Steps -->
+    <div class="col-lg-8">
+      <!-- Order Summary Step -->
+      <div class="checkout-step">
+        <div class="step-header">
+          <div class="step-number">1</div>
+          <div class="step-title">Order Summary</div>
+        </div>
+        
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Details</th>
+                <th class="text-center">Quantity</th>
+                <th class="text-end">Price</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in cart %}
+              <tr>
+                <td>
+                  {% if item.image %}
+                  <img src="{{ url_for('static', filename='uploads/' ~ item.image) }}" alt="{{ item.title }}" class="book-image">
+                  {% else %}
+                  <div class="book-image bg-light d-flex align-items-center justify-content-center">
+                    <i class="bi bi-book text-muted"></i>
+                  </div>
+                  {% endif %}
+                </td>
+                <td>
+                  <h6 class="mb-0">{{ item.title }}</h6>
+                  <small class="text-muted">{{ item.author }}</small>
+                </td>
+                <td class="text-center">{{ item.quantity }}</td>
+                <td class="text-end">₹{{ "%.2f"|format(item.price * item.quantity) }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Customer Information Step -->
+      <div class="checkout-step">
+        <div class="step-header">
+          <div class="step-number">2</div>
+          <div class="step-title">Customer Information</div>
+        </div>
+        
+        <form id="customer-info-form">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label for="name" class="form-label">Full Name</label>
+              <input type="text" class="form-control" id="name" required>
+            </div>
+            <div class="col-md-6">
+              <label for="email" class="form-label">Email</label>
+              <input type="email" class="form-control" id="email" value="{{ session.get('email', '') }}" {% if session.get('email') %}readonly{% endif %}>
+            </div>
+            <div class="col-md-6">
+              <label for="phone" class="form-label">Phone</label>
+              <input type="tel" class="form-control" id="phone" value="{{ session.get('phone', '') }}">
+            </div>
+            <div class="col-md-6">
+              <label for="address" class="form-label">Address</label>
+              <input type="text" class="form-control" id="address" required>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Payment Method Step -->
+      <div class="checkout-step">
+        <div class="step-header">
+          <div class="step-number">3</div>
+          <div class="step-title">Payment Method</div>
+        </div>
+        
+        <div class="payment-options">
+          <div class="payment-option selected" onclick="selectPaymentOption(this)">
+            <div class="d-flex align-items-center">
+              <input type="radio" name="payment-method" id="razorpay" checked>
+              <label for="razorpay" class="ms-2 mb-0">Razorpay</label>
+              <img src="https://razorpay.com/assets/razorpay-glyph.svg" alt="Razorpay" height="30" class="ms-auto">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column - Order Summary -->
+    <div class="col-lg-4">
+  <div class="checkout-step">
+    <h5 class="mb-4">Order Total</h5>
+
+    {% set tax = total_price * 0.05 %}
+    {% set subtotal_with_tax = total_price + tax %}
+    {% set delivery_charge = 60 if subtotal_with_tax < 500 else 0 %}
+    {% set final_total = subtotal_with_tax + delivery_charge %}
+
+    <div class="order-summary">
+      <div class="order-summary-item">
+        <span>Subtotal</span>
+        <span>₹{{ "%.2f"|format(total_price) }}</span>
+      </div>
+      <div class="order-summary-item">
+        <span>Shipping</span>
+        <span>₹{{ "%.2f"|format(delivery_charge) }}</span>
+      </div>
+      <div class="order-summary-item">
+        <span>Tax (5%)</span>
+        <span>₹{{ "%.2f"|format(tax) }}</span>
+      </div>
+      <div class="order-summary-item">
+        <strong>Total</strong>
+        <strong>₹{{ "%.2f"|format(final_total) }}</strong>
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <button id="rzp-button" class="btn razorpay-btn w-100">Pay Now</button>
+    </div>
+
+    <div class="mt-3 text-center">
+      <small class="text-muted">
+        <i class="bi bi-shield-check me-1"></i> Secure Payment
+      </small>
+    </div>
+  </div>
+</div>
+
+  </div>
+</div>
+
+<!-- Razorpay Script -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+  function selectPaymentOption(element) {
+    document.querySelectorAll('.payment-option').forEach(option => {
+      option.classList.remove('selected');
+    });
+    element.classList.add('selected');
+    element.querySelector('input[type="radio"]').checked = true;
+  }
+  
+  document.getElementById('rzp-button').addEventListener('click', function(e) {
+    e.preventDefault();
+    
+    // Validate form
+    const form = document.getElementById('customer-info-form');
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+    
+    // Get form values
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const phone = document.getElementById('phone').value;
+    
+    // Calculate amount in paise (Razorpay uses smallest currency unit)
+    // Calculate amount in paise
+    const amount = {{ (total_price * 1.05 + (total_price * 1.05 < 500 and 60 or 0)) * 100 | round|int }};
+
+    
+    var options = {
+      key: "rzp_test_vntVc372QhJLXH",
+      amount: amount,
+      currency: "INR",
+      name: "Easy2Learning",
+      description: "Purchase from Easy2Learning",
+      image: "/static/icons/logo.png",
+      handler: function(response) {
+        // On successful payment
+        window.location.href = "/payment/success?payment_id=" + response.razorpay_payment_id;
+      },
+      prefill: {
+        name: name,
+        email: email,
+        contact: phone
+      },
+      theme: {
+        color: "#F4E21D"
+      }
+    };
+    
+    var rzp = new Razorpay(options);
+    rzp.open();
+  });
+</script>
+{% endblock %}

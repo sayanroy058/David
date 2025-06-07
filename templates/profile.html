@@ -1,0 +1,747 @@
+{% extends 'base_new.html' %}
+{% block title %}Profile | Easy2Learning{% endblock %}
+
+{% block extra_css %}
+<style>
+  .profile-container {
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 0 20px;
+  }
+  
+  .row.g-4 > [class*="col-"] {
+    display: flex;
+    flex-direction: column;
+  }
+  .profile-header {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border-radius: 15px;
+    padding: 40px;
+    margin-bottom: 40px;
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.15);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .profile-header::before {
+    content: '';
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    z-index: 0;
+  }
+  .profile-header::after {
+    content: '';
+    position: absolute;
+    bottom: -80px;
+    left: -80px;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.05);
+    z-index: 0;
+  }
+  .profile-avatar {
+    width: 120px;
+    height: 120px;
+    background: linear-gradient(135deg, #F4E21D, #f7d046);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    margin-bottom: 25px;
+    box-shadow: 0 8px 20px rgba(244, 226, 29, 0.3);
+    border: 5px solid rgba(255, 255, 255, 0.2);
+    position: relative;
+    z-index: 1;
+    transition: all 0.3s ease;
+  }
+  .profile-avatar:hover {
+    transform: scale(1.05);
+    box-shadow: 0 12px 25px rgba(244, 226, 29, 0.4);
+  }
+  .profile-name {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    position: relative;
+    z-index: 1;
+  }
+  .profile-email {
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 20px;
+    font-size: 16px;
+    position: relative;
+    z-index: 1;
+  }
+  .profile-stats {
+    display: flex;
+    gap: 25px;
+    margin-top: 30px;
+    position: relative;
+    z-index: 1;
+    width: 100%;
+  }
+  
+  @media (max-width: 768px) {
+    .profile-header {
+      padding: 25px;
+      flex-direction: column;
+    }
+    .profile-stats {
+      margin-top: 20px;
+    }
+    .col-md-8, .col-md-4 {
+      width: 100%;
+    }
+    .profile-avatar {
+      width: 100px;
+      height: 100px;
+      font-size: 40px;
+    }
+    .profile-name {
+      font-size: 28px;
+    }
+  }
+  .stat-item {
+    background-color: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    padding: 20px;
+    flex: 1;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .stat-item:hover {
+    transform: translateY(-5px);
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+  .stat-value {
+    font-size: 32px;
+    font-weight: 700;
+    color: #F4E21D;
+    margin-bottom: 8px;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  .stat-label {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 15px;
+    font-weight: 500;
+  }
+  .profile-card {
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+    padding: 30px;
+    margin-bottom: 30px;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0, 0, 0, 0.03);
+    height: calc(100% - 30px);
+    display: flex;
+    flex-direction: column;
+  }
+  .profile-card:hover {
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+    transform: translateY(-5px);
+  }
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 20px;
+    margin-bottom: 25px;
+    border-bottom: 1px solid #e9ecef;
+    flex-shrink: 0;
+  }
+  .card-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0;
+    color: #2d3748;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .card-title i {
+    color: #667eea;
+  }
+  .course-item {
+    display: flex;
+    align-items: center;
+    padding: 20px 0;
+    border-bottom: 1px solid #e9ecef;
+    transition: all 0.3s ease;
+    flex-wrap: wrap;
+  }
+  
+  @media (max-width: 576px) {
+    .course-details {
+      width: 100%;
+      margin-bottom: 15px;
+    }
+    .course-image {
+      margin-bottom: 15px;
+    }
+    .download-btn, .certificate-badge {
+      margin-top: 10px;
+    }
+  }
+  .course-item:hover {
+    background-color: #f8f9fa;
+    padding-left: 15px;
+    padding-right: 15px;
+    margin-left: -15px;
+    margin-right: -15px;
+    border-radius: 10px;
+  }
+  .course-item:last-child {
+    border-bottom: none;
+  }
+  .course-image {
+    width: 100px;
+    height: 75px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-right: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+  }
+  .course-item:hover .course-image {
+    transform: scale(1.05);
+  }
+  .course-details {
+    flex-grow: 1;
+  }
+  .course-title {
+    font-weight: 700;
+    margin-bottom: 8px;
+    font-size: 18px;
+    color: #2d3748;
+    transition: all 0.3s ease;
+  }
+  .course-item:hover .course-title {
+    color: #667eea;
+  }
+  .course-meta {
+    color: #718096;
+    font-size: 14px;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+  }
+  .course-meta span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .course-meta i {
+    color: #667eea;
+    font-size: 16px;
+  }
+  .certificate-badge {
+    background-color: #ebfaf0;
+    color: #27ae60;
+    padding: 8px 15px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 3px 10px rgba(39, 174, 96, 0.1);
+    transition: all 0.3s ease;
+  }
+  .certificate-badge:hover {
+    background-color: #d4f3e0;
+    transform: translateY(-2px);
+  }
+  .certificate-badge i {
+    font-size: 16px;
+  }
+  .download-btn {
+    background: linear-gradient(135deg, #F4E21D, #f7d046);
+    color: #333;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 15px rgba(244, 226, 29, 0.2);
+    text-decoration: none;
+  }
+  .download-btn:hover {
+    background: linear-gradient(135deg, #f7d046, #F4E21D);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(244, 226, 29, 0.3);
+  }
+  .order-item {
+    display: flex;
+    align-items: center;
+    padding: 20px 0;
+    border-bottom: 1px solid #e9ecef;
+    transition: all 0.3s ease;
+    flex-wrap: wrap;
+  }
+  
+  @media (max-width: 576px) {
+    .order-details {
+      width: 100%;
+      margin-bottom: 10px;
+    }
+    .order-status {
+      margin-top: 5px;
+    }
+  }
+  .order-item:hover {
+    background-color: #f8f9fa;
+    padding-left: 15px;
+    padding-right: 15px;
+    margin-left: -15px;
+    margin-right: -15px;
+    border-radius: 10px;
+  }
+  .order-item:last-child {
+    border-bottom: none;
+  }
+  .order-details {
+    flex-grow: 1;
+  }
+  .order-id {
+    font-weight: 700;
+    margin-bottom: 8px;
+    font-size: 16px;
+    color: #2d3748;
+  }
+  .order-meta {
+    color: #718096;
+    font-size: 14px;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+  }
+  .order-meta span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .order-meta i {
+    color: #667eea;
+  }
+  .order-status {
+    padding: 8px 15px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 600;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+  }
+  .status-completed {
+    background-color: #ebfaf0;
+    color: #27ae60;
+  }
+  .status-processing {
+    background-color: #fef9e7;
+    color: #f1c40f;
+  }
+  .logout-btn {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    backdrop-filter: blur(5px);
+    position: relative;
+    z-index: 1;
+  }
+  .logout-btn:hover {
+    background-color: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: translateY(-2px);
+  }
+  
+  /* Empty State Styling */
+  .empty-state {
+    padding: 40px 20px;
+    transition: all 0.3s ease;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .empty-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+  }
+  .empty-icon i {
+    font-size: 32px;
+    color: #adb5bd;
+    transition: all 0.3s ease;
+  }
+  .empty-state:hover .empty-icon {
+    transform: scale(1.05) translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+  }
+  .empty-state:hover .empty-icon i {
+    color: #667eea;
+  }
+  .empty-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #2d3748;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+  .empty-description {
+    color: #718096;
+    font-size: 16px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  .empty-hint {
+    color: #a0aec0;
+    font-size: 14px;
+    font-style: italic;
+    text-align: center;
+  }
+  .cta-button {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+    text-decoration: none;
+    margin-top: 10px;
+  }
+  .cta-button:hover {
+    background: linear-gradient(135deg, #764ba2, #667eea);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+    color: white;
+  }
+  
+  /* Account Details Styling */
+  .account-fields {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .account-field {
+    display: flex;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid #e9ecef;
+    transition: all 0.3s ease;
+  }
+  .account-field:last-of-type {
+    border-bottom: none;
+  }
+  .account-field:hover {
+    background-color: #f8f9fa;
+    padding-left: 15px;
+    padding-right: 15px;
+    margin-left: -15px;
+    margin-right: -15px;
+    border-radius: 10px;
+  }
+  .field-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    transition: all 0.3s ease;
+  }
+  .field-icon i {
+    font-size: 18px;
+    color: #667eea;
+  }
+  .account-field:hover .field-icon {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+  }
+  .account-field:hover .field-icon i {
+    color: white;
+  }
+  .field-content {
+    flex-grow: 1;
+  }
+  .field-label {
+    font-size: 13px;
+    color: #a0aec0;
+    margin-bottom: 4px;
+    font-weight: 500;
+  }
+  .field-value {
+    font-size: 16px;
+    color: #2d3748;
+    font-weight: 500;
+  }
+  .edit-profile-btn {
+    background-color: white;
+    color: #667eea;
+    border: 2px solid #667eea;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .edit-profile-btn:hover {
+    background-color: #667eea;
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.2);
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+  <!-- Profile Header -->
+  <div class="profile-header">
+    <div class="col-md-8">
+      <div class="d-flex align-items-center mb-3">
+        <div class="profile-avatar me-4">
+          <i class="bi bi-person"></i>
+        </div>
+        <div>
+          <h1 class="profile-name mb-1">{{ user.name or 'User' }}</h1>
+          <p class="profile-email mb-0">{{ user.email }}</p>
+        </div>
+      </div>
+      <!-- <a href="{{ url_for('logout') }}" class="logout-btn">
+        <i class="bi bi-box-arrow-right me-2"></i>Log Out
+      </a> -->
+    </div>
+    <div class="col-md-4">
+      <div class="profile-stats">
+        <div class="stat-item">
+          <div class="stat-value">{{ user_courses|length }}</div>
+          <div class="stat-label">Courses</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">{{ certificates|length }}</div>
+          <div class="stat-label">Certificates</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="row g-4">
+    <!-- Left Column -->
+    <div class="col-lg-8">
+      <!-- My Courses -->
+      <div class="profile-card">
+        <div class="card-header">
+          <h2 class="card-title">My Courses</h2>
+        </div>
+        
+        {% if user_courses %}
+          {% for course in user_courses %}
+          <div class="course-item">
+            {% if course.image %}
+            <img src="{{ url_for('static', filename='uploads/courses/' + course.image) }}" alt="{{ course.title }}" class="course-image">
+            {% else %}
+            <div class="course-image bg-light d-flex align-items-center justify-content-center">
+              <i class="bi bi-journal text-muted"></i>
+            </div>
+            {% endif %}
+            
+            <div class="course-details">
+              <h3 class="course-title">{{ course.title }} <span class="badge bg-secondary">ID: {{ course.id }}</span></h3>
+              <div class="course-meta">
+                <span><i class="bi bi-person me-1"></i>{{ course.teacher.name }}</span>
+                <span><i class="bi bi-calendar me-1"></i>Enrolled on {{ course.enrollment_date }}</span>
+              </div>
+            </div>
+            
+            {% if course.certificate %}
+            <a href="{{ url_for('download_certificate', certificate_id=course.certificate.id) }}" class="download-btn">
+              <i class="bi bi-download"></i> Certificate
+            </a>
+            {% else %}
+            <span class="certificate-badge">
+              <i class="bi bi-hourglass-split"></i> In Progress
+            </span>
+            {% endif %}
+          </div>
+          {% endfor %}
+        {% else %}
+          <div class="text-center py-5 empty-state">
+            <div class="empty-icon">
+              <i class="bi bi-journal-x"></i>
+            </div>
+            <h4 class="empty-title">No Courses Yet</h4>
+            <p class="empty-description">You are not enrolled in any courses yet.</p>
+            <a href="{{ url_for('courses') }}" class="cta-button">
+              <i class="bi bi-collection-play me-2"></i>Browse Courses
+            </a>
+          </div>
+        {% endif %}
+      </div>
+      
+      <!-- Recent Orders -->
+      <div class="profile-card">
+        <div class="card-header">
+          <h2 class="card-title">Recent Orders</h2>
+        </div>
+        
+        {% if orders %}
+          {% for order in orders %}
+          <div class="order-item">
+            <div class="order-details">
+              <h3 class="order-id">Order #{{ order.id }}</h3>
+              <div class="order-meta">
+                <span><i class="bi bi-calendar me-1"></i>{{ order.date }}</span>
+                <span><i class="bi bi-currency-dollar me-1"></i>{{ "%.2f"|format(order.amount) }}</span>
+              </div>
+            </div>
+            
+            <span class="order-status status-{{ order.status|lower }}">{{ order.status }}</span>
+          </div>
+          {% endfor %}
+        {% else %}
+          <div class="text-center py-5 empty-state">
+            <div class="empty-icon">
+              <i class="bi bi-cart-x"></i>
+            </div>
+            <h4 class="empty-title">No Orders Yet</h4>
+            <p class="empty-description">You haven't placed any orders yet.</p>
+            <a href="{{ url_for('books') }}" class="cta-button">
+              <i class="bi bi-book me-2"></i>Browse Books
+            </a>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+    
+    <!-- Right Column -->
+    <div class="col-lg-4">
+      <!-- My Certificates -->
+      <div class="profile-card">
+        <div class="card-header">
+          <h2 class="card-title">My Certificates</h2>
+        </div>
+        
+        {% if certificates %}
+          {% for cert in certificates %}
+          <div class="course-item">
+            <div class="course-details">
+              <h3 class="course-title">{{ cert.course.title }}</h3>
+              <div class="course-meta">
+                <span><i class="bi bi-calendar me-1"></i>Issued on {{ cert.upload_date.strftime('%Y-%m-%d') }}</span>
+              </div>
+            </div>
+            
+            <a href="{{ url_for('download_certificate', certificate_id=cert.id) }}" class="download-btn">
+              <i class="bi bi-download"></i>
+            </a>
+          </div>
+          {% endfor %}
+        {% else %}
+          <div class="text-center py-5 empty-state">
+            <div class="empty-icon">
+              <i class="bi bi-file-earmark-x"></i>
+            </div>
+            <h4 class="empty-title">No Certificates Yet</h4>
+            <p class="empty-description">You don't have any certificates yet.</p>
+            <p class="empty-hint">Complete courses to earn certificates.</p>
+          </div>
+        {% endif %}
+      </div>
+      
+      <!-- Account Details -->
+      <div class="profile-card">
+        <div class="card-header">
+          <h2 class="card-title">Account Details</h2>
+        </div>
+        
+        <div class="account-fields">
+          <div class="account-field">
+            <div class="field-icon">
+              <i class="bi bi-envelope"></i>
+            </div>
+            <div class="field-content">
+              <label class="field-label">Email</label>
+              <div class="field-value">{{ user.email }}</div>
+            </div>
+          </div>
+          
+          <div class="account-field">
+            <div class="field-icon">
+              <i class="bi bi-telephone"></i>
+            </div>
+            <div class="field-content">
+              <label class="field-label">Phone</label>
+              <div class="field-value">{{ user.phone or 'Not provided' }}</div>
+            </div>
+          </div>
+          
+          <div class="account-field">
+            <div class="field-icon">
+              <i class="bi bi-calendar-check"></i>
+            </div>
+            <div class="field-content">
+              <label class="field-label">Member Since</label>
+              <div class="field-value">{{ user.date_registered.strftime('%B %Y') if user.date_registered else 'Unknown' }}</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="d-grid mt-auto pt-4">
+          <button class="edit-profile-btn">
+            <i class="bi bi-pencil me-2"></i>Edit Profile
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

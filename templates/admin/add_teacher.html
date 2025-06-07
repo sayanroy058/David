@@ -1,0 +1,42 @@
+{% extends 'admin/base_admin.html' %}
+{% block title %}Add Teacher{% endblock %}
+{% block content %}
+  <div class="container mt-5" style="max-width: 600px;">
+    <div class="card shadow-sm border-0 rounded-4">
+      <div class="card-body p-5">
+        <h2 class="card-title mb-4 text-center fw-bold">Add New Teacher</h2>
+        <form method="POST" enctype="multipart/form-data" action="{{ url_for('admin.add_teacher') }}">
+          {{ form.hidden_tag() }}
+
+          <div class="mb-4">
+            {{ form.name.label(class="form-label fw-semibold") }}
+            {{ form.name(class="form-control form-control-lg", placeholder="Enter teacher's full name") }}
+            {% if form.name.errors %}
+              <div class="form-text text-danger">{{ form.name.errors[0] }}</div>
+            {% endif %}
+          </div>
+
+          <div class="mb-4">
+            {{ form.title.label(class="form-label fw-semibold") }}
+            {{ form.title(class="form-control form-control-lg", placeholder="Enter professional title") }}
+            {% if form.title.errors %}
+              <div class="form-text text-danger">{{ form.title.errors[0] }}</div>
+            {% endif %}
+          </div>
+
+          <div class="mb-4">
+            {{ form.image.label(class="form-label fw-semibold") }}
+            {{ form.image(class="form-control form-control-lg", type="file") }}
+            {% if form.image.errors %}
+              <div class="form-text text-danger">{{ form.image.errors[0] }}</div>
+            {% endif %}
+          </div>
+
+          <div class="d-grid">
+            <button type="submit" class="btn btn-primary btn-lg fw-semibold shadow-sm">Add Teacher</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}

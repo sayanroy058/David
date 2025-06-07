@@ -1,0 +1,63 @@
+{% extends 'base_new.html' %}
+{% block title %}Books | Easy2Learning{% endblock %}
+{% block content %}
+<div style="max-width: 600px; margin: 40px auto; padding: 30px; background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); font-family: 'Arial', sans-serif;">
+  <h2 style="color: #333333; margin-bottom: 25px; text-align: center; font-weight: 600; border-bottom: 2px solid #D4AF37; padding-bottom: 15px;">Create Your Account</h2>
+  
+  <form method="POST" style="display: flex; flex-direction: column;">
+    {{ form.hidden_tag() }}
+    
+    <div style="margin-bottom: 20px;">
+      <label for="{{ form.email.id }}" style="display: block; margin-bottom: 8px; color: #333333; font-weight: 600; font-size: 14px;">{{ form.email.label.text }}</label>
+      {{ form.email(style="width: 100%; padding: 12px; border: 1px solid #cccccc; border-radius: 4px; font-size: 14px; transition: border-color 0.3s; box-sizing: border-box;", placeholder="Enter your email address") }}
+    </div>
+    
+    <div style="margin-bottom: 20px;">
+      <label for="{{ form.phone.id }}" style="display: block; margin-bottom: 8px; color: #333333; font-weight: 600; font-size: 14px;">{{ form.phone.label.text }}</label>
+      {{ form.phone(style="width: 100%; padding: 12px; border: 1px solid #cccccc; border-radius: 4px; font-size: 14px; transition: border-color 0.3s; box-sizing: border-box;", placeholder="Enter your phone number") }}
+    </div>
+    
+    <div style="margin-bottom: 20px;">
+      <label for="{{ form.password.id }}" style="display: block; margin-bottom: 8px; color: #333333; font-weight: 600; font-size: 14px;">{{ form.password.label.text }}</label>
+      {{ form.password(style="width: 100%; padding: 12px; border: 1px solid #cccccc; border-radius: 4px; font-size: 14px; transition: border-color 0.3s; box-sizing: border-box;", placeholder="Create a secure password") }}
+    </div>
+    
+    <div style="margin-bottom: 25px;">
+      <label for="{{ form.confirm_password.id }}" style="display: block; margin-bottom: 8px; color: #333333; font-weight: 600; font-size: 14px;">{{ form.confirm_password.label.text }}</label>
+      {{ form.confirm_password(style="width: 100%; padding: 12px; border: 1px solid #cccccc; border-radius: 4px; font-size: 14px; transition: border-color 0.3s; box-sizing: border-box;", placeholder="Confirm your password") }}
+    </div>
+    
+    <div style="display: flex; align-items: center; margin-bottom: 25px;">
+      {{ form.terms(style="margin-right: 10px; width: 18px; height: 18px; accent-color: #D4AF37;") }}
+      <label for="{{ form.terms.id }}" style="color: #333333; font-size: 14px;">{{ form.terms.label.text }}</label>
+    </div>
+    
+    <div style="text-align: center;">
+      {{ form.submit(style="background-color: #333333; color: #D4AF37; border: none; padding: 12px 30px; font-size: 16px; font-weight: 600; border-radius: 4px; cursor: pointer; transition: all 0.3s; box-shadow: 0 2px 5px rgba(0,0,0,0.2);") }}
+    </div>
+  </form>
+  
+  <p style="text-align: center; margin-top: 25px; color: #666666; font-size: 14px;">Already have an account? <a href="/login" style="color: #D4AF37; text-decoration: none; font-weight: 600;">Sign In</a></p>
+</div>
+
+<style>
+  @media (max-width: 768px) {
+    div[style*="max-width: 600px"] {
+      margin: 20px auto;
+      padding: 20px;
+      width: 90%;
+    }
+  }
+  
+  input:focus {
+    outline: none;
+    border-color: #D4AF37 !important;
+    box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2) !important;
+  }
+  
+  input[type="submit"]:hover {
+    background-color: #404040 !important;
+    transform: translateY(-2px);
+  }
+</style>
+{% endblock %}

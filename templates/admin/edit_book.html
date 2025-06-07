@@ -1,0 +1,63 @@
+{% extends 'admin/base_admin.html' %}
+{% block title %}Edit Book | Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-5" style="max-width: 600px;">
+  <div class="card shadow-sm border-0 rounded-4">
+    <div class="card-body p-5">
+      <h2 class="card-title mb-4 text-center fw-bold">Edit Book</h2>
+      <form method="POST" enctype="multipart/form-data" action="{{ url_for('admin.edit_book', book_id=book.id) }}">
+        {{ form.hidden_tag() }}
+
+        {% for field in [form.title, form.author, form.category, form.subject, form.quantity, form.original_price, form.price] %}
+          <div class="mb-3">
+            {{ field.label(class="form-label fw-semibold") }}
+            {{ field(class="form-control") }}
+            {% for error in field.errors %}
+              <div class="form-text text-danger">{{ error }}</div>
+            {% endfor %}
+          </div>
+        {% endfor %}
+
+        <div class="mb-3">
+          {{ form.description.label(class="form-label fw-semibold") }}
+          {{ form.description(class="form-control", rows="4") }}
+        </div>
+
+        <!-- Current Images -->
+        {% if book.images %}
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Current Images</label>
+          <div class="row g-2">
+            {% for image in book.images %}
+            <div class="col-4">
+              <div class="position-relative">
+                <img src="{{ url_for('static', filename='uploads/books/' + image.image_filename) }}" 
+                     class="img-thumbnail" alt="Book image">
+                <div class="form-check position-absolute" style="top: 5px; right: 5px;">
+                  <input class="form-check-input" type="checkbox" name="delete_images" value="{{ image.id }}" id="img{{ image.id }}">
+                  <label class="form-check-label visually-hidden" for="img{{ image.id }}">Delete</label>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          <div class="form-text">Check images you want to delete</div>
+        </div>
+        {% endif %}
+
+        <div class="mb-3">
+          {{ form.images.label(class="form-label fw-semibold") }}
+          {{ form.images(class="form-control", multiple=True) }}
+          <div class="form-text">Upload new images (optional)</div>
+        </div>
+
+        <div class="d-grid gap-2">
+          <button type="submit" class="btn btn-primary">Update Book</button>
+          <a href="{{ url_for('admin.manage_books') }}" class="btn btn-outline-secondary">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

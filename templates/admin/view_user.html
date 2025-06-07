@@ -1,0 +1,266 @@
+{% extends 'admin/base_admin.html' %}
+{% block title %}View User | Admin Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+  .admin-dashboard {
+    padding: 30px 0;
+  }
+  .dashboard-header {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    padding: 30px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  }
+  .user-card {
+    background-color: white;
+    border-radius: 10px;
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+  }
+  .section-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #edf2f7;
+  }
+  .info-row {
+    display: flex;
+    margin-bottom: 15px;
+  }
+  .info-label {
+    width: 120px;
+    font-weight: 600;
+    color: #4a5568;
+  }
+  .info-value {
+    flex: 1;
+    color: #2d3748;
+  }
+  .table-responsive {
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .admin-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .admin-table th {
+    background-color: #f8fafc;
+    padding: 12px 15px;
+    text-align: left;
+    font-weight: 600;
+    color: #4a5568;
+    font-size: 14px;
+  }
+  .admin-table td {
+    padding: 12px 15px;
+    border-top: 1px solid #edf2f7;
+    color: #2d3748;
+    font-size: 14px;
+  }
+  .admin-table tr:hover {
+    background-color: #f8fafc;
+  }
+  .badge {
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .badge-success {
+    background-color: rgba(46, 204, 113, 0.1);
+    color: #2ecc71;
+  }
+  .badge-warning {
+    background-color: rgba(241, 196, 15, 0.1);
+    color: #f1c40f;
+  }
+  .badge-danger {
+    background-color: rgba(231, 76, 60, 0.1);
+    color: #e74c3c;
+  }
+  .action-btn {
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 14px;
+    transition: all 0.3s ease;
+  }
+  .action-btn:hover {
+    transform: translateY(-2px);
+  }
+  .action-btn-primary {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="admin-dashboard">
+  <div class="container">
+    <!-- Dashboard Header -->
+    <div class="dashboard-header">
+      <div class="row align-items-center">
+        <div class="col-md-6">
+          <h2 class="mb-1">User Details</h2>
+          <p class="mb-0">Viewing information for {{ user.email }}</p>
+        </div>
+        <div class="col-md-6 text-md-end">
+          <div class="d-flex justify-content-md-end gap-2">
+            <a href="{{ url_for('admin.edit_user', user_id=user.id) }}" class="btn action-btn action-btn-primary">
+              <i class="bi bi-pencil me-2"></i>Edit User
+            </a>
+            <a href="{{ url_for('admin.dashboard') }}" class="btn action-btn action-btn-primary">
+              <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- User Information -->
+    <div class="user-card">
+      <h3 class="section-title">User Information</h3>
+      
+      <div class="info-row">
+        <div class="info-label">User ID:</div>
+        <div class="info-value">#{{ user.id }}</div>
+      </div>
+      
+      <div class="info-row">
+        <div class="info-label">Email:</div>
+        <div class="info-value">{{ user.email }}</div>
+      </div>
+      
+      <div class="info-row">
+        <div class="info-label">Phone:</div>
+        <div class="info-value">{{ user.phone or 'N/A' }}</div>
+      </div>
+      
+      <div class="info-row">
+        <div class="info-label">Joined:</div>
+        <div class="info-value">{{ user.date_created.strftime('%Y-%m-%d') if user.date_created else 'N/A' }}</div>
+      </div>
+    </div>
+    
+    <!-- User Courses -->
+    <div class="user-card">
+      <h3 class="section-title">Enrolled Courses</h3>
+      
+      {% if user_courses %}
+      <div class="table-responsive">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Course ID</th>
+              <th>Course Title</th>
+              <th>Enrollment Date</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for enrollment in user_courses %}
+            <tr>
+              <td>#{{ enrollment.course_id }}</td>
+              <td>{{ enrollment.course.title }}</td>
+              <td>{{ enrollment.enrollment_date.strftime('%Y-%m-%d') if enrollment.enrollment_date else 'N/A' }}</td>
+              <td>
+                <span class="badge badge-{{ 'success' if enrollment.completion_status == 'completed' else 'warning' }}">{{ enrollment.completion_status.capitalize() }}</span>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <p>No courses enrolled.</p>
+      {% endif %}
+    </div>
+    
+    <!-- User Certificates -->
+    <div class="user-card">
+      <h3 class="section-title">Certificates</h3>
+      
+      {% if user_certificates %}
+      <div class="table-responsive">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Certificate ID</th>
+              <th>Course</th>
+              <th>Upload Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for cert in user_certificates %}
+            <tr>
+              <td>#{{ cert.id }}</td>
+              <td>{{ cert.course.title }}</td>
+              <td>{{ cert.upload_date.strftime('%Y-%m-%d') }}</td>
+              <td>
+                <div class="d-flex gap-2">
+                  <a href="{{ url_for('admin.view_certificate', certificate_id=cert.id) }}" class="btn btn-sm btn-outline-primary">View</a>
+                  <a href="{{ url_for('admin.delete_certificate', certificate_id=cert.id) }}" class="btn btn-sm btn-outline-danger">Delete</a>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <p>No certificates issued.</p>
+      {% endif %}
+    </div>
+    
+    <!-- User Orders -->
+    <div class="user-card">
+      <h3 class="section-title">Orders</h3>
+      
+      {% if user_orders %}
+      <div class="table-responsive">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Date</th>
+              <th>Amount</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for order in user_orders %}
+            <tr>
+              <td>#{{ order.id }}</td>
+              <td>{{ order.date_created.strftime('%Y-%m-%d') }}</td>
+              <td>
+                $ {% set total = 0 %}
+                {% for item in order.items %}
+                  {% set total = total + (item.price * item.quantity) %}
+                {% endfor %}
+                {{ "%.2f"|format(total) }}
+              </td>
+              <td>
+                <span class="badge badge-{{ 'success' if order.status.lower() == 'completed' else 'warning' }}">{{ order.status.capitalize() }}</span>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <p>No orders placed.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

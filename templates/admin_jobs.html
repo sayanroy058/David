@@ -1,0 +1,478 @@
+{% extends 'base_new.html' %}
+{% block title %}Admin - Job Postings{% endblock %}
+
+{% block content %}
+<style>
+  :root {
+    --golden: #D4AF37;
+    --charcoal: #36454F;
+    --light-golden: #F4E4BC;
+    --dark-charcoal: #2C3E50;
+    --golden-hover: #B8941F;
+    --soft-white: #FEFEFE;
+    --light-grey: #F8F9FA;
+  }
+
+  .admin-section {
+    background: linear-gradient(135deg, var(--light-grey) 0%, #e9ecef 100%);
+    min-height: 100vh;
+    position: relative;
+  }
+
+  .admin-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="admin-pattern" width="40" height="40" patternUnits="userSpaceOnUse"><circle cx="20" cy="20" r="1.5" fill="rgba(212,175,55,0.08)"/><circle cx="10" cy="10" r="0.8" fill="rgba(54,69,79,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23admin-pattern)"/></svg>') repeat;
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
+  .admin-container {
+    position: relative;
+    z-index: 2;
+  }
+
+  .admin-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--charcoal);
+    margin-bottom: 2rem;
+    position: relative;
+    text-align: center;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .admin-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 4px;
+    background: linear-gradient(90deg, var(--golden) 0%, #FFD700 100%);
+    border-radius: 2px;
+  }
+
+  .admin-title::before {
+    content: '⚙️';
+    margin-right: 15px;
+    font-size: 2rem;
+  }
+
+  .job-form-card {
+    background: white;
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(54, 69, 79, 0.1);
+    padding: 3rem;
+    margin-bottom: 3rem;
+    position: relative;
+    overflow: hidden;
+    border-top: 5px solid var(--golden);
+  }
+
+  .job-form-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(212,175,55,0.1) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+
+  .form-section-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: var(--charcoal);
+    margin-bottom: 2rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  .form-section-title::before {
+    content: '📝';
+    margin-right: 10px;
+    font-size: 1.5rem;
+  }
+
+  .form-group {
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  .form-label {
+    font-weight: 600;
+    color: var(--charcoal);
+    margin-bottom: 0.8rem;
+    font-size: 1rem;
+    display: block;
+  }
+
+  .form-control {
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    padding: 15px 20px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: var(--soft-white);
+    width: 100%;
+    resize: vertical;
+  }
+
+  .form-control:focus {
+    border-color: var(--golden);
+    box-shadow: 0 0 0 0.2rem rgba(212, 175, 55, 0.25);
+    background: white;
+    outline: none;
+    transform: translateY(-2px);
+  }
+
+  .form-control:hover {
+    border-color: var(--golden);
+    background: white;
+  }
+
+  textarea.form-control {
+    min-height: 120px;
+    font-family: inherit;
+  }
+
+  .btn-create-job {
+    background: linear-gradient(135deg, var(--golden) 0%, #FFD700 100%);
+    border: none;
+    border-radius: 50px;
+    padding: 15px 35px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--charcoal);
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+  }
+
+  .btn-create-job::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    transition: left 0.5s;
+  }
+
+  .btn-create-job:hover::before {
+    left: 100%;
+  }
+
+  .btn-create-job:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4);
+    background: linear-gradient(135deg, var(--golden-hover) 0%, #DAA520 100%);
+  }
+
+  .btn-create-job::after {
+    content: '✨';
+    margin-left: 8px;
+    font-size: 1rem;
+  }
+
+  .section-divider {
+    height: 3px;
+    background: linear-gradient(90deg, transparent 0%, var(--golden) 50%, transparent 100%);
+    margin: 3rem 0;
+    border-radius: 2px;
+  }
+
+  .listings-section {
+    background: white;
+    border-radius: 20px;
+    padding: 3rem;
+    box-shadow: 0 15px 35px rgba(54, 69, 79, 0.1);
+    position: relative;
+    overflow: hidden;
+    border-top: 5px solid var(--charcoal);
+  }
+
+  .listings-section::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(54,69,79,0.08) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+
+  .listings-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: var(--charcoal);
+    margin-bottom: 2rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  .listings-title::before {
+    content: '📋';
+    margin-right: 10px;
+    font-size: 1.5rem;
+  }
+
+  .job-listings {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    position: relative;
+    z-index: 2;
+  }
+
+  .job-item {
+    background: linear-gradient(135deg, var(--soft-white) 0%, var(--light-grey) 100%);
+    border: 2px solid rgba(212, 175, 55, 0.1);
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .job-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(to bottom, var(--golden) 0%, #FFD700 100%);
+    transform: scaleY(0);
+    transition: transform 0.3s ease;
+  }
+
+  .job-item:hover::before {
+    transform: scaleY(1);
+  }
+
+  .job-item:hover {
+    transform: translateX(8px);
+    box-shadow: 0 8px 25px rgba(54, 69, 79, 0.15);
+    border-color: var(--golden);
+  }
+
+  .job-info {
+    flex: 1;
+  }
+
+  .job-title {
+    font-weight: 700;
+    color: var(--charcoal);
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .job-location {
+    color: #6c757d;
+    font-size: 1rem;
+    font-weight: 500;
+  }
+
+  .job-location::before {
+    content: '📍';
+    margin-right: 5px;
+  }
+
+  .btn-view-applications {
+    background: linear-gradient(135deg, var(--charcoal) 0%, var(--dark-charcoal) 100%);
+    border: none;
+    border-radius: 25px;
+    padding: 10px 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: white;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-view-applications::before {
+    content: '👥';
+    font-size: 0.9rem;
+  }
+
+  .btn-view-applications:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(54, 69, 79, 0.3);
+    color: white;
+    text-decoration: none;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 3rem;
+    color: #6c757d;
+    font-size: 1.1rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  .empty-state::before {
+    content: '📝';
+    font-size: 3rem;
+    display: block;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .admin-title {
+      font-size: 2rem;
+    }
+    
+    .job-form-card,
+    .listings-section {
+      padding: 2rem;
+    }
+    
+    .form-control {
+      padding: 12px 16px;
+    }
+    
+    .btn-create-job {
+      padding: 12px 25px;
+      font-size: 1rem;
+    }
+    
+    .job-item {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    
+    .btn-view-applications {
+      align-self: stretch;
+      justify-content: center;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .admin-title {
+      font-size: 1.8rem;
+    }
+    
+    .job-form-card,
+    .listings-section {
+      padding: 1.5rem;
+    }
+    
+    .form-section-title,
+    .listings-title {
+      font-size: 1.5rem;
+    }
+  }
+
+  /* Animation for job items */
+  .job-item {
+    animation: slideInLeft 0.5s ease-out forwards;
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+
+  .job-item:nth-child(1) { animation-delay: 0.1s; }
+  .job-item:nth-child(2) { animation-delay: 0.2s; }
+  .job-item:nth-child(3) { animation-delay: 0.3s; }
+  .job-item:nth-child(4) { animation-delay: 0.4s; }
+  .job-item:nth-child(5) { animation-delay: 0.5s; }
+
+  @keyframes slideInLeft {
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  /* Form validation styles */
+  .form-control:invalid {
+    border-color: #dc3545;
+  }
+
+  .form-control:valid {
+    border-color: var(--golden);
+  }
+</style>
+
+<div class="admin-section">
+  <div class="container admin-container py-5">
+    <h2 class="admin-title">Admin Dashboard</h2>
+    
+    <!-- Job Creation Form -->
+    <div class="job-form-card">
+      <h3 class="form-section-title">Post New Job</h3>
+      <form method="POST">
+        {{ form.hidden_tag() }}
+        
+        <div class="form-group">
+          {{ form.title.label(class="form-label") }}
+          {{ form.title(class="form-control", placeholder="Enter job title (e.g., Senior Software Engineer)") }}
+        </div>
+        
+        <div class="form-group">
+          {{ form.description.label(class="form-label") }}
+          {{ form.description(class="form-control", placeholder="Describe the role, responsibilities, and requirements...") }}
+        </div>
+        
+        <div class="form-group">
+          {{ form.location.label(class="form-label") }}
+          {{ form.location(class="form-control", placeholder="Enter location (e.g., San Francisco, CA / Remote)") }}
+        </div>
+        
+        {{ form.submit(class="btn btn-create-job") }}
+      </form>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- Existing Job Listings -->
+    <div class="listings-section">
+      <h3 class="listings-title">Existing Job Listings</h3>
+      {% if jobs %}
+        <ul class="job-listings">
+          {% for job in jobs %}
+            <li class="job-item">
+              <div class="job-info">
+                <div class="job-title">{{ job.title }}</div>
+                <div class="job-location">{{ job.location }}</div>
+              </div>
+              <a href="{{ url_for('view_applications', job_id=job.id) }}" class="btn-view-applications">
+                View Applications
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <div class="empty-state">
+          <p>No job listings found. Create your first job posting above!</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

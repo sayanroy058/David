@@ -1,0 +1,292 @@
+{% extends 'base_new.html' %}
+{% block title %}Your Cart{% endblock %}
+
+{% block content %}
+<div style="
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+">
+  <h2 style="
+    text-align: center;
+    margin-bottom: 40px;
+    font-size: 2.2em;
+    font-weight: 300;
+    color: #2c3e50;
+    letter-spacing: -0.5px;
+  ">Your Shopping Cart</h2>
+
+  {% if session.cart and session.cart|length > 0 %}
+  
+  <!-- Cart Table Container -->
+  <div style="
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin-bottom: 30px;
+  ">
+    <table style="
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    ">
+      <thead>
+        <tr style="background: linear-gradient(135deg,rgb(234, 225, 102) 0%,rgb(242, 111, 45) 100%);">
+          <th style="padding: 20px 15px; color: white; font-weight: 600; text-align: left; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">Image</th>
+          <th style="padding: 20px 15px; color: white; font-weight: 600; text-align: left; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">Title</th>
+          <th style="padding: 20px 15px; color: white; font-weight: 600; text-align: left; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">Author</th>
+          <th style="padding: 20px 15px; color: white; font-weight: 600; text-align: left; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">Category</th>
+          <th style="padding: 20px 15px; color: white; font-weight: 600; text-align: left; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">Subject</th>
+          <th style="padding: 20px 15px; color: white; font-weight: 600; text-align: left; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">Price</th>
+          <th style="padding: 20px 15px; color: white; font-weight: 600; text-align: left; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">Quantity</th>
+          <th style="padding: 20px 15px; color: white; font-weight: 600; text-align: left; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">Total</th>
+          <th style="padding: 20px 15px; color: white; font-weight: 600; text-align: center; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% set grand_total = 0 %}
+        {% for item in session.cart %}
+          {% set total = item.price * item.quantity %}
+          {% set grand_total = grand_total + total %}
+          <tr style="
+            border-bottom: 1px solid #f1f3f6;
+            transition: background-color 0.3s ease;
+          " onmouseover="this.style.backgroundColor='#f8f9ff'" onmouseout="this.style.backgroundColor='transparent'">
+            <td style="padding: 20px 15px; vertical-align: middle;">
+              {% if item.image %}
+                <img src="{{ url_for('static', filename='uploads/' ~ item.image) }}" 
+                     alt="{{ item.title }}" 
+                     style="
+                       width: 80px;
+                       height: 100px;
+                       object-fit: cover;
+                       border-radius: 8px;
+                       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                     ">
+              {% else %}
+                <div style="
+                  width: 80px;
+                  height: 100px;
+                  background: #f8f9fa;
+                  border-radius: 8px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  color: #6c757d;
+                  font-size: 12px;
+                  text-align: center;
+                ">No image</div>
+              {% endif %}
+            </td>
+            <td style="padding: 20px 15px; vertical-align: middle; font-weight: 500; color: #2c3e50;">{{ item.title }}</td>
+            <td style="padding: 20px 15px; vertical-align: middle; color: #5a6c7d;">{{ item.author }}</td>
+            <td style="padding: 20px 15px; vertical-align: middle;">
+              <span style="
+                background: #e3f2fd;
+                color: #1976d2;
+                padding: 4px 12px;
+                border-radius: 20px;
+                font-size: 12px;
+                font-weight: 500;
+              ">{{ item.category }}</span>
+            </td>
+            <td style="padding: 20px 15px; vertical-align: middle; color: #5a6c7d;">{{ item.subject }}</td>
+            <td style="padding: 20px 15px; vertical-align: middle; font-weight: 600; color: #27ae60; font-size: 16px;">${{ "%.2f"|format(item.price) }}</td>
+            <td style="padding: 20px 15px; vertical-align: middle;">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <span style="
+                  background: #f8f9fa;
+                  padding: 8px 12px;
+                  border-radius: 6px;
+                  font-weight: 600;
+                  color: #2c3e50;
+                ">{{ item.quantity }}</span>
+                {% if item.quantity < 5 %}
+                  <span style="
+                    background: #fff3cd;
+                    color: #856404;
+                    padding: 4px 8px;
+                    border-radius: 4px;
+                    font-size: 11px;
+                    font-weight: 500;
+                    border: 1px solid #ffeaa7;
+                  ">Only {{ item.quantity }} left!</span>
+                {% endif %}
+              </div>
+            </td>
+            <td style="padding: 20px 15px; vertical-align: middle; font-weight: 700; color: #2c3e50; font-size: 18px;">${{ "%.2f"|format(total) }}</td>
+            <td style="padding: 20px 15px; vertical-align: middle; text-align: center;">
+              <a href="{{ url_for('remove_from_cart', book_id=item.id) }}" 
+                 style="
+                   background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+                   color: white;
+                   padding: 8px 16px;
+                   text-decoration: none;
+                   border-radius: 6px;
+                   font-size: 12px;
+                   font-weight: 500;
+                   transition: all 0.3s ease;
+                   display: inline-block;
+                 "
+                 onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(255,107,107,0.3)'"
+                 onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                Remove
+              </a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+      <tfoot>
+        <tr style="background: #f8f9ff; border-top: 2px solid #667eea;">
+          <td colspan="7" style="
+            padding: 25px 15px;
+            text-align: right;
+            font-weight: 700;
+            font-size: 18px;
+            color: #2c3e50;
+          ">Grand Total:</td>
+          <td colspan="2" style="
+            padding: 25px 15px;
+            font-weight: 700;
+            font-size: 24px;
+            color:rgb(54, 196, 35);
+          ">${{ "%.2f"|format(grand_total) }}</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <!-- Action Buttons -->
+  <div style="
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    flex-wrap: wrap;
+  ">
+    <a href="{{ url_for('checkout') }}" 
+       style="
+         background: linear-gradient(135deg,rgb(222, 201, 41),rgb(244, 226, 29));
+         color: white;
+         padding: 15px 30px;
+         text-decoration: none;
+         border-radius: 8px;
+         font-weight: 600;
+         font-size: 16px;
+         transition: all 0.3s ease;
+         display: inline-block;
+         box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+       "
+       onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(39, 174, 96, 0.4)'"
+       onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(39, 174, 96, 0.3)'">
+      Proceed to Checkout
+    </a>
+    
+    <a href="{{ url_for('books') }}" 
+       style="
+         background: transparent;
+         color: #667eea;
+         padding: 15px 30px;
+         text-decoration: none;
+         border-radius: 8px;
+         font-weight: 600;
+         font-size: 16px;
+         border: 2px solid #667eea;
+         transition: all 0.3s ease;
+         display: inline-block;
+       "
+       onmouseover="this.style.background='#667eea'; this.style.color='white'"
+       onmouseout="this.style.background='transparent'; this.style.color='#667eea'">
+      Continue Shopping
+    </a>
+  </div>
+
+  {% else %}
+    <!-- Empty Cart Message -->
+    <div style="
+      background: linear-gradient(135deg,rgb(233, 209, 59),rgb(238, 131, 24));
+      color: white;
+      padding: 60px 40px;
+      border-radius: 16px;
+      text-align: center;
+      box-shadow: 0 8px 32px rgba(116, 185, 255, 0.3);
+    ">
+      <div style="
+        font-size: 64px;
+        margin-bottom: 20px;
+        opacity: 0.7;
+      ">🛒</div>
+      <h3 style="
+        font-size: 24px;
+        margin-bottom: 15px;
+        font-weight: 300;
+      ">Your cart is empty</h3>
+      <p style="
+        font-size: 16px;
+        margin-bottom: 30px;
+        opacity: 0.9;
+      ">Discover amazing books and start building your collection!</p>
+      <a href="{{ url_for('books') }}" 
+         style="
+           background: white;
+           color: #0984e3;
+           padding: 15px 30px;
+           text-decoration: none;
+           border-radius: 8px;
+           font-weight: 600;
+           font-size: 16px;
+           transition: all 0.3s ease;
+           display: inline-block;
+           box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+         "
+         onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(0,0,0,0.15)'"
+         onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0,0,0,0.1)'">
+        Browse Books
+      </a>
+    </div>
+  {% endif %}
+</div>
+
+<!-- Responsive Styles -->
+<style>
+@media (max-width: 768px) {
+  table, thead, tbody, th, td, tr {
+    display: block;
+  }
+  
+  thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+  
+  tr {
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+    padding: 15px;
+    border-radius: 8px;
+    background: white;
+  }
+  
+  td {
+    border: none;
+    position: relative;
+    padding: 10px 15px 10px 35% !important;
+    text-align: left;
+  }
+  
+  td:before {
+    content: attr(data-label) ": ";
+    position: absolute;
+    left: 15px;
+    width: 30%;
+    padding-right: 10px;
+    white-space: nowrap;
+    font-weight: bold;
+    color: #667eea;
+  }
+}
+</style>
+{% endblock %}

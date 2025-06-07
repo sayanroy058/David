@@ -1,0 +1,260 @@
+<link rel="stylesheet" href="/static/css/e2ln-courses.css">
+{% extends 'base_new.html' %}
+{% block title %}Certifications | Easy2Learning{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="e2l-certifications-container">
+  <h2 class="e2l-section-title text-center">Explore Our Certification Programs</h2>
+  
+  <!-- Category Filter Section -->
+  <div class="category-filter-container" style="max-width: 1200px; margin: 0 auto 40px; padding: 20px; background-color: #f8fafc; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+    <h3 style="margin-bottom: 20px; font-size: 18px; color: #2c3e50; font-weight: 600;">Filter Courses</h3>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+      <!-- Subject Category Dropdown -->
+      <div class="filter-group">
+        <label for="subject-filter" style="display: block; margin-bottom: 8px; font-size: 14px; color: #34495e; font-weight: 500;">Subject</label>
+        <div style="position: relative;">
+          <select id="subject-filter" class="filter-select" style="width: 100%; padding: 12px 15px; border: 1px solid #e0e0e0; border-radius: 6px; font-size: 14px; color: #2c3e50; appearance: none; background-color: white; transition: all 0.3s ease;">
+            <option value="">All Subjects</option>
+            <option value="programming">Programming</option>
+            <option value="data-science">Data Science</option>
+            <option value="web-development">Web Development</option>
+            <option value="cybersecurity">Cybersecurity</option>
+            <option value="ai-ml">AI & Machine Learning</option>
+            <option value="design">Design</option>
+          </select>
+          <div style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); pointer-events: none;">
+            <i class="fas fa-chevron-down" style="color: #3498db;"></i>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Difficulty Level Dropdown -->
+      <div class="filter-group">
+        <label for="level-filter" style="display: block; margin-bottom: 8px; font-size: 14px; color: #34495e; font-weight: 500;">Difficulty Level</label>
+        <div style="position: relative;">
+          <select id="level-filter" class="filter-select" style="width: 100%; padding: 12px 15px; border: 1px solid #e0e0e0; border-radius: 6px; font-size: 14px; color: #2c3e50; appearance: none; background-color: white; transition: all 0.3s ease;">
+            <option value="">All Levels</option>
+            <option value="beginner">Beginner</option>
+            <option value="intermediate">Intermediate</option>
+            <option value="advanced">Advanced</option>
+            <option value="expert">Expert</option>
+          </select>
+          <div style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); pointer-events: none;">
+            <i class="fas fa-chevron-down" style="color: #3498db;"></i>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Format Dropdown -->
+      <div class="filter-group">
+        <label for="format-filter" style="display: block; margin-bottom: 8px; font-size: 14px; color: #34495e; font-weight: 500;">Format</label>
+        <div style="position: relative;">
+          <select id="format-filter" class="filter-select" style="width: 100%; padding: 12px 15px; border: 1px solid #e0e0e0; border-radius: 6px; font-size: 14px; color: #2c3e50; appearance: none; background-color: white; transition: all 0.3s ease;">
+            <option value="">All Formats</option>
+            <option value="self-paced">Self-paced</option>
+            <option value="instructor-led">Instructor-led</option>
+            <option value="bootcamp">Bootcamp</option>
+            <option value="workshop">Workshop</option>
+            <option value="certification">Certification</option>
+          </select>
+          <div style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); pointer-events: none;">
+            <i class="fas fa-chevron-down" style="color: #3498db;"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Apply Filters Button -->
+    <div style="margin-top: 25px; text-align: right;">
+      <button id="reset-filters" style="background: transparent; border: 1px solid #3498db; color: #3498db; padding: 10px 20px; border-radius: 6px; margin-right: 10px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.3s ease;">Reset Filters</button>
+      <button id="apply-filters" style="background: linear-gradient(to right, #3498db, #2980b9); color: white; border: none; padding: 10px 20px; border-radius: 6px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 8px rgba(52, 152, 219, 0.2);">Apply Filters</button>
+    </div>
+  </div>
+  
+  <div class="row g-4">
+   <!-- Popular Courses Section -->
+<section style="text-align: center; padding: 60px 20px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #f9f9f9 0%, #f0f4f8 100%); position: relative; overflow: hidden;">
+  <div style="max-width: 1200px; margin: 0 auto; position: relative; z-index: 2;">
+    <h2 style="margin-bottom: 48px; font-size: 36px; color: #2c3e50; font-weight: 600; position: relative; display: inline-block; animation: fadeInDown 0.8s ease-out;">All Courses
+      <span style="position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); width: 80px; height: 4px; background: linear-gradient(to right, #3498db, #2ecc71); border-radius: 2px; animation: expandWidth 1s ease-out forwards;"></span>
+    </h2>
+    
+    <div id="courses-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
+      {% for course in courses %}
+        <div class="course-card" 
+             data-subject="{{ course.subject|default('') }}" 
+             data-level="{{ course.level|default('') }}" 
+             data-format="{{ course.format|default('') }}"
+             style="border: none; border-radius: 12px; overflow: hidden; background-color: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.08); transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); cursor: pointer; position: relative; opacity: 0; animation: fadeIn 0.6s ease-out forwards; animation-delay: calc(0.1s * {{ loop.index }}); transform: translateY(20px);"
+             onmouseover="this.style.transform='translateY(-10px)'; this.style.boxShadow='0 15px 35px rgba(52, 152, 219, 0.15)'; this.querySelector('.course-title-underline').style.width='70%';"
+             onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.08)'; this.querySelector('.course-title-underline').style.width='40px';">
+          
+          <div class="course-card-image-container">
+            {% if course.image %}
+              <img class="course-card-image" src="{{ url_for('static', filename='uploads/courses/' + course.image) if course.image else url_for('static', filename='uploads/default_course.jpg') }}" alt="{{ course.title }}">
+            {% else %}
+              <img class="course-card-image" src="{{ url_for('static', filename='uploads/default_course.jpg') }}" alt="Default Image">
+            {% endif %}
+            <div style="position: absolute; top: 15px; right: 15px; background-color: rgba(46, 204, 113, 0.9); color: white; font-size: 12px; font-weight: 600; padding: 5px 12px; border-radius: 30px; letter-spacing: 0.5px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">POPULAR</div>
+          </div>
+          
+          <div style="padding: 25px; text-align: left;">
+            <h3 style="margin: 0 0 15px; font-size: 22px; color: #2c3e50; position: relative; padding-bottom: 10px;">{{ course.title }}
+              <span class="course-title-underline" style="position: absolute; bottom: 0; left: 0; width: 40px; height: 3px; background-color: #3498db; transition: width 0.3s ease;"></span>
+            </h3>
+            <p style="margin: 0; color: #7f8c8d; font-size: 15px; line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">{{ course.description }}</p>
+            <div style="margin-top: 20px; display: flex; justify-content: space-between; align-items: center;">
+              <span style="background-color: #f1f9ff; color: #3498db; padding: 5px 12px; border-radius: 20px; font-size: 13px; font-weight: 500;">Online</span>
+              <button 
+  style="background: linear-gradient(to right, #3498db, #2980b9); color: white; border: none; padding: 8px 18px; border-radius: 6px; font-weight: 500; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 8px rgba(52, 152, 219, 0.2);" 
+  onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 12px rgba(52, 152, 219, 0.3)';" 
+  onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 8px rgba(52, 152, 219, 0.2)';" 
+  onclick="window.location.href='{% if session.user_id %}{{ url_for("enroll_course", course_id=course.id) }}{% else %}{{ url_for("login") }}{% endif %}';"
+>
+  Enroll Now
+</button>
+            </div>
+          </div>
+        </div>
+      {% else %}
+        <div id="no-courses-message" style="grid-column: 1 / -1; padding: 60px 20px; background-color: rgba(255,255,255,0.7); border-radius: 12px; border: 2px dashed #e0e0e0; animation: pulse 2s infinite;">
+          <img src="{{ url_for('static', filename='images/empty-courses.svg') }}" alt="No Courses" style="width: 120px; margin-bottom: 20px; opacity: 0.6;">
+          <p style="font-size: 20px; color: #7f8c8d; margin: 0;">No courses available at the moment. Check back soon!</p>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+  
+  <!-- Background animation elements -->
+  <div style="position: absolute; width: 300px; height: 300px; border-radius: 50%; background: linear-gradient(45deg, rgba(52, 152, 219, 0.05), rgba(46, 204, 113, 0.05)); top: -150px; right: -100px; z-index: 1; animation: float 15s infinite alternate ease-in-out;"></div>
+  <div style="position: absolute; width: 200px; height: 200px; border-radius: 50%; background: linear-gradient(45deg, rgba(155, 89, 182, 0.05), rgba(231, 76, 60, 0.05)); bottom: -80px; left: -50px; z-index: 1; animation: float 12s infinite alternate-reverse ease-in-out;"></div>
+  
+  <style>
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes expandWidth {
+      from { width: 0; }
+      to { width: 80px; }
+    }
+    
+    @keyframes float {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      50% { transform: translate(20px, 20px) rotate(5deg); }
+      100% { transform: translate(-20px, 10px) rotate(-5deg); }
+    }
+    
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(52, 152, 219, 0.4); }
+      70% { box-shadow: 0 0 0 10px rgba(52, 152, 219, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(52, 152, 219, 0); }
+    }
+    
+    .filter-select:hover, .filter-select:focus {
+      border-color: #3498db;
+      box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+      outline: none;
+    }
+    
+    #no-filter-results {
+      display: none;
+      grid-column: 1 / -1; 
+      padding: 60px 20px; 
+      background-color: rgba(255,255,255,0.7); 
+      border-radius: 12px; 
+      border: 2px dashed #e0e0e0; 
+      text-align: center;
+    }
+  </style>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const subjectFilter = document.getElementById('subject-filter');
+      const levelFilter = document.getElementById('level-filter');
+      const formatFilter = document.getElementById('format-filter');
+      const applyButton = document.getElementById('apply-filters');
+      const resetButton = document.getElementById('reset-filters');
+      const coursesContainer = document.getElementById('courses-container');
+      const courseCards = document.querySelectorAll('.course-card');
+      
+      // Create "No results" message element
+      const noResultsElement = document.createElement('div');
+      noResultsElement.id = 'no-filter-results';
+      noResultsElement.style.cssText = 'grid-column: 1 / -1; padding: 60px 20px; background-color: rgba(255,255,255,0.7); border-radius: 12px; border: 2px dashed #e0e0e0; animation: pulse 2s infinite; text-align: center;';
+      noResultsElement.innerHTML = `
+        <img src="{{ url_for('static', filename='images/no-results.svg') }}" alt="No Results" style="width: 120px; margin-bottom: 20px; opacity: 0.6;">
+        <p style="font-size: 20px; color: #7f8c8d; margin: 0;">No courses match your filter criteria.</p>
+        <button id="clear-filters" style="margin-top: 20px; background: #3498db; color: white; border: none; padding: 8px 18px; border-radius: 6px; font-size: 14px; font-weight: 500; cursor: pointer;">Clear Filters</button>
+      `;
+      coursesContainer.appendChild(noResultsElement);
+      
+      // Apply filters function
+      function applyFilters() {
+        const selectedSubject = subjectFilter.value;
+        const selectedLevel = levelFilter.value;
+        const selectedFormat = formatFilter.value;
+        
+        let visibleCount = 0;
+        
+        courseCards.forEach(card => {
+          const cardSubject = card.getAttribute('data-subject');
+          const cardLevel = card.getAttribute('data-level');
+          const cardFormat = card.getAttribute('data-format');
+          
+          const subjectMatch = !selectedSubject || cardSubject === selectedSubject;
+          const levelMatch = !selectedLevel || cardLevel === selectedLevel;
+          const formatMatch = !selectedFormat || cardFormat === selectedFormat;
+          
+          if (subjectMatch && levelMatch && formatMatch) {
+            card.style.display = 'block';
+            visibleCount++;
+          } else {
+            card.style.display = 'none';
+          }
+        });
+        
+        // Show or hide "No results" message
+        if (visibleCount === 0 && (selectedSubject || selectedLevel || selectedFormat)) {
+          document.getElementById('no-filter-results').style.display = 'block';
+        } else {
+          document.getElementById('no-filter-results').style.display = 'none';
+        }
+      }
+      
+      // Reset filters function
+      function resetFilters() {
+        subjectFilter.value = '';
+        levelFilter.value = '';
+        formatFilter.value = '';
+        
+        courseCards.forEach(card => {
+          card.style.display = 'block';
+        });
+        
+        document.getElementById('no-filter-results').style.display = 'none';
+      }
+      
+      // Event listeners
+      applyButton.addEventListener('click', applyFilters);
+      resetButton.addEventListener('click', resetFilters);
+      
+      // Add event listener for the "Clear Filters" button in the no results message
+      document.getElementById('clear-filters').addEventListener('click', resetFilters);
+    });
+  </script>
+</div>
+{% endblock %}

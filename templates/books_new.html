@@ -1,0 +1,433 @@
+{% extends 'base_new.html' %}
+{% block title %}Book Collection - Professional Library{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="bg-gradient-to-r from-blue-50 to-indigo-50 py-5 mb-5">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-8 mx-auto text-center">
+        <h1 class="display-4 fw-bold text-primary mb-3">Our Book Collection</h1>
+        <p class="lead text-muted mb-4">Discover knowledge that transforms careers and enriches minds</p>
+        <div class="d-flex justify-content-center gap-4 text-sm">
+          <div class="d-flex align-items-center">
+            <i class="bi bi-book-fill text-primary me-2"></i>
+            <span>{{ books|length }}+ Books Available</span>
+          </div>
+          <div class="d-flex align-items-center">
+            <i class="bi bi-star-fill text-warning me-2"></i>
+            <span>Premium Quality Content</span>
+          </div>
+          <div class="d-flex align-items-center">
+            <i class="bi bi-truck text-success me-2"></i>
+            <span>Fast Delivery</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="container">
+<!-- Advanced Search & Filter Section -->
+<section class="mb-5">
+  <div class="card border-0 shadow-sm bg-white">
+    <div class="card-header bg-transparent border-0 py-4">
+      <div class="row align-items-center">
+        <div class="col">
+          <h3 class="h5 mb-0 fw-semibold">
+            <i class="bi bi-funnel me-2 text-primary"></i>
+            Advanced Search & Filters
+          </h3>
+          <p class="text-muted small mb-0">Find exactly what you're looking for</p>
+        </div>
+        <div class="col-auto">
+          <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse">
+            <i class="bi bi-chevron-down"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="collapse show" id="filterCollapse">
+      <div class="card-body pt-0">
+        <form method="GET" class="row g-3">
+
+          <!-- Book Title -->
+          <div class="col-lg-3 col-md-6">
+            <label class="form-label small fw-medium text-secondary">Book Title</label>
+            <div class="input-group">
+              <span class="input-group-text bg-light border-end-0">
+                <i class="bi bi-search text-muted"></i>
+              </span>
+              <input type="text" name="title" class="form-control border-start-0" placeholder="Enter book title..." value="{{ request.args.get('title', '') }}">
+            </div>
+          </div>
+
+          <!-- Author -->
+          <div class="col-lg-3 col-md-6">
+            <label class="form-label small fw-medium text-secondary">Author</label>
+            <div class="input-group">
+              <span class="input-group-text bg-light border-end-0">
+                <i class="bi bi-person text-muted"></i>
+              </span>
+              <input type="text" name="author" class="form-control border-start-0" placeholder="Author name..." value="{{ request.args.get('author', '') }}">
+            </div>
+          </div>
+
+          <!-- Category -->
+          <div class="col-lg-3 col-md-6">
+            <label class="form-label small fw-medium text-secondary">Category</label>
+            <div class="input-group">
+              <span class="input-group-text bg-light border-end-0">
+                <i class="bi bi-bookmarks text-muted"></i>
+              </span>
+              <select name="category" class="form-select border-start-0">
+                <option value="">All Categories</option>
+                {% for cat in categories %}
+                  <option value="{{ cat }}" {% if request.args.get('category') == cat %}selected{% endif %}>{{ cat }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+
+          <!-- Subject -->
+          <div class="col-lg-3 col-md-6">
+            <label class="form-label small fw-medium text-secondary">Subject</label>
+            <div class="input-group">
+              <span class="input-group-text bg-light border-end-0">
+                <i class="bi bi-journal-bookmark text-muted"></i>
+              </span>
+              <select name="subject" class="form-select border-start-0">
+                <option value="">All Subjects</option>
+                {% for sub in subjects %}
+                  <option value="{{ sub }}" {% if request.args.get('subject') == sub %}selected{% endif %}>{{ sub }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+
+          <!-- Price Range -->
+          <div class="col-lg-3 col-md-6">
+            <label class="form-label small fw-medium text-secondary">Price Range ($)</label>
+            <div class="d-flex gap-2">
+              <input type="number" name="min_price" class="form-control" placeholder="Min" step="0.01" min="0" value="{{ request.args.get('min_price', '') }}">
+              <input type="number" name="max_price" class="form-control" placeholder="Max" step="0.01" min="0" value="{{ request.args.get('max_price', '') }}">
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="col-lg-2 col-md-12">
+            <label class="form-label small fw-medium text-secondary d-block">&nbsp;</label>
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-primary">
+                <i class="bi bi-funnel me-1"></i>Apply Filters
+              </button>
+            </div>
+          </div>
+
+          <!-- Clear Filters Notice -->
+          {% if request.args %}
+          <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="text-muted small">
+                <i class="bi bi-info-circle me-1"></i>
+                Showing filtered results
+              </span>
+              <a href="{{ url_for('books') }}" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-clockwise me-1"></i>Clear All Filters
+              </a>
+            </div>
+          </div>
+          {% endif %}
+
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+  <!-- Results Summary -->
+  <section class="mb-4">
+    <div class="d-flex justify-content-between align-items-center">
+      <div>
+        <h2 class="h4 mb-1">Book Collection</h2>
+        <p class="text-muted mb-0">
+          {% if books %}
+            Showing {{ books|length }} book{{ 's' if books|length != 1 else '' }}
+          {% else %}
+            No books found
+          {% endif %}
+        </p>
+      </div>
+      <div class="d-flex gap-2">
+        <div class="dropdown">
+          <button class="btn btn-outline-secondary dropdown-toggle btn-sm" type="button" data-bs-toggle="dropdown">
+            <i class="bi bi-sort-down me-1"></i>Sort By
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">Title A-Z</a></li>
+            <li><a class="dropdown-item" href="#">Author A-Z</a></li>
+            <li><a class="dropdown-item" href="#">Category</a></li>
+            <li><a class="dropdown-item" href="#">Newest First</a></li>
+          </ul>
+        </div>
+        <div class="btn-group" role="group">
+          <input type="radio" class="btn-check" name="view" id="grid-view" checked>
+          <label class="btn btn-outline-secondary btn-sm" for="grid-view">
+            <i class="bi bi-grid-3x3-gap"></i>
+          </label>
+          <input type="radio" class="btn-check" name="view" id="list-view">
+          <label class="btn btn-outline-secondary btn-sm" for="list-view">
+            <i class="bi bi-list"></i>
+          </label>
+        </div>
+      </div>
+    </div>
+  </section>
+
+<!-- Book Collection Section -->
+<section class="container py-5">
+  {% if books %}
+  <div class="row g-4" id="books-container">
+    {% for book in books %}
+    <div class="col-xl-3 col-lg-4 col-md-6">
+      <div class="card h-100 border-0 shadow-sm hover-shadow transition-all rounded-4">
+        
+        <!-- Book Image -->
+        <div class="position-relative overflow-hidden rounded-top" style="height: 280px;">
+          {% if book.images %}
+          <img src="{{ url_for('static', filename='uploads/' + book.images[0].image_filename) }}"
+               class="w-100 h-100 object-fit-cover"
+               alt="{{ book.title }}"
+               style="transition: transform 0.3s ease;"
+               onmouseover="this.style.transform='scale(1.05)'"
+               onmouseout="this.style.transform='scale(1)'">
+          {% else %}
+          <div class="w-100 h-100 bg-light d-flex align-items-center justify-content-center">
+            <i class="bi bi-book text-muted" style="font-size: 3rem;"></i>
+          </div>
+          {% endif %}
+
+          <!-- Category Badge -->
+          <span class="badge bg-primary position-absolute top-0 start-0 m-2 rounded-pill px-3 py-2">
+            {{ book.category or 'Uncategorized' }}
+          </span>
+
+          <!-- Quick Actions -->
+          <div class="position-absolute top-0 end-0 m-2 d-flex flex-column gap-1">
+            <button class="btn btn-light btn-sm rounded-circle shadow-sm" title="Add to Wishlist">
+              <i class="bi bi-heart text-danger"></i>
+            </button>
+            <button class="btn btn-light btn-sm rounded-circle shadow-sm" title="Quick View">
+              <i class="bi bi-eye text-primary"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Book Details -->
+        <div class="card-body d-flex flex-column p-4">
+          <h5 class="card-title text-dark fw-semibold mb-2" style="line-height: 1.3;">
+            {{ book.title }}
+          </h5>
+
+          <div class="mb-2 text-muted small">
+            <i class="bi bi-person me-1"></i>{{ book.author }}
+          </div>
+          <div class="mb-2 text-muted small">
+            <i class="bi bi-bookmark me-1"></i>{{ book.subject or 'N/A' }}
+          </div>
+
+          {% if book.original_price %}
+          <div class="small mb-1 text-muted">
+            <i class="fw-semibold text-dark"></i>Original:
+            <span class="text-decoration-line-through">₹{{ "%.2f"|format(book.original_price) }}</span>
+          </div>
+          {% endif %}
+
+          <div class="mb-2 d-flex align-items-center">
+            <i class="bi bi-tag-fill text-success me-1"></i>
+            <span class="fw-semibold text-dark">Now:</span>
+            <span class="fw-bold text-success ms-1 me-2">₹{{ "%.2f"|format(book.price) }}</span>
+
+            {% if book.original_price and book.original_price > book.price %}
+            {% set discount = ((book.original_price - book.price) / book.original_price) * 100 %}
+            <span class="badge bg-danger small fw-medium">{{ discount | round(0, 'floor') }}% OFF</span>
+            {% endif %}
+          </div>
+
+          {% if book.quantity < 5 %}
+          <div class="text-danger small mb-2">
+            <i class="bi bi-exclamation-triangle me-1"></i>
+            Only {{ book.quantity }} left!
+          </div>
+          {% endif %}
+
+          <p class="card-text small text-secondary flex-grow-1" style="line-height: 1.4;">
+            {{ book.description | truncate(100, true) }}
+          </p>
+        </div>
+
+        <!-- Buttons -->
+        <div class="card-footer bg-transparent border-0 p-4 pt-0">
+          <div class="d-grid gap-2">
+            <a href="{{ url_for('buy_now', book_id=book.id) }}" class="btn btn-success fw-medium">
+              <i class="bi bi-cart-check me-2"></i>Buy Now
+            </a>
+            <a href="{{ url_for('add_to_cart', book_id=book.id) }}" class="btn btn-outline-primary fw-medium">
+              <i class="bi bi-plus-circle me-2"></i>Add to Cart
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+    <!-- Empty State -->
+    <div class="text-center py-5">
+      <div class="mb-4">
+        <i class="bi bi-search text-muted" style="font-size: 4rem;"></i>
+      </div>
+      <h3 class="h4 text-muted mb-3">No Books Found</h3>
+      <p class="text-muted mb-4">
+        We couldn't find any books matching your search criteria.<br>
+        Try adjusting your filters or browse our complete collection.
+      </p>
+      <div class="d-flex justify-content-center gap-3">
+        <a href="{{ url_for('books') }}" class="btn btn-primary">
+          <i class="bi bi-arrow-clockwise me-2"></i>View All Books
+        </a>
+        <button class="btn btn-outline-secondary" onclick="document.querySelector('input[name=title]').focus()">
+          <i class="bi bi-search me-2"></i>Try New Search
+        </button>
+      </div>
+    </div>
+    {% endif %}
+  </section>
+
+  <!-- Call to Action Section -->
+  {% if books %}
+  <section class="bg-light rounded-3 p-5 text-center">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <h3 class="h4 fw-bold mb-3">Can't Find What You're Looking For?</h3>
+        <p class="text-muted mb-4">
+          Our collection is constantly growing. Contact us for book recommendations 
+          or to request specific titles for your professional development needs.
+        </p>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+          <a href="#" class="btn btn-primary">
+            <i class="bi bi-envelope me-2"></i>Contact Us
+          </a>
+          <a href="#" class="btn btn-outline-secondary">
+            <i class="bi bi-bell me-2"></i>Get Notified of New Arrivals
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+  {% endif %}
+</div>
+
+<!-- Custom Styles -->
+<style>
+.hover-shadow-lg:hover {
+  box-shadow: 0 1rem 3rem rgba(0,0,0,.175) !important;
+}
+
+.transition-all {
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+}
+
+.input-group-text {
+  border: 1px solid #dee2e6;
+}
+
+.form-control:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+.btn-group input[type="radio"]:checked + label {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .display-4 {
+    font-size: 2rem;
+  }
+  
+  .col-xl-3.col-lg-4.col-md-6 {
+    flex: 0 0 auto;
+    width: 100%;
+  }
+}
+</style>
+
+<!-- JavaScript for Enhanced Functionality -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // View toggle functionality
+  const gridView = document.getElementById('grid-view');
+  const listView = document.getElementById('list-view');
+  const booksContainer = document.getElementById('books-container');
+  
+  if (listView) {
+    listView.addEventListener('change', function() {
+      if (this.checked) {
+        booksContainer.className = 'row g-3';
+        const bookItems = document.querySelectorAll('.book-item');
+        bookItems.forEach(item => {
+          item.className = 'col-12 book-item';
+          const card = item.querySelector('.card');
+          card.classList.add('flex-row');
+          const img = card.querySelector('.card-img-top').parentElement;
+          img.style.width = '200px';
+          img.style.height = 'auto';
+        });
+      }
+    });
+  }
+  
+  if (gridView) {
+    gridView.addEventListener('change', function() {
+      if (this.checked) {
+        booksContainer.className = 'row g-4';
+        const bookItems = document.querySelectorAll('.book-item');
+        bookItems.forEach(item => {
+          item.className = 'col-xl-3 col-lg-4 col-md-6 book-item';
+          const card = item.querySelector('.card');
+          card.classList.remove('flex-row');
+          const img = card.querySelector('.card-img-top').parentElement;
+          img.style.width = 'auto';
+          img.style.height = '280px';
+        });
+      }
+    });
+  }
+  
+  // Enhanced filter collapse
+  const filterToggle = document.querySelector('[data-bs-target="#filterCollapse"]');
+  const filterCollapse = document.getElementById('filterCollapse');
+  
+  if (filterToggle && filterCollapse) {
+    filterCollapse.addEventListener('shown.bs.collapse', function() {
+      filterToggle.innerHTML = '<i class="bi bi-chevron-up"></i>';
+    });
+    
+    filterCollapse.addEventListener('hidden.bs.collapse', function() {
+      filterToggle.innerHTML = '<i class="bi bi-chevron-down"></i>';
+    });
+  }
+});
+</script>
+{% endblock %}
