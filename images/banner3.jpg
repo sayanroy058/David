@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="500" viewBox="0 0 1200 500">
-  <rect width="1200" height="500" fill="#4aaf6a"/>
-  <text x="600" y="200" font-family="Arial" font-size="40" text-anchor="middle" fill="white">Bharat's Trusted &amp; Affordable Educational Platform</text>
-  <text x="600" y="270" font-family="Arial" font-size="28" text-anchor="middle" fill="white">Unlock your potential with Physics Wallah</text>
-  <text x="600" y="320" font-family="Arial" font-size="28" text-anchor="middle" fill="white">The most affordable learning solution</text>
-  <rect x="500" y="360" width="200" height="60" rx="30" fill="#FFD32C"/>
-  <text x="600" y="400" font-family="Arial" font-size="24" text-anchor="middle" fill="black">Get Started</text>
-</svg>
