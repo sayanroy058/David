@@ -1,8 +1,9 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, request, session, current_app, send_from_directory, abort
+from flask import Blueprint, render_template, redirect, url_for, flash, request, session, current_app, send_from_directory, abort, jsonify
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
-from models import db, Course, Teacher, Book, BookImage, Admin, User, Certificate, UserCourse, Order, OrderItem, Transaction
-from forms import CourseForm, TeacherForm, BookForm, AdminRegistrationForm, AdminLoginForm, CertificateUploadForm
+from sqlalchemy.orm import joinedload
+from models import Category, SubCategory, db, Course, Teacher, Book, BookImage, BookReview, Admin, User, Certificate, UserCourse, Order, OrderItem, Transaction, BundleOffer, FullOrderDetail, Customer, utc_now
+from forms import CourseForm, TeacherForm, BookForm, AdminRegistrationForm, AdminLoginForm, CertificateUploadForm, BundleOfferForm
 import os
 from datetime import datetime
 import uuid
@@ -20,6 +21,15 @@ def admin_login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
+# Admin Logout
+@admin_bp.route('/logout')
+def admin_logout():
+    session.pop('admin_id', None)
+    session.pop('admin_name', None)
+    session.pop('admin_email', None)
+    flash('You have been logged out successfully.', 'success')
+    return redirect(url_for('admin.login'))
+
 # Admin Login
 @admin_bp.route('/login', methods=['GET', 'POST'])
 def login():
@@ -29,6 +39,7 @@ def login():
         if admin and check_password_hash(admin.password_hash, form.password.data):
             session['admin_id'] = admin.id
             session['admin_name'] = admin.name
+            session['admin_email'] = admin.email
             flash('Login successful!', 'success')
             return redirect(url_for('admin.dashboard'))
         else:
@@ -62,14 +73,6 @@ def register():
         
     return render_template('admin/register.html', form=form)
 
-# Admin Logout
-@admin_bp.route('/logout')
-@admin_login_required
-def logout():
-    session.pop('admin_id', None)
-    session.pop('admin_name', None)
-    flash('You have been logged out', 'info')
-    return redirect(url_for('admin.login'))
 
 # Admin Dashboard
 @admin_bp.route('/dashboard')
@@ -82,8 +85,9 @@ def dashboard():
     stats = {
         'users': User.query.count(),
         'courses': Course.query.count(),
-        'books': Book.query.count(),
-        'orders': Order.query.count()
+        'books': Book.query.filter_by(is_deleted=False).count(),
+        'orders': Order.query.count(),
+        'bundles': BundleOffer.query.filter_by(is_active=True).count()
     }
     
     # Get recent orders from database
@@ -112,8 +116,13 @@ def dashboard():
     # Get all users
     all_users = User.query.all()
     
-    # Get certificates
+    # Get certificates with enhanced statistics
     recent_certificates = Certificate.query.order_by(Certificate.upload_date.desc()).limit(10).all()
+    
+    # Enhanced certificate statistics
+    stats['certificates'] = Certificate.query.count()
+    stats['online_certificates'] = Certificate.query.filter_by(is_offline=False).count()
+    stats['offline_certificates'] = Certificate.query.filter_by(is_offline=True).count()
     
     # Recent activity (placeholder data)
     recent_activity = [
@@ -123,18 +132,13 @@ def dashboard():
         {'text': 'New course added', 'time': '1 day ago', 'icon': 'bi-journal-plus', 'color': 'rgba(155, 89, 182, 0.8)'},
     ]
     
-    # Certificate upload form with user dropdown
-    certificate_form = CertificateUploadForm()
-    certificate_form.user_email.choices = [(user.email, user.email) for user in all_users]
-    
     return render_template('admin/dashboard.html', 
                            admin=admin, 
                            stats=stats, 
                            recent_orders=recent_orders,
                            users=all_users,
                            recent_certificates=recent_certificates,
-                           recent_activity=recent_activity,
-                           certificate_form=certificate_form)
+                           recent_activity=recent_activity)
 
 # Add Course (existing route)
 @admin_bp.route('/add-course', methods=['GET', 'POST'])
@@ -281,19 +285,15 @@ def delete_teacher(teacher_id):
 
 
 
-# Manage Books
 @admin_bp.route('/manage-books')
 @admin_login_required
 def manage_books():
-    # Get search and filter parameters
     search = request.args.get('search', '')
-    category_filter = request.args.get('category', '')
+    category_filter = request.args.get('category', type=int)
     sort_by = request.args.get('sort', 'title_asc')
-    
-    # Start with base query
-    query = Book.query
-    
-    # Apply search filter if provided
+
+    query = Book.query.filter_by(is_deleted=False)
+
     if search:
         query = query.filter(
             db.or_(
@@ -302,12 +302,12 @@ def manage_books():
                 Book.description.ilike(f'%{search}%')
             )
         )
-    
-    # Apply category filter if provided
+
+    # ✅ Filter by category
     if category_filter:
-        query = query.filter(Book.category == category_filter)
-    
-    # Apply sorting
+        query = query.join(Book.categories).filter(Category.id == category_filter)
+
+    # Sorting
     if sort_by == 'title_asc':
         query = query.order_by(Book.title.asc())
     elif sort_by == 'title_desc':
@@ -316,14 +316,12 @@ def manage_books():
         query = query.order_by(Book.price.asc())
     elif sort_by == 'price_desc':
         query = query.order_by(Book.price.desc())
-    
-    # Execute query
+
     books = query.all()
-    
-    # Get unique categories for filter dropdown
-    categories = db.session.query(Book.category).distinct().filter(Book.category != None).all()
-    categories = [cat[0] for cat in categories if cat[0]]
-    
+
+    # ✅ Get all categories
+    categories = Category.query.order_by(Category.name).all()
+
     return render_template('admin/manage_books.html', books=books, categories=categories)
 
 # Edit Book
@@ -333,49 +331,66 @@ def edit_book(book_id):
     book = db.session.get(Book, book_id)
     if not book:
         abort(404)
+
     form = BookForm(obj=book)
+
+    # Get all categories and subcategories for the template
+    all_categories = Category.query.all()
+    all_subcategories = SubCategory.query.all()
     
+    # Prepopulate multiple-select fields for GET request
+    if request.method == 'GET':
+        form.categories.data = [c.id for c in book.categories]
+        form.subcategories.data = [sc.id for sc in book.subcategories]
+
     if form.validate_on_submit():
         # Update book details
         book.title = form.title.data
         book.author = form.author.data
         book.description = form.description.data
         book.price = float(form.price.data)
-        book.category = form.category.data
-        book.subject = form.subject.data
+        book.original_price = float(form.original_price.data) if form.original_price.data else None
         book.quantity = int(form.quantity.data)
-        
-        # Handle image deletions if any
+
+        # Update categories and subcategories (many-to-many)
+        # Get selected categories from form checkboxes
+        selected_category_ids = request.form.getlist('categories')
+        selected_category_ids = [int(cat_id) for cat_id in selected_category_ids if cat_id]
+        book.categories = Category.query.filter(Category.id.in_(selected_category_ids)).all() if selected_category_ids else []
+
+        # Get selected subcategories from form checkboxes  
+        selected_subcategory_ids = request.form.getlist('subcategories')
+        selected_subcategory_ids = [int(subcat_id) for subcat_id in selected_subcategory_ids if subcat_id]
+        book.subcategories = SubCategory.query.filter(SubCategory.id.in_(selected_subcategory_ids)).all() if selected_subcategory_ids else []
+
+        # Handle image deletions
         delete_images = request.form.getlist('delete_images')
-        if delete_images:
-            for image_id in delete_images:
-                image = db.session.get(BookImage, image_id)
-                if image and image.book_id == book.id:
-                    # Delete the file from filesystem
-                    try:
-                        os.remove(os.path.join(current_app.config['UPLOAD_FOLDER'], 'books', image.image_filename))
-                    except Exception as e:
-                        flash(f'Error deleting image file: {str(e)}', 'warning')
-                    
-                    # Delete from database
-                    db.session.delete(image)
-        
+        for image_id in delete_images:
+            image = db.session.get(BookImage, image_id)
+            if image and image.book_id == book.id:
+                # Delete file from filesystem
+                try:
+                    os.remove(os.path.join(current_app.config['UPLOAD_FOLDER'], 'books', image.image_filename))
+                except Exception as e:
+                    flash(f'Error deleting image file: {str(e)}', 'warning')
+                # Delete from database
+                db.session.delete(image)
+
         # Handle new image uploads
         if form.images.data:
             for image in form.images.data:
-                if image.filename:  # Check if a file was actually uploaded
-                    image_filename = secure_filename(image.filename)
-                    image.save(os.path.join(current_app.config['UPLOAD_FOLDER'], 'books', image_filename))
-                    
-                    # Create book image record
-                    book_image = BookImage(image_filename=image_filename, book_id=book.id)
+                if image.filename:
+                    filename = secure_filename(image.filename)
+                    image.save(os.path.join(current_app.config['UPLOAD_FOLDER'], 'books', filename))
+                    book_image = BookImage(image_filename=filename, book_id=book.id)
                     db.session.add(book_image)
-        
+
         db.session.commit()
         flash('Book updated successfully!', 'success')
         return redirect(url_for('admin.manage_books'))
-    
-    return render_template('admin/edit_book.html', form=form, book=book)
+
+    return render_template('admin/edit_book.html', form=form, book=book, 
+                         all_categories=all_categories, all_subcategories=all_subcategories)
 
 # Delete Book
 @admin_bp.route('/delete-book/<int:book_id>')
@@ -385,87 +400,165 @@ def delete_book(book_id):
     if not book:
         abort(404)
     
-    # Delete associated images from filesystem
-    for image in book.images:
-        try:
-            os.remove(os.path.join(current_app.config['UPLOAD_FOLDER'], 'books', image.image_filename))
-        except Exception as e:
-            flash(f'Error deleting image file: {str(e)}', 'warning')
+    try:
+        # Soft delete: Mark book as deleted instead of removing from database
+        book.is_deleted = True
+        book.deleted_at = utc_now()
+        
+        db.session.commit()
+        flash('Book deleted successfully!', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error deleting book: {str(e)}', 'danger')
     
-    # Delete book and associated images from database
-    # The cascade="all, delete-orphan" in the Book model will handle deleting associated images
-    db.session.delete(book)
-    db.session.commit()
-    
-    flash('Book deleted successfully!', 'success')
     return redirect(url_for('admin.manage_books'))
 
 # Upload Certificate
 @admin_bp.route('/upload-certificate', methods=['GET', 'POST'])
 @admin_login_required
 def upload_certificate():
-    # Get all users for the dropdown
-    all_users = User.query.all()
-    
     form = CertificateUploadForm()
-    form.user_email.choices = [(user.email, user.email) for user in all_users]
     
     if request.method == 'GET':
         return render_template('admin/upload_certificate.html', form=form)
     
     if form.validate_on_submit():
-        # Find user by email
-        user = User.query.filter_by(email=form.user_email.data).first()
-        if not user:
-            flash('User not found', 'danger')
-            return redirect(url_for('admin.dashboard'))
-            
-        # Check if course exists
-        course = db.session.get(Course, form.course_id.data)
-        if not course:
-            flash('Course not found', 'danger')
-            return redirect(url_for('admin.dashboard'))
-            
-        # Check if user is enrolled in the course
-        user_course = UserCourse.query.filter_by(user_id=user.id, course_id=course.id).first()
-        if not user_course:
-            # Create user course enrollment if it doesn't exist
-            user_course = UserCourse(user_id=user.id, course_id=course.id, completed=True)
-            db.session.add(user_course)
-            db.session.commit()
+        # Read selected user from form
+        selected_user_id = request.form.get('selected_user')
+        if not selected_user_id:
+            flash('Please select a user', 'danger')
+            return redirect(url_for('admin.upload_certificate'))
         
-        # Save certificate file
-        if form.certificate.data:
-            # Generate unique filename
-            filename = f"{uuid.uuid4().hex}_{secure_filename(form.certificate.data.filename)}"
-            certificate_path = os.path.join(current_app.config['UPLOAD_FOLDER'], 'certificates', filename)
-            
-            # Ensure directory exists
-            os.makedirs(os.path.dirname(certificate_path), exist_ok=True)
-            
-            # Save file
-            form.certificate.data.save(certificate_path)
-            
-            # Create certificate record
-            certificate = Certificate(
-                user_id=user.id,
-                course_id=course.id,
-                filename=filename,
-                upload_date=datetime.now()
-            )
-            db.session.add(certificate)
-            db.session.commit()
-            
-            flash('Certificate uploaded successfully', 'success')
+        try:
+            selected_user_id = int(selected_user_id)
+        except ValueError:
+            flash('Invalid user selection', 'danger')
+            return redirect(url_for('admin.upload_certificate'))
+        
+        # Fetch the selected user
+        user = db.session.get(User, selected_user_id)
+        if not user:
+            flash('Selected user not found', 'danger')
+            return redirect(url_for('admin.upload_certificate'))
+        
+        # Handle offline certificates
+        if form.is_offline.data:
+            # Save certificate file
+            if form.certificate.data:
+                # Generate unique filename
+                filename = f"{uuid.uuid4().hex}_{secure_filename(form.certificate.data.filename)}"
+                certificate_path = os.path.join(current_app.config['UPLOAD_FOLDER'], 'certificates', filename)
+                
+                # Ensure directory exists
+                os.makedirs(os.path.dirname(certificate_path), exist_ok=True)
+                
+                try:
+                    # Save file
+                    form.certificate.data.save(certificate_path)
+                    
+                    # Create offline certificate record
+                    certificate = Certificate(
+                        user_id=user.id,
+                        course_id=None,
+                        filename=filename,
+                        upload_date=utc_now(),
+                        is_offline=True
+                    )
+                    db.session.add(certificate)
+                    db.session.commit()
+                    
+                    flash('Offline certificate uploaded successfully', 'success')
+                except Exception as e:
+                    db.session.rollback()
+                    # Clean up saved file on error
+                    if os.path.exists(certificate_path):
+                        os.remove(certificate_path)
+                    flash('Error uploading certificate. Please try again.', 'danger')
+            else:
+                flash('No certificate file provided', 'danger')
         else:
-            flash('No certificate file provided', 'danger')
+            # Handle online certificates (existing logic)
+            course = db.session.get(Course, form.course_id.data)
+            if not course:
+                flash('Course not found', 'danger')
+                return redirect(url_for('admin.upload_certificate'))
+                
+            # Check if user is enrolled in the course
+            user_course = UserCourse.query.filter_by(user_id=user.id, course_id=course.id).first()
+            if not user_course:
+                # Create user course enrollment if it doesn't exist
+                user_course = UserCourse(user_id=user.id, course_id=course.id, completion_status='completed')
+                db.session.add(user_course)
+                db.session.commit()
             
+            # Save certificate file
+            if form.certificate.data:
+                # Generate unique filename
+                filename = f"{uuid.uuid4().hex}_{secure_filename(form.certificate.data.filename)}"
+                certificate_path = os.path.join(current_app.config['UPLOAD_FOLDER'], 'certificates', filename)
+                
+                # Ensure directory exists
+                os.makedirs(os.path.dirname(certificate_path), exist_ok=True)
+                
+                try:
+                    # Save file
+                    form.certificate.data.save(certificate_path)
+                    
+                    # Create certificate record
+                    certificate = Certificate(
+                        user_id=user.id,
+                        course_id=course.id,
+                        filename=filename,
+                        upload_date=utc_now(),
+                        is_offline=False
+                    )
+                    db.session.add(certificate)
+                    db.session.commit()
+                    
+                    flash('Certificate uploaded successfully', 'success')
+                except Exception as e:
+                    db.session.rollback()
+                    # Clean up saved file on error
+                    if os.path.exists(certificate_path):
+                        os.remove(certificate_path)
+                    flash('Error uploading certificate. Please try again.', 'danger')
+            else:
+                flash('No certificate file provided', 'danger')
+                
     else:
         for field, errors in form.errors.items():
             for error in errors:
                 flash(f"{field}: {error}", 'danger')
                 
-    return redirect(url_for('admin.dashboard'))
+    return redirect(url_for('admin.upload_certificate'))
+
+def search_users_by_criteria(search_type, search_value):
+    """Search users by email or name"""
+    if search_type == 'email':
+        return User.query.filter(User.email.ilike(f'%{search_value}%')).all()
+    elif search_type == 'name':
+        # Search in customer table for full_name if available
+        customers = Customer.query.filter(Customer.full_name.ilike(f'%{search_value}%')).all()
+        user_ids = [c.user_id for c in customers]
+        return User.query.filter(User.id.in_(user_ids)).all() if user_ids else []
+    return []
+
+@admin_bp.route('/search-users', methods=['POST'])
+@admin_login_required
+def search_users():
+    """AJAX endpoint for user search"""
+    search_type = request.json.get('search_type')
+    search_value = request.json.get('search_value')
+    
+    users = search_users_by_criteria(search_type, search_value)
+    
+    return jsonify({
+        'users': [{
+            'id': user.id,
+            'email': user.email,
+            'name': user.customer.full_name if user.customer else 'No name available'
+        } for user in users]
+    })
 
 # View Certificate
 @admin_bp.route('/certificate/<int:certificate_id>')
@@ -651,3 +744,192 @@ def edit_user(user_id):
         return redirect(url_for('admin.view_user', user_id=user.id))
     
     return render_template('admin/edit_user.html', user=user)
+
+@admin_bp.route('/book-reviews')
+@admin_login_required
+def manage_book_reviews():
+    reviews = BookReview.query.order_by(BookReview.created_at.desc()).all()
+    return render_template('admin/manage_reviews.html', reviews=reviews)
+
+@admin_bp.route('/set-book-rating/<int:book_id>', methods=['POST'])
+@admin_login_required
+def set_book_rating(book_id):
+    book = db.session.get(Book, book_id)
+    if not book:
+        abort(404)
+    
+    rating = request.form.get('rating')
+    review_count = request.form.get('review_count')
+    
+    if rating and review_count:
+        try:
+            book.avg_rating = float(rating)
+            book.review_count = int(review_count)
+            db.session.commit()
+            flash('Book rating updated successfully!', 'success')
+        except ValueError:
+            flash('Invalid rating or review count values.', 'danger')
+    else:
+        flash('Rating and review count are required.', 'danger')
+    
+    return redirect(url_for('admin.edit_book', book_id=book_id))
+
+@admin_bp.route('/book-reviews/delete/<int:review_id>', methods=['POST'])
+@admin_login_required
+def delete_review(review_id):
+    review = db.session.get(BookReview, review_id)
+    if not review:
+        abort(404)
+    
+    db.session.delete(review)
+    db.session.commit()
+    flash('Review deleted successfully!', 'success')
+    return redirect(url_for('admin.manage_book_reviews'))
+
+
+# Bundle Management Routes
+
+@admin_bp.route('/manage-bundles')
+@admin_login_required
+def manage_bundles():
+    # Search and filter parameters
+    search = request.args.get('search', '')
+    status_filter = request.args.get('status', 'all')
+    sort_by = request.args.get('sort', 'title')
+    sort_order = request.args.get('order', 'asc')
+    
+    # Base query with joined books
+    query = BundleOffer.query.options(joinedload(BundleOffer.books))
+    
+    # Apply search filter (case-insensitive)
+    if search:
+        query = query.filter(BundleOffer.title.ilike(f'%{search}%'))
+    
+    # Apply status filter
+    if status_filter == 'active':
+        query = query.filter(BundleOffer.is_active == True)
+    elif status_filter == 'inactive':
+        query = query.filter(BundleOffer.is_active == False)
+    
+    # Apply sorting
+    if sort_by == 'title':
+        if sort_order == 'desc':
+            query = query.order_by(BundleOffer.title.desc())
+        else:
+            query = query.order_by(BundleOffer.title.asc())
+    elif sort_by == 'price':
+        if sort_order == 'desc':
+            query = query.order_by(BundleOffer.selling_price.desc())
+        else:
+            query = query.order_by(BundleOffer.selling_price.asc())
+    elif sort_by == 'created':
+        if sort_order == 'desc':
+            query = query.order_by(BundleOffer.created_at.desc())
+        else:
+            query = query.order_by(BundleOffer.created_at.asc())
+    
+    bundles = query.all()
+    
+    return render_template('admin/manage_bundles.html', bundles=bundles, 
+                         search=search, status_filter=status_filter, 
+                         sort_by=sort_by, sort_order=sort_order)
+
+
+@admin_bp.route('/add-bundle', methods=['GET', 'POST'])
+@admin_login_required
+def add_bundle():
+    form = BundleOfferForm()
+    
+    if form.validate_on_submit():
+        try:
+            # Create new bundle
+            bundle = BundleOffer(
+                title=form.title.data,
+                description=form.description.data,
+                mrp=form.mrp.data,
+                selling_price=form.selling_price.data,
+                discount_type=form.discount_type.data,
+                discount_value=form.discount_value.data,
+                is_active=form.is_active.data
+            )
+            
+            # Associate selected books
+            bundle.books = form.books.data
+            
+            db.session.add(bundle)
+            db.session.commit()
+            
+            flash('Bundle offer created successfully!', 'success')
+            return redirect(url_for('admin.manage_bundles'))
+            
+        except Exception as e:
+            db.session.rollback()
+            flash('Error creating bundle offer. Please try again.', 'error')
+    
+    return render_template('admin/add_bundle.html', form=form)
+
+
+@admin_bp.route('/edit-bundle/<int:bundle_id>', methods=['GET', 'POST'])
+@admin_login_required
+def edit_bundle(bundle_id):
+    bundle = db.session.get(BundleOffer, bundle_id)
+    if not bundle:
+        abort(404)
+    
+    form = BundleOfferForm(obj=bundle)
+    
+    if form.validate_on_submit():
+        try:
+            # Update bundle fields
+            bundle.title = form.title.data
+            bundle.description = form.description.data
+            bundle.mrp = form.mrp.data
+            bundle.selling_price = form.selling_price.data
+            bundle.discount_type = form.discount_type.data
+            bundle.discount_value = form.discount_value.data
+            bundle.is_active = form.is_active.data
+            
+            # Update book associations
+            bundle.books = form.books.data
+            
+            db.session.commit()
+            
+            flash('Bundle offer updated successfully!', 'success')
+            return redirect(url_for('admin.manage_bundles'))
+            
+        except Exception as e:
+            db.session.rollback()
+            flash('Error updating bundle offer. Please try again.', 'error')
+    
+    # Pre-populate books field
+    form.books.data = bundle.books
+    
+    return render_template('admin/edit_bundle.html', form=form, bundle=bundle)
+
+
+@admin_bp.route('/delete-bundle/<int:bundle_id>', methods=['POST'])
+@admin_login_required
+def delete_bundle(bundle_id):
+    bundle = db.session.get(BundleOffer, bundle_id)
+    if not bundle:
+        flash('Bundle not found.', 'error')
+        return redirect(url_for('admin.manage_bundles'))
+    
+    # Safety check: Prevent deletion if bundle is referenced in any orders
+    existing_refs = FullOrderDetail.query.filter(
+        FullOrderDetail.bundle_id == bundle_id,
+        FullOrderDetail.item_type == 'bundle'
+    ).first()
+    if existing_refs:
+        flash('Cannot delete: bundle is referenced by existing orders. Consider deactivating instead.', 'warning')
+        return redirect(url_for('admin.manage_bundles'))
+    
+    try:
+        db.session.delete(bundle)
+        db.session.commit()
+        flash('Bundle offer deleted successfully!', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash('Error deleting bundle offer. Please try again.', 'error')
+    
+    return redirect(url_for('admin.manage_bundles'))

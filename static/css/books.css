@@ -1,0 +1,204 @@
+:root {
+  --primary-color: #FFD32C; /* Yellow brand color */
+  --primary-dark: #e6b800;
+  --secondary-color: #6c757d;
+  --light-bg: #f8f9fa;
+  --white: #ffffff;
+  --dark: #212529;
+  --border-radius: 8px;
+  --box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  --transition: all 0.3s ease;
+}
+
+/* Books Page Specific Styles */
+.books-hero {
+  background-color: var(--light-bg);
+  padding: 60px 0;
+  margin-bottom: 50px;
+}
+
+.books-hero h1 {
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: var(--dark);
+}
+
+.books-hero p {
+  font-size: 1.1rem;
+  max-width: 700px;
+  margin: 0 auto 30px;
+}
+
+.book-card {
+  background-color: var(--white);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: var(--box-shadow);
+  height: 100%;
+  transition: var(--transition);
+  position: relative;
+}
+
+.book-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+.book-img-container {
+  height: 250px;
+  overflow: hidden;
+  position: relative;
+}
+
+.book-img-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: var(--transition);
+}
+
+.book-card:hover .book-img-container img {
+  transform: scale(1.1);
+}
+
+.book-badge {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background-color: var(--primary-color);
+  color: var(--dark);
+  font-weight: 600;
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+}
+
+.book-content {
+  padding: 20px;
+}
+
+.book-title {
+  font-weight: 600;
+  margin-bottom: 10px;
+  font-size: 1.2rem;
+}
+
+.book-author {
+  color: var(--secondary-color);
+  margin-bottom: 15px;
+  font-size: 0.9rem;
+}
+
+.book-description {
+  margin-bottom: 20px;
+  font-size: 0.95rem;
+}
+
+.book-price {
+  font-weight: 700;
+  color: var(--primary-color);
+  font-size: 1.3rem;
+  margin-bottom: 15px;
+}
+
+.book-price .original-price {
+  text-decoration: line-through;
+  color: var(--secondary-color);
+  font-size: 1rem;
+  margin-left: 10px;
+  font-weight: 400;
+}
+
+.book-actions {
+  display: flex;
+  justify-content: space-between;
+}
+
+.book-actions .btn {
+  padding: 8px 15px;
+  font-size: 0.9rem;
+}
+
+/* Book Categories */
+.book-categories {
+  margin-bottom: 50px;
+}
+
+.category-pill {
+  display: inline-block;
+  padding: 8px 20px;
+  background-color: var(--light-bg);
+  border-radius: 30px;
+  margin: 0 10px 10px 0;
+  font-weight: 500;
+  transition: var(--transition);
+  cursor: pointer;
+}
+
+.category-pill:hover, .category-pill.active {
+  background-color: var(--primary-color);
+  color: var(--dark);
+}
+
+/* Book Details */
+.book-details {
+  padding: 80px 0;
+}
+
+.book-details-img {
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  max-height: 500px;
+  object-fit: cover;
+}
+
+.book-details-content h1 {
+  font-weight: 700;
+  margin-bottom: 15px;
+}
+
+.book-details-author {
+  color: var(--secondary-color);
+  margin-bottom: 20px;
+  font-size: 1.1rem;
+}
+
+.book-details-price {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin-bottom: 20px;
+}
+
+.book-details-description {
+  margin-bottom: 30px;
+}
+
+.book-details-meta {
+  background-color: var(--light-bg);
+  border-radius: var(--border-radius);
+  padding: 20px;
+  margin-bottom: 30px;
+}
+
+.book-details-meta p {
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.book-details-meta span {
+  font-weight: 600;
+}
+
+/* Related Books */
+.related-books {
+  padding: 60px 0;
+  background-color: var(--light-bg);
+}
+
+.related-books h2 {
+  margin-bottom: 40px;
+  font-weight: 700;
+  text-align: center;
+}

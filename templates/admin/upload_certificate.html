@@ -1,4 +1,4 @@
-{% extends 'admin/base_admin.html' %}
+{% extends 'admin_base.html' %}
 {% block title %}Upload Certificate | Admin Dashboard{% endblock %}
 
 {% block extra_css %}
@@ -103,26 +103,72 @@
   <form method="POST" enctype="multipart/form-data">
     {{ form.hidden_tag() }}
     
+    <!-- User Search Section -->
     <div class="row">
-      <div class="col-md-6">
+      <div class="col-md-4">
         <div class="form-group">
-          <label for="user_email" class="form-label">User Email</label>
-          {{ form.user_email(class="form-control", placeholder="Enter user's email") }}
-          {% if form.user_email.errors %}
+          <label for="user_search_type" class="form-label">Search By</label>
+          {{ form.user_search_type(class="form-control") }}
+          {% if form.user_search_type.errors %}
             <div class="text-danger">
-              {% for error in form.user_email.errors %}
+              {% for error in form.user_search_type.errors %}
                 <small>{{ error }}</small>
               {% endfor %}
             </div>
           {% endif %}
-          <div class="help-text">Enter the email of the user who completed the course</div>
         </div>
       </div>
       
+      <div class="col-md-8">
+        <div class="form-group">
+          <label for="user_search_value" class="form-label">User Email/Name</label>
+          {{ form.user_search_value(class="form-control", id="user_search_value") }}
+          {% if form.user_search_value.errors %}
+            <div class="text-danger">
+              {% for error in form.user_search_value.errors %}
+                <small>{{ error }}</small>
+              {% endfor %}
+            </div>
+          {% endif %}
+          <div class="help-text">Type at least 2 characters to search for users</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- User Selection Results -->
+    <div class="row">
+      <div class="col-12">
+        <div class="form-group">
+          <label for="selected_user" class="form-label">Select User</label>
+          <select id="selected_user" name="selected_user" class="form-control" style="display: none;">
+            <option value="">Select a user...</option>
+          </select>
+          <div id="search_results" class="help-text">Search results will appear here</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Offline Certificate Option -->
+    <div class="row">
+      <div class="col-12">
+        <div class="form-group">
+          <div class="form-check">
+            {{ form.is_offline(class="form-check-input", id="is_offline") }}
+            <label class="form-check-label" for="is_offline">
+              Offline Certificate
+            </label>
+          </div>
+          <div class="help-text">Check this for certificates not associated with any specific course</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Course ID Field (Online Certificates Only) -->
+    <div class="row" id="course_id_field">
       <div class="col-md-6">
         <div class="form-group">
           <label for="course_id" class="form-label">Course ID</label>
-          {{ form.course_id(class="form-control", placeholder="Enter course ID") }}
+          {{ form.course_id(class="form-control", id="course_id", placeholder="Enter course ID") }}
           {% if form.course_id.errors %}
             <div class="text-danger">
               {% for error in form.course_id.errors %}
@@ -130,11 +176,30 @@
               {% endfor %}
             </div>
           {% endif %}
-          <div class="help-text">Enter the ID of the completed course</div>
+          <div class="help-text">Required for online certificates</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Course Name Field (Offline Certificates Only) -->
+    <div class="row" id="course_name_field" style="display: none;">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="course_name" class="form-label">Course Name</label>
+          {{ form.course_name(class="form-control", id="course_name", placeholder="Enter course name") }}
+          {% if form.course_name.errors %}
+            <div class="text-danger">
+              {% for error in form.course_name.errors %}
+                <small>{{ error }}</small>
+              {% endfor %}
+            </div>
+          {% endif %}
+          <div class="help-text">Required for offline certificates</div>
         </div>
       </div>
     </div>
     
+    <!-- Certificate Upload Section -->
     <div class="form-group">
       <label for="certificate" class="form-label">Certificate File</label>
       {{ form.certificate(class="form-control") }}
@@ -145,7 +210,7 @@
           {% endfor %}
         </div>
       {% endif %}
-      <div class="help-text">Upload a PDF or image file of the certificate (max 5MB)</div>
+      <div class="help-text">Upload a PDF or image file (max 5MB). Supports both online and offline certificates.</div>
     </div>
     
     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
@@ -153,4 +218,125 @@
     </div>
   </form>
 </div>
+
+
+
+<script>
+// CSRF token for AJAX requests
+const csrfToken = "{{ form.csrf_token._value() }}";
+
+// Elements
+const userSearchInput = document.getElementById('user_search_value');
+const userSelect = document.getElementById('selected_user');
+const searchResults = document.getElementById('search_results');
+const offlineCheckbox = document.getElementById('is_offline');
+const courseIdField = document.getElementById('course_id_field');
+const courseNameField = document.getElementById('course_name_field');
+
+let searchTimeout;
+
+// Toggle course fields based on offline checkbox
+function toggleCourseFields() {
+    if (offlineCheckbox.checked) {
+        courseIdField.style.display = 'none';
+        courseNameField.style.display = 'block';
+        document.getElementById('course_id').required = false;
+        document.getElementById('course_name').required = true;
+    } else {
+        courseIdField.style.display = 'block';
+        courseNameField.style.display = 'none';
+        document.getElementById('course_id').required = true;
+        document.getElementById('course_name').required = false;
+    }
+}
+
+// Initialize course fields on page load
+document.addEventListener('DOMContentLoaded', toggleCourseFields);
+offlineCheckbox.addEventListener('change', toggleCourseFields);
+
+// Real-time user search
+userSearchInput.addEventListener('input', function() {
+    clearTimeout(searchTimeout);
+    const searchValue = this.value.trim();
+    
+    if (searchValue.length >= 2) {
+        searchTimeout = setTimeout(() => {
+            searchUsers(searchValue);
+        }, 300);
+    } else {
+        clearSearchResults();
+    }
+});
+
+// AJAX: Search users
+function searchUsers(searchValue) {
+    const searchType = document.getElementById('user_search_type').value;
+
+    fetch('/admin/search-users', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken
+        },
+        body: JSON.stringify({
+            search_type: searchType,
+            search_value: searchValue
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        displaySearchResults(data.users);
+    })
+    .catch(error => {
+        console.error('Search error:', error);
+    });
+}
+
+// Display search results in select dropdown
+function displaySearchResults(users) {
+    userSelect.innerHTML = '<option value="">Select a user...</option>';
+    
+    users.forEach(user => {
+        const option = document.createElement('option');
+        option.value = user.id;
+        option.textContent = `${user.name} (${user.email})`;
+        userSelect.appendChild(option);
+    });
+    
+    userSelect.style.display = users.length > 0 ? 'block' : 'none';
+}
+
+// Clear search results
+function clearSearchResults() {
+    userSelect.innerHTML = '<option value="">Select a user...</option>';
+    userSelect.style.display = 'none';
+}
+
+// Form validation before submit
+document.querySelector('form').addEventListener('submit', function(e) {
+    const selectedUser = userSelect.value;
+    const isOffline = offlineCheckbox.checked;
+    const courseId = document.getElementById('course_id').value;
+    const courseName = document.getElementById('course_name').value;
+
+    if (!selectedUser) {
+        e.preventDefault();
+        alert('Please search and select a user.');
+        return;
+    }
+
+    if (!isOffline && !courseId) {
+        e.preventDefault();
+        alert('Course ID is required for online certificates.');
+        return;
+    }
+
+    if (isOffline && !courseName) {
+        e.preventDefault();
+        alert('Course Name is required for offline certificates.');
+        return;
+    }
+});
+</script>
+
 {% endblock %}

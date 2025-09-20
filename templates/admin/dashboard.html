@@ -1,4 +1,4 @@
-{% extends 'admin/base_admin.html' %}
+{% extends 'admin_base.html' %}
 {% block title %}Admin Dashboard | Easy2Learning{% endblock %}
 
 {% block extra_css %}
@@ -51,6 +51,10 @@
   .stat-orders {
     background-color: rgba(231, 76, 60, 0.1);
     color: #e74c3c;
+  }
+  .stat-bundles {
+    background-color: rgba(153, 102, 255, 0.1);
+    color: #9966ff;
   }
   .stat-value {
     font-size: 28px;
@@ -164,6 +168,7 @@
     border-bottom: 2px solid #667eea;
     background-color: transparent;
   }
+  
 </style>
 {% endblock %}
 
@@ -239,6 +244,46 @@
       </div>
     </div>
     
+    <!-- Additional Stats Row -->
+    <div class="row mb-4">
+      <div class="col-md-3">
+        <div class="stat-card">
+          <div class="stat-icon stat-bundles">
+            <i class="bi bi-collection"></i>
+          </div>
+          <div class="stat-value">{{ stats.bundles }}</div>
+          <div class="stat-label">Active Bundles</div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="stat-card">
+          <div class="stat-icon" style="background: rgba(52, 152, 219, 0.2);">
+            <i class="bi bi-file-earmark-check" style="color: rgba(52, 152, 219, 0.8);"></i>
+          </div>
+          <div class="stat-value">{{ stats.certificates }}</div>
+          <div class="stat-label">Total Certificates</div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="stat-card">
+          <div class="stat-icon" style="background: rgba(46, 204, 113, 0.2);">
+            <i class="bi bi-file-earmark-plus" style="color: rgba(46, 204, 113, 0.8);"></i>
+          </div>
+          <div class="stat-value">{{ stats.online_certificates }}</div>
+          <div class="stat-label">Online Certificates</div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="stat-card">
+          <div class="stat-icon" style="background: rgba(155, 89, 182, 0.2);">
+            <i class="bi bi-file-earmark-minus" style="color: rgba(155, 89, 182, 0.8);"></i>
+          </div>
+          <div class="stat-value">{{ stats.offline_certificates }}</div>
+          <div class="stat-label">Offline Certificates</div>
+        </div>
+      </div>
+    </div>
+    
     <!-- Main Content -->
     <div class="row">
       <!-- Left Column -->
@@ -266,7 +311,7 @@
                 <tr>
                   <td>#{{ order.id }}</td>
                   <td>{{ order.user_email }}</td>
-                  <td>${{ "%.2f"|format(order.amount) }}</td>
+                  <td>₹{{ "%.2f"|format(order.amount) }}</td>
                   <td>{{ order.date }}</td>
                   <td>
                     <span class="badge badge-{{ order.status_class }}">{{ order.status }}</span>
@@ -279,111 +324,201 @@
         </div>
         
         <!-- User Management -->
-        <div class="action-card">
-          <div class="action-header">
-            <h3 class="action-title">User Management</h3>
-            <a href="#" class="action-btn action-btn-secondary">View All Users</a>
-          </div>
-          
-          <ul class="nav nav-tabs" id="userTabs" role="tablist">
-            <li class="nav-item" role="presentation">
-              <button class="nav-link active" id="all-users-tab" data-bs-toggle="tab" data-bs-target="#all-users" type="button" role="tab">All Users</button>
-            </li>
-            <li class="nav-item" role="presentation">
-              <button class="nav-link" id="certificates-tab" data-bs-toggle="tab" data-bs-target="#certificates" type="button" role="tab">Certificates</button>
-            </li>
-          </ul>
-          
-          <div class="tab-content" id="userTabsContent">
-            <div class="tab-pane fade show active" id="all-users" role="tabpanel">
-              <div class="table-responsive">
-                <table class="admin-table">
-                  <thead>
-                    <tr>
-                      <th>User ID</th>
-                      <th>Email</th>
-                      <th>Phone</th>
-                      <th>Courses</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {% for user in users %}
-                    <tr>
-                      <td>#{{ user.id }}</td>
-                      <td>{{ user.email }}</td>
-                      <td>{{ user.phone or 'N/A' }}</td>
-                      <td>{{ user.enrolled_courses|length if user.enrolled_courses else 0 }}</td>
-                      <td>
-                        <div class="d-flex gap-2">
-                          <a href="{{ url_for('admin.view_user', user_id=user.id) }}" class="btn btn-sm btn-outline-primary">View</a>
-                          <a href="{{ url_for('admin.edit_user', user_id=user.id) }}" class="btn btn-sm btn-outline-success">Edit</a>
-                        </div>
-                      </td>
-                    </tr>
-                    {% endfor %}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            
-            <div class="tab-pane fade" id="certificates" role="tabpanel">
-              <div class="mb-4 p-3 border rounded bg-light">
-                <h5 class="mb-3">Upload Certificate for User</h5>
-                <form method="POST" action="{{ url_for('admin.upload_certificate') }}" enctype="multipart/form-data">
-                  {{ certificate_form.hidden_tag() }}
-                  <div class="row g-3">
-                    <div class="col-md-4">
-                      <label for="{{ certificate_form.user_email.id }}" class="form-label">User Email</label>
-                      {{ certificate_form.user_email(class="form-select") }}
-                    </div>
-                    <div class="col-md-3">
-                      <label for="{{ certificate_form.course_id.id }}" class="form-label">Course ID</label>
-                      {{ certificate_form.course_id(class="form-control", placeholder="Course ID") }}
-                    </div>
-                    <div class="col-md-3">
-                      <label for="{{ certificate_form.certificate.id }}" class="form-label">Certificate File</label>
-                      {{ certificate_form.certificate(class="form-control") }}
-                    </div>
-                    <div class="col-md-2 d-flex align-items-end">
-                      {{ certificate_form.submit(class="btn action-btn action-btn-primary w-100") }}
-                    </div>
-                  </div>
-                </form>
-              </div>
-              
-              <div class="table-responsive mt-4">
-                <table class="admin-table">
-                  <thead>
-                    <tr>
-                      <th>ID</th>
-                      <th>User</th>
-                      <th>Course</th>
-                      <th>Upload Date</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {% for cert in recent_certificates %}
-                    <tr>
-                      <td>#{{ cert.id }}</td>
-                      <td>{{ cert.user.email }}</td>
-                      <td>{{ cert.course.title }}</td>
-                      <td>{{ cert.upload_date.strftime('%Y-%m-%d') }}</td>
-                      <td>
-                        <div class="d-flex gap-2">
-                          <a href="{{ url_for('admin.view_certificate', certificate_id=cert.id) }}" class="btn btn-sm btn-outline-primary">View</a>
-                          <a href="{{ url_for('admin.delete_certificate', certificate_id=cert.id) }}" class="btn btn-sm btn-outline-danger">Delete</a>
-                        </div>
-                      </td>
-                    </tr>
-                    {% endfor %}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
+<div class="action-card">
+  <div class="action-header">
+    <h3 class="action-title">User Management</h3>
+    <a href="#" id="viewAllUsersBtn" class="action-btn action-btn-secondary">View All Users</a>
+  </div>
+
+  <ul class="nav nav-tabs" id="userTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" id="all-users-tab" data-bs-toggle="tab" data-bs-target="#all-users" type="button" role="tab">All Users</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="certificates-tab" data-bs-toggle="tab" data-bs-target="#certificates" type="button" role="tab">Certificates</button>
+    </li>
+  </ul>
+
+  <div class="tab-content" id="userTabsContent">
+    <!-- All Users -->
+    <div class="tab-pane fade show active" id="all-users" role="tabpanel">
+      <div class="table-responsive">
+        <table class="admin-table" id="usersTable">
+          <thead>
+            <tr>
+              <th>User ID</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Courses</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for user in users %}
+            <tr>
+              <td>#{{ user.id }}</td>
+              <td>{{ user.email }}</td>
+              <td>{{ user.phone or 'N/A' }}</td>
+              <td>{{ user.enrolled_courses|length if user.enrolled_courses else 0 }}</td>
+              <td>
+                <div class="d-flex gap-2">
+                  <a href="{{ url_for('admin.view_user', user_id=user.id) }}" class="btn btn-sm btn-outline-primary">View</a>
+                  <a href="{{ url_for('admin.edit_user', user_id=user.id) }}" class="btn btn-sm btn-outline-success">Edit</a>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <nav>
+        <ul class="pagination justify-content-center mt-3" id="usersPagination"></ul>
+      </nav>
+    </div>
+
+    <!-- Certificates -->
+    <div class="tab-pane fade" id="certificates" role="tabpanel">
+      <div class="mb-4 p-3 border rounded bg-light">
+        <h5 class="mb-3">Certificate Management</h5>
+        <p>Use the dedicated certificate upload page for enhanced search functionality and offline certificate support.</p>
+        <a href="{{ url_for('admin.upload_certificate') }}" class="btn action-btn action-btn-primary">
+          <i class="bi bi-file-earmark-plus me-2"></i>Upload Certificate
+        </a>
+      </div>
+
+      <div class="table-responsive mt-4">
+        <table class="admin-table" id="certificatesTable">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>User</th>
+              <th>Course</th>
+              <th>Type</th>
+              <th>Upload Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for cert in recent_certificates %}
+            <tr>
+              <td>#{{ cert.id }}</td>
+              <td>{{ cert.user.email }}</td>
+              <td>
+                {% if cert.is_offline %}
+                  <span class="text-muted">N/A</span>
+                {% else %}
+                  {{ cert.course.title if cert.course else 'Unknown' }}
+                {% endif %}
+              </td>
+              <td>
+                {% if cert.is_offline %}
+                  <span class="badge bg-secondary"><i class="bi bi-file-earmark-minus me-1"></i>Offline</span>
+                {% else %}
+                  <span class="badge bg-primary"><i class="bi bi-file-earmark-plus me-1"></i>Online</span>
+                {% endif %}
+              </td>
+              <td>{{ cert.upload_date.strftime('%Y-%m-%d') }}</td>
+              <td>
+                <div class="d-flex gap-2">
+                  <a href="{{ url_for('admin.view_certificate', certificate_id=cert.id) }}" class="btn btn-sm btn-outline-primary">View</a>
+                  <a href="{{ url_for('admin.delete_certificate', certificate_id=cert.id) }}" class="btn btn-sm btn-outline-danger">Delete</a>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <nav>
+        <ul class="pagination justify-content-center mt-3" id="certificatesPagination"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<!-- Pagination Script -->
+<script>
+function setupPagination(tableId, paginationId, rowsPerPage = 10) {
+  const table = document.getElementById(tableId);
+  const tbody = table.querySelector("tbody");
+  const rows = tbody.querySelectorAll("tr");
+  const pagination = document.getElementById(paginationId);
+
+  let currentPage = 1;
+  let showAll = false;
+
+  function displayTable() {
+    let start = (currentPage - 1) * rowsPerPage;
+    let end = start + rowsPerPage;
+
+    rows.forEach((row, index) => {
+      if (showAll || (index >= start && index < end)) {
+        row.style.display = "";
+      } else {
+        row.style.display = "none";
+      }
+    });
+  }
+
+  function updatePagination() {
+    pagination.innerHTML = "";
+    if (showAll) return;
+
+    const pageCount = Math.ceil(rows.length / rowsPerPage);
+
+    for (let i = 1; i <= pageCount; i++) {
+      const li = document.createElement("li");
+      li.classList.add("page-item");
+      if (i === currentPage) {
+        li.classList.add("active");
+      }
+
+      const link = document.createElement("a");
+      link.classList.add("page-link");
+      link.href = "#";
+      link.textContent = i;
+
+      link.addEventListener("click", (e) => {
+        e.preventDefault();
+        currentPage = i;
+        showAll = false; // back to paginated view
+        displayTable();
+        updatePagination();
+      });
+
+      li.appendChild(link);
+      pagination.appendChild(li);
+    }
+  }
+
+  function init() {
+    displayTable();
+    updatePagination();
+  }
+
+  init();
+
+  return {
+    showAllRows: function () {
+      showAll = true;
+      displayTable();
+      updatePagination();
+    }
+  };
+}
+
+// Setup for users and certificates
+const usersPagination = setupPagination("usersTable", "usersPagination");
+const certsPagination = setupPagination("certificatesTable", "certificatesPagination");
+
+// Handle "View All Users" button
+document.getElementById("viewAllUsersBtn").addEventListener("click", function (e) {
+  e.preventDefault();
+  usersPagination.showAllRows();
+});
+</script>
+
+
       </div>
       
       <!-- Right Column -->
@@ -398,8 +533,11 @@
             <a href="{{ url_for('admin.manage_books') }}" class="btn action-btn action-btn-primary">
               <i class="bi bi-book-half me-2"></i>Manage Books
             </a>
+            <a href="{{ url_for('admin.manage_bundles') }}" class="btn action-btn action-btn-primary">
+              <i class="bi bi-collection me-2"></i>Manage Bundle Offers
+            </a>
             <a href="{{ url_for('admin.upload_certificate') }}" class="btn action-btn action-btn-primary">
-              <i class="bi bi-file-earmark-check me-2"></i>Upload Certificate
+              <i class="bi bi-file-earmark-plus me-2"></i>Manage Certificates
             </a>
             <a href="/manage-categories" class="btn action-btn action-btn-primary">
               <i class="bi bi-file-earmark-check me-2"></i>Manage Category
@@ -412,6 +550,12 @@
             </a>
             <a href="{{ url_for('admin_hero_slider') }}" class="btn action-btn action-btn-primary">
               <i class="bi bi-file-earmark-check me-2"></i>Manage Hero Slides
+            </a>
+            <a href="/admin/full-orders" class="btn action-btn action-btn-primary">
+              <i class="bi bi-file-earmark-check me-2"></i>Order Details
+            </a>
+            <a href="{{ url_for('admin.manage_book_reviews') }}" class="btn action-btn action-btn-primary">
+              <i class="bi bi-chat-square-text me-2"></i>Manage Book Reviews
             </a>
           </div>
         </div>

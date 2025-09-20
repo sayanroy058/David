@@ -2,26 +2,41 @@
 {% block title %}Book Collection - Professional Library{% endblock %}
 
 {% block content %}
-<!-- Hero Section -->
-<section class="bg-gradient-to-r from-blue-50 to-indigo-50 py-5 mb-5">
-  <div class="container">
-    <div class="row align-items-center">
-      <div class="col-lg-8 mx-auto text-center">
-        <h1 class="display-4 fw-bold text-primary mb-3">Our Book Collection</h1>
-        <p class="lead text-muted mb-4">Discover knowledge that transforms careers and enriches minds</p>
-        <div class="d-flex justify-content-center gap-4 text-sm">
-          <div class="d-flex align-items-center">
-            <i class="bi bi-book-fill text-primary me-2"></i>
-            <span>{{ books|length }}+ Books Available</span>
-          </div>
-          <div class="d-flex align-items-center">
-            <i class="bi bi-star-fill text-warning me-2"></i>
-            <span>Premium Quality Content</span>
-          </div>
-          <div class="d-flex align-items-center">
-            <i class="bi bi-truck text-success me-2"></i>
-            <span>Fast Delivery</span>
-          </div>
+<!-- Modern Hero Section -->
+<section class="modern-hero-section position-relative overflow-hidden py-5 mb-5">
+  <!-- Background Elements -->
+  <div class="hero-bg-pattern"></div>
+  <div class="hero-floating-shapes">
+    <div class="floating-shape shape-1"></div>
+    <div class="floating-shape shape-2"></div>
+    <div class="floating-shape shape-3"></div>
+  </div>
+  
+  <div class="container position-relative">
+    <div class="row align-items-center justify-content-center">
+      <div class="col-lg-10 col-xl-8 text-center">
+        <!-- Main Title -->
+        <div class="hero-badge mb-3">
+          <span class="badge-text">
+            <i class="bi bi-bookmark-star me-2"></i>
+            Professional Library
+          </span>
+        </div>
+        
+        <h1 class="hero-main-title mb-4">
+          Our <span class="text-gradient">Book Collection</span>
+        </h1>
+        
+        <p class="hero-description mb-5">
+          Discover knowledge that transforms careers and enriches minds with our carefully curated collection of professional books
+        </p>
+        
+        <!-- CTA Button -->
+        <div class="hero-cta">
+          <a href="#books-section" class="btn btn-hero-primary btn-lg">
+            <i class="bi bi-arrow-down-circle me-2"></i>
+            Explore Collection
+          </a>
         </div>
       </div>
     </div>
@@ -30,99 +45,100 @@
 
 <div class="container">
 <!-- Advanced Search & Filter Section -->
-<section class="mb-5">
-  <div class="card border-0 shadow-sm bg-white">
-    <div class="card-header bg-transparent border-0 py-4">
-      <div class="row align-items-center">
-        <div class="col">
-          <h3 class="h5 mb-0 fw-semibold">
+<section class="mb-4">
+  <div class="card border-0 shadow-sm bg-white search-filter-card">
+    <div class="card-header bg-transparent border-0 py-3">
+      <div class="d-flex align-items-center justify-content-between">
+        <div>
+          <h3 class="h6 mb-1 fw-semibold">
             <i class="bi bi-funnel me-2 text-primary"></i>
             Advanced Search & Filters
           </h3>
-          <p class="text-muted small mb-0">Find exactly what you're looking for</p>
+          <p class="text-muted small mb-0 d-none d-md-block">Find exactly what you're looking for</p>
         </div>
-        <div class="col-auto">
-          <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse">
-            <i class="bi bi-chevron-down"></i>
-          </button>
-        </div>
+        <button class="btn btn-outline-secondary btn-sm filter-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse">
+          <i class="bi bi-chevron-down"></i>
+        </button>
       </div>
     </div>
 
-    <div class="collapse show" id="filterCollapse">
+    <div class="collapse" id="filterCollapse">
       <div class="card-body pt-0">
-        <form method="GET" class="row g-3">
+        <form method="GET" class="mobile-filter-form">
 
-          <!-- Book Title -->
-          <div class="col-lg-3 col-md-6">
-            <label class="form-label small fw-medium text-secondary">Book Title</label>
-            <div class="input-group">
-              <span class="input-group-text bg-light border-end-0">
-                <i class="bi bi-search text-muted"></i>
-              </span>
-              <input type="text" name="title" class="form-control border-start-0" placeholder="Enter book title..." value="{{ request.args.get('title', '') }}">
+          <!-- Mobile-Optimized Form Fields -->
+          <div class="row g-3">
+            <!-- Book Title -->
+            <div class="col-12 col-md-6 col-lg-3">
+              <label class="form-label small fw-medium text-secondary">Book Title</label>
+              <div class="input-group input-group-mobile">
+                <span class="input-group-text bg-light border-end-0">
+                  <i class="bi bi-search text-muted"></i>
+                </span>
+                <input type="text" name="title" class="form-control border-start-0" placeholder="Enter book title..." value="{{ request.args.get('title', '') }}">
+              </div>
             </div>
-          </div>
 
-          <!-- Author -->
-          <div class="col-lg-3 col-md-6">
-            <label class="form-label small fw-medium text-secondary">Author</label>
-            <div class="input-group">
-              <span class="input-group-text bg-light border-end-0">
-                <i class="bi bi-person text-muted"></i>
-              </span>
-              <input type="text" name="author" class="form-control border-start-0" placeholder="Author name..." value="{{ request.args.get('author', '') }}">
+            <!-- Author -->
+            <div class="col-12 col-md-6 col-lg-3">
+              <label class="form-label small fw-medium text-secondary">Author</label>
+              <div class="input-group input-group-mobile">
+                <span class="input-group-text bg-light border-end-0">
+                  <i class="bi bi-person text-muted"></i>
+                </span>
+                <input type="text" name="author" class="form-control border-start-0" placeholder="Author name..." value="{{ request.args.get('author', '') }}">
+              </div>
             </div>
-          </div>
 
-          <!-- Category -->
-          <div class="col-lg-3 col-md-6">
-            <label class="form-label small fw-medium text-secondary">Category</label>
-            <div class="input-group">
-              <span class="input-group-text bg-light border-end-0">
-                <i class="bi bi-bookmarks text-muted"></i>
-              </span>
-              <select name="category" class="form-select border-start-0">
-                <option value="">All Categories</option>
-                {% for cat in categories %}
-                  <option value="{{ cat }}" {% if request.args.get('category') == cat %}selected{% endif %}>{{ cat }}</option>
-                {% endfor %}
-              </select>
+            <!-- Category -->
+            <div class="col-12 col-md-6 col-lg-3">
+              <label class="form-label small fw-medium text-secondary">Category</label>
+              <div class="input-group input-group-mobile">
+                <span class="input-group-text bg-light border-end-0">
+                  <i class="bi bi-bookmarks text-muted"></i>
+                </span>
+                <select name="category" class="form-select border-start-0">
+                  <option value="">All Categories</option>
+                  {% for cat in categories %}
+                    <option value="{{ cat }}" {% if request.args.get('category') == cat %}selected{% endif %}>{{ cat }}</option>
+                  {% endfor %}
+                </select>
+              </div>
             </div>
-          </div>
 
-          <!-- Subject -->
-          <div class="col-lg-3 col-md-6">
-            <label class="form-label small fw-medium text-secondary">Subject</label>
-            <div class="input-group">
-              <span class="input-group-text bg-light border-end-0">
-                <i class="bi bi-journal-bookmark text-muted"></i>
-              </span>
-              <select name="subject" class="form-select border-start-0">
-                <option value="">All Subjects</option>
-                {% for sub in subjects %}
-                  <option value="{{ sub }}" {% if request.args.get('subject') == sub %}selected{% endif %}>{{ sub }}</option>
-                {% endfor %}
-              </select>
+            <!-- Subject -->
+            <div class="col-12 col-md-6 col-lg-3">
+              <label class="form-label small fw-medium text-secondary">Subject</label>
+              <div class="input-group input-group-mobile">
+                <span class="input-group-text bg-light border-end-0">
+                  <i class="bi bi-journal-bookmark text-muted"></i>
+                </span>
+                <select name="subject" class="form-select border-start-0">
+                  <option value="">All Subjects</option>
+                  {% for sub in subjects %}
+                    <option value="{{ sub }}" {% if request.args.get('subject') == sub %}selected{% endif %}>{{ sub }}</option>
+                  {% endfor %}
+                </select>
+              </div>
             </div>
-          </div>
 
-          <!-- Price Range -->
-          <div class="col-lg-3 col-md-6">
-            <label class="form-label small fw-medium text-secondary">Price Range ($)</label>
-            <div class="d-flex gap-2">
-              <input type="number" name="min_price" class="form-control" placeholder="Min" step="0.01" min="0" value="{{ request.args.get('min_price', '') }}">
-              <input type="number" name="max_price" class="form-control" placeholder="Max" step="0.01" min="0" value="{{ request.args.get('max_price', '') }}">
+            <!-- Price Range -->
+            <div class="col-12 col-md-6 col-lg-3">
+              <label class="form-label small fw-medium text-secondary">Price Range (₹)</label>
+              <div class="d-flex gap-2">
+                <input type="number" name="min_price" class="form-control form-control-mobile" placeholder="Min" step="0.01" min="0" value="{{ request.args.get('min_price', '') }}">
+                <input type="number" name="max_price" class="form-control form-control-mobile" placeholder="Max" step="0.01" min="0" value="{{ request.args.get('max_price', '') }}">
+              </div>
             </div>
-          </div>
 
-          <!-- Submit Button -->
-          <div class="col-lg-2 col-md-12">
-            <label class="form-label small fw-medium text-secondary d-block">&nbsp;</label>
-            <div class="d-grid gap-2">
-              <button type="submit" class="btn btn-primary">
-                <i class="bi bi-funnel me-1"></i>Apply Filters
-              </button>
+            <!-- Submit Button -->
+            <div class="col-12 col-md-6 col-lg-3">
+              <label class="form-label small fw-medium text-secondary d-block d-lg-none">&nbsp;</label>
+              <div class="d-grid">
+                <button type="submit" class="btn btn-primary btn-mobile">
+                  <i class="bi bi-funnel me-1"></i>Apply Filters
+                </button>
+              </div>
             </div>
           </div>
 
@@ -148,143 +164,325 @@
 </section>
 
 
-  <!-- Results Summary -->
-  <section class="mb-4">
-    <div class="d-flex justify-content-between align-items-center">
-      <div>
-        <h2 class="h4 mb-1">Book Collection</h2>
-        <p class="text-muted mb-0">
-          {% if books %}
-            Showing {{ books|length }} book{{ 's' if books|length != 1 else '' }}
-          {% else %}
-            No books found
-          {% endif %}
-        </p>
-      </div>
-      <div class="d-flex gap-2">
-        <div class="dropdown">
-          <button class="btn btn-outline-secondary dropdown-toggle btn-sm" type="button" data-bs-toggle="dropdown">
-            <i class="bi bi-sort-down me-1"></i>Sort By
-          </button>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="#">Title A-Z</a></li>
-            <li><a class="dropdown-item" href="#">Author A-Z</a></li>
-            <li><a class="dropdown-item" href="#">Category</a></li>
-            <li><a class="dropdown-item" href="#">Newest First</a></li>
-          </ul>
+  <!-- Category Quick Navigation - Hidden for cleaner look -->
+  {% if false %}
+  <section class="mb-4 d-none">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body py-3">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <h6 class="mb-0 fw-semibold text-secondary">
+            <i class="bi bi-compass me-2"></i>Quick Category Navigation
+          </h6>
+          <small class="text-muted">{{ books_by_category|length }} categories</small>
         </div>
-        <div class="btn-group" role="group">
-          <input type="radio" class="btn-check" name="view" id="grid-view" checked>
-          <label class="btn btn-outline-secondary btn-sm" for="grid-view">
-            <i class="bi bi-grid-3x3-gap"></i>
-          </label>
-          <input type="radio" class="btn-check" name="view" id="list-view">
-          <label class="btn btn-outline-secondary btn-sm" for="list-view">
-            <i class="bi bi-list"></i>
-          </label>
+        <div class="d-flex flex-wrap gap-2">
+          {% for category in books_by_category.keys() %}
+          <a href="#category-{{ loop.index }}" class="btn btn-outline-primary btn-sm category-nav-btn">
+            <i class="bi bi-bookmark me-1"></i>{{ category }}
+            <span class="badge bg-primary ms-1">{{ books_by_category[category]|length }}</span>
+          </a>
+          {% endfor %}
         </div>
       </div>
     </div>
   </section>
+  {% endif %}
+
+  
+      
+      <!-- View Controls -->
+     
+    </div>
+  </section>
 
 <!-- Book Collection Section -->
-<section class="container py-5">
+<section id="books-section" class="container py-5">
   {% if books %}
-  <div class="row g-4" id="books-container">
-    {% for book in books %}
-    <div class="col-xl-3 col-lg-4 col-md-6">
-      <div class="card h-100 border-0 shadow-sm hover-shadow transition-all rounded-4">
+    
+    {% if view_type == 'category' and books_by_category %}
+      <!-- Category View -->
+      {% for category, category_books in books_by_category.items() %}
+      <div class="mb-5" id="category-{{ loop.index }}">
+        <!-- Category Header -->
+        <div class="d-flex align-items-center justify-content-between mb-4">
+          <div class="d-flex align-items-center">
+            <h3 class="h4 fw-bold text-primary mb-0">
+              <i class="bi bi-bookmarks me-2"></i>{{ category }}
+            </h3>
+            <span class="badge bg-light text-dark ms-3">{{ category_books|length }} book{{ 's' if category_books|length != 1 else '' }}</span>
+          </div>
+          <a href="{{ url_for('books', category=category, view='list') }}" class="btn btn-outline-primary btn-sm">
+            <i class="bi bi-arrow-right me-1"></i>View All
+          </a>
+        </div>
         
-        <!-- Book Image -->
-        <div class="position-relative overflow-hidden rounded-top" style="height: 280px;">
-          {% if book.images %}
-          <img src="{{ url_for('static', filename='uploads/' + book.images[0].image_filename) }}"
-               class="w-100 h-100 object-fit-cover"
-               alt="{{ book.title }}"
-               style="transition: transform 0.3s ease;"
-               onmouseover="this.style.transform='scale(1.05)'"
-               onmouseout="this.style.transform='scale(1)'">
-          {% else %}
-          <div class="w-100 h-100 bg-light d-flex align-items-center justify-content-center">
-            <i class="bi bi-book text-muted" style="font-size: 3rem;"></i>
-          </div>
-          {% endif %}
+        <!-- Category Books -->
+        <div class="row g-4" id="books-container-{{ loop.index }}">
+          {% for book in category_books %}
+          <div class="col-xl-3 col-lg-4 col-md-6">
+            <div class="card h-100 border-0 shadow-sm hover-shadow transition-all rounded-3 book-card">
+              
+              <!-- Book Image -->
+              <div class="position-relative overflow-hidden rounded-top" style="height: 280px;">
+                <a href="{{ url_for('book_detail', book_id=book.id) }}" class="text-decoration-none">
+                  {% if book.images %}
+                  <img src="{{ url_for('static', filename='uploads/books/' + book.images[0].image_filename) }}"
+                       class="w-100 h-100"
+                       alt="{{ book.title }}"
+                       style="transition: transform 0.3s ease; object-fit: contain;"
+                       onmouseover="this.style.transform='scale(1.05)'"
+                       onmouseout="this.style.transform='scale(1)'">
+                  {% else %}
+                  <div class="w-100 h-100 bg-light d-flex align-items-center justify-content-center">
+                    <i class="bi bi-book text-muted" style="font-size: 3rem;"></i>
+                  </div>
+                  {% endif %}
+                </a>
 
-          <!-- Category Badge -->
-          <span class="badge bg-primary position-absolute top-0 start-0 m-2 rounded-pill px-3 py-2">
-            {{ book.category or 'Uncategorized' }}
-          </span>
+                <!-- Subject Badge -->
+                {% if book.subject %}
+                <span class="badge bg-secondary position-absolute top-0 start-0 m-2 rounded-pill px-3 py-2">
+                  {{ book.subject }}
+                </span>
+                {% endif %}
 
-          <!-- Quick Actions -->
-          <div class="position-absolute top-0 end-0 m-2 d-flex flex-column gap-1">
-            <button class="btn btn-light btn-sm rounded-circle shadow-sm" title="Add to Wishlist">
-              <i class="bi bi-heart text-danger"></i>
-            </button>
-            <button class="btn btn-light btn-sm rounded-circle shadow-sm" title="Quick View">
-              <i class="bi bi-eye text-primary"></i>
-            </button>
+                <!-- Quick Actions -->
+                <div class="position-absolute top-0 end-0 m-2 d-flex flex-column gap-1">
+                  <button class="btn btn-light btn-sm rounded-circle shadow-sm" title="Add to Wishlist">
+                    <i class="bi bi-heart text-danger"></i>
+                  </button>
+                  <button class="btn btn-light btn-sm rounded-circle shadow-sm" title="Quick View">
+                    <i class="bi bi-eye text-primary"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Book Details -->
+              <div class="card-body d-flex flex-column p-3">
+                <!-- Book Title -->
+                <h6 class="card-title text-dark fw-semibold mb-2 book-title" style="line-height: 1.3; height: 2.6em; overflow: hidden;">
+                  <a href="{{ url_for('book_detail', book_id=book.id) }}" class="text-decoration-none text-dark">
+                    {{ book.title }}
+                  </a>
+                </h6>
+
+                <!-- Author -->
+                <div class="mb-2 text-muted small author-info">
+                  <i class="bi bi-person-fill me-1 text-primary"></i>{{ book.author }}
+                </div>
+                
+                <!-- Rating Display -->
+                <div class="mb-2 d-flex align-items-center">
+                  <div class="text-warning small me-1">
+                    {% for i in range(1, 6) %}
+                      {% if i <= book.avg_rating %}
+                        <i class="bi bi-star-fill"></i>
+                      {% elif i <= book.avg_rating + 0.5 %}
+                        <i class="bi bi-star-half"></i>
+                      {% else %}
+                        <i class="bi bi-star"></i>
+                      {% endif %}
+                    {% endfor %}
+                  </div>
+                  <span class="text-muted small">
+                    {{ "%.1f"|format(book.avg_rating) }} ({{ book.review_count - 1}})
+                  </span>
+                </div>
+
+                <!-- Price Section -->
+                <div class="price-section mb-3">
+                  {% if book.original_price %}
+                  <div class="d-flex align-items-center gap-2 mb-1">
+                    <span class="text-muted small text-decoration-line-through">₹{{ "%.2f"|format(book.original_price) }}</span>
+                    {% if book.original_price and book.original_price > book.price %}
+                    {% set discount = ((book.original_price - book.price) / book.original_price) * 100 %}
+                    <span class="badge bg-danger small">{{ discount | round(0, 'floor') }}% OFF</span>
+                    {% endif %}
+                  </div>
+                  {% endif %}
+                  
+                  <div class="d-flex align-items-center">
+                    <span class="h6 fw-bold text-success mb-0">₹{{ "%.2f"|format(book.price) }}</span>
+                  </div>
+                </div>
+
+                <!-- Stock Warning -->
+                {% if book.quantity < 5 %}
+                <div class="alert alert-warning py-1 px-2 small mb-2">
+                  <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                  Only {{ book.quantity }} left in stock!
+                </div>
+                {% endif %}
+
+                <!-- Description -->
+                <p class="card-text small text-secondary flex-grow-1 mb-3" style="line-height: 1.4; height: 3em; overflow: hidden;">
+                  {{ book.description | truncate(60, true) }}
+                </p>
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="card-footer bg-light border-0 p-3">
+                <div class="d-flex flex-column gap-2">
+                  <!-- Primary Action -->
+                  <a href="{{ url_for('book_detail', book_id=book.id) }}" class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-eye me-1"></i>VIEW DETAILS
+                  </a>
+                  
+                  <!-- Secondary Actions -->
+                  <div class="d-flex gap-2">
+                    <a href="{{ url_for('buy_now', book_id=book.id) }}" class="btn btn-success btn-sm flex-fill">
+                      <i class="bi bi-lightning-fill me-1"></i>BUY
+                    </a>
+                    <a href="{{ url_for('add_to_cart', book_id=book.id) }}" class="btn btn-outline-success btn-sm flex-fill">
+                      <i class="bi bi-cart-plus me-1"></i>CART
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+            </div>
           </div>
+          {% endfor %}
         </div>
-
-        <!-- Book Details -->
-        <div class="card-body d-flex flex-column p-4">
-          <h5 class="card-title text-dark fw-semibold mb-2" style="line-height: 1.3;">
-            {{ book.title }}
-          </h5>
-
-          <div class="mb-2 text-muted small">
-            <i class="bi bi-person me-1"></i>{{ book.author }}
-          </div>
-          <div class="mb-2 text-muted small">
-            <i class="bi bi-bookmark me-1"></i>{{ book.subject or 'N/A' }}
-          </div>
-
-          {% if book.original_price %}
-          <div class="small mb-1 text-muted">
-            <i class="fw-semibold text-dark"></i>Original:
-            <span class="text-decoration-line-through">₹{{ "%.2f"|format(book.original_price) }}</span>
-          </div>
-          {% endif %}
-
-          <div class="mb-2 d-flex align-items-center">
-            <i class="bi bi-tag-fill text-success me-1"></i>
-            <span class="fw-semibold text-dark">Now:</span>
-            <span class="fw-bold text-success ms-1 me-2">₹{{ "%.2f"|format(book.price) }}</span>
-
-            {% if book.original_price and book.original_price > book.price %}
-            {% set discount = ((book.original_price - book.price) / book.original_price) * 100 %}
-            <span class="badge bg-danger small fw-medium">{{ discount | round(0, 'floor') }}% OFF</span>
-            {% endif %}
-          </div>
-
-          {% if book.quantity < 5 %}
-          <div class="text-danger small mb-2">
-            <i class="bi bi-exclamation-triangle me-1"></i>
-            Only {{ book.quantity }} left!
-          </div>
-          {% endif %}
-
-          <p class="card-text small text-secondary flex-grow-1" style="line-height: 1.4;">
-            {{ book.description | truncate(100, true) }}
-          </p>
-        </div>
-
-        <!-- Buttons -->
-        <div class="card-footer bg-transparent border-0 p-4 pt-0">
-          <div class="d-grid gap-2">
-            <a href="{{ url_for('buy_now', book_id=book.id) }}" class="btn btn-success fw-medium">
-              <i class="bi bi-cart-check me-2"></i>Buy Now
-            </a>
-            <a href="{{ url_for('add_to_cart', book_id=book.id) }}" class="btn btn-outline-primary fw-medium">
-              <i class="bi bi-plus-circle me-2"></i>Add to Cart
-            </a>
-          </div>
-        </div>
-
+        
+        {% if not loop.last %}
+        <hr class="my-5">
+        {% endif %}
       </div>
-    </div>
-    {% endfor %}
-  </div>
+      {% endfor %}
+      
+    {% else %}
+      <!-- List View -->
+      <div class="row g-4" id="books-container">
+        {% for book in books %}
+        <div class="col-xl-3 col-lg-4 col-md-6">
+          <div class="card h-100 border-0 shadow-sm hover-shadow transition-all rounded-3 book-card">
+            
+            <!-- Book Image -->
+            <div class="position-relative overflow-hidden rounded-top" style="height: 280px;">
+              <a href="{{ url_for('book_detail', book_id=book.id) }}" class="text-decoration-none">
+                {% if book.images %}
+                <img src="{{ url_for('static', filename='uploads/books/' + book.images[0].image_filename) }}"
+                     class="w-100 h-100"
+                     alt="{{ book.title }}"
+                     style="transition: transform 0.3s ease; object-fit: contain;"
+                     onmouseover="this.style.transform='scale(1.05)'"
+                     onmouseout="this.style.transform='scale(1)'">
+                {% else %}
+                <div class="w-100 h-100 bg-light d-flex align-items-center justify-content-center">
+                  <i class="bi bi-book text-muted" style="font-size: 3rem;"></i>
+                </div>
+                {% endif %}
+              </a>
+
+              <!-- Category Badge -->
+              <span class="badge bg-primary position-absolute top-0 start-0 m-2 rounded-pill px-3 py-2">
+                {{ book.category or 'Uncategorized' }}
+              </span>
+
+              <!-- Quick Actions -->
+              <div class="position-absolute top-0 end-0 m-2 d-flex flex-column gap-1">
+                <button class="btn btn-light btn-sm rounded-circle shadow-sm" title="Add to Wishlist">
+                  <i class="bi bi-heart text-danger"></i>
+                </button>
+                <button class="btn btn-light btn-sm rounded-circle shadow-sm" title="Quick View">
+                  <i class="bi bi-eye text-primary"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Book Details -->
+            <div class="card-body d-flex flex-column p-3">
+              <!-- Book Title -->
+              <h6 class="card-title text-dark fw-semibold mb-2 book-title" style="line-height: 1.3; height: 2.6em; overflow: hidden;">
+                <a href="{{ url_for('book_detail', book_id=book.id) }}" class="text-decoration-none text-dark">
+                  {{ book.title }}
+                </a>
+              </h6>
+
+              <!-- Author & Subject -->
+              <div class="mb-2 text-muted small author-info">
+                <i class="bi bi-person-fill me-1 text-primary"></i>{{ book.author }}
+              </div>
+              <div class="mb-2 text-muted small">
+                <i class="bi bi-bookmark-fill me-1 text-secondary"></i>{{ book.subject or 'N/A' }}
+              </div>
+              
+              <!-- Rating Display -->
+               <div class="mb-2 d-flex align-items-center">
+                 <div class="text-warning small me-1">
+                   {% for i in range(1, 6) %}
+                     {% if i <= book.avg_rating %}
+                       <i class="bi bi-star-fill"></i>
+                     {% elif i <= book.avg_rating + 0.5 %}
+                       <i class="bi bi-star-half"></i>
+                     {% else %}
+                       <i class="bi bi-star"></i>
+                     {% endif %}
+                   {% endfor %}
+                 </div>
+                 <span class="text-muted small">
+                   {{ "%.1f"|format(book.avg_rating) }} ({{ book.review_count }})
+                 </span>
+               </div>
+
+              <!-- Price Section -->
+              <div class="price-section mb-3">
+                {% if book.original_price %}
+                <div class="d-flex align-items-center gap-2 mb-1">
+                  <span class="text-muted small text-decoration-line-through">₹{{ "%.2f"|format(book.original_price) }}</span>
+                  {% if book.original_price and book.original_price > book.price %}
+                  {% set discount = ((book.original_price - book.price) / book.original_price) * 100 %}
+                  <span class="badge bg-danger small">{{ discount | round(0, 'floor') }}% OFF</span>
+                  {% endif %}
+                </div>
+                {% endif %}
+                
+                <div class="d-flex align-items-center">
+                  <span class="h6 fw-bold text-success mb-0">₹{{ "%.2f"|format(book.price) }}</span>
+                </div>
+              </div>
+
+              <!-- Stock Warning -->
+              {% if book.quantity < 5 %}
+              <div class="alert alert-warning py-1 px-2 small mb-2">
+                <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                Only {{ book.quantity }} left in stock!
+              </div>
+              {% endif %}
+
+              <!-- Description -->
+              <p class="card-text small text-secondary flex-grow-1 mb-3" style="line-height: 1.4; height: 3em; overflow: hidden;">
+                {{ book.description | truncate(80, true) }}
+              </p>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="card-footer bg-light border-0 p-3">
+              <div class="d-flex flex-column gap-2">
+                <!-- Primary Action -->
+                <a href="{{ url_for('book_detail', book_id=book.id) }}" class="btn btn-outline-primary btn-sm">
+                  <i class="bi bi-eye me-1"></i>VIEW DETAILS
+                </a>
+                
+                <!-- Secondary Actions -->
+                <div class="d-flex gap-2">
+                  <a href="{{ url_for('buy_now', book_id=book.id) }}" class="btn btn-success btn-sm flex-fill">
+                    <i class="bi bi-lightning-fill me-1"></i>BUY
+                  </a>
+                  <a href="{{ url_for('add_to_cart', book_id=book.id) }}" class="btn btn-outline-success btn-sm flex-fill">
+                    <i class="bi bi-cart-plus me-1"></i>CART
+                  </a>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+    
   {% else %}
     <!-- Empty State -->
     <div class="text-center py-5">
@@ -361,6 +559,611 @@
   color: white;
 }
 
+/* Category navigation styles */
+.category-nav-btn {
+  transition: all 0.3s ease;
+  border-radius: 20px !important;
+}
+
+.category-nav-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.category-nav-btn .badge {
+  font-size: 0.7em;
+}
+
+/* Category section highlight */
+.category-highlight {
+  background-color: #f8f9fa !important;
+  border-radius: 10px;
+  padding: 20px;
+  margin: -20px;
+}
+
+/* Results Summary Section */
+.results-summary-container {
+  background: white;
+  border-radius: 15px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.results-header {
+  text-align: center;
+}
+
+.results-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+}
+
+.results-stats {
+  font-size: 0.95rem;
+  margin-bottom: 0;
+}
+
+.view-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+}
+
+.view-type-controls {
+  width: 100%;
+  max-width: 300px;
+}
+
+.btn-view {
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.btn-view:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.layout-controls .btn-group {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.layout-controls .btn {
+  border-radius: 0;
+  padding: 0.5rem 0.75rem;
+}
+
+/* Active view button */
+.btn.active, .btn-primary {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+  color: white;
+}
+
+/* Desktop Layout */
+@media (min-width: 768px) {
+  .results-summary-container {
+    padding: 2rem;
+  }
+  
+  .results-header {
+    text-align: left;
+    margin-bottom: 1.5rem;
+  }
+  
+  .results-title {
+    font-size: 1.75rem;
+  }
+  
+  .view-controls {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .view-type-controls {
+    width: auto;
+    max-width: none;
+  }
+  
+  .btn-view {
+    font-size: 0.95rem;
+    padding: 0.7rem 1.2rem;
+  }
+}
+
+/* Enhanced Book Card Styles */
+.book-title {
+  font-size: 0.95rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.author-info {
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.price-section {
+  border-left: 3px solid #28a745;
+  padding-left: 0.75rem;
+  background: rgba(40, 167, 69, 0.05);
+  border-radius: 0 4px 4px 0;
+  margin-left: -0.75rem;
+  padding-right: 0.75rem;
+}
+
+/* Card Footer Styling */
+.card-footer.bg-light {
+  background-color: #f8f9fa !important;
+  border-top: 1px solid #e9ecef;
+}
+
+/* Button Enhancements */
+.btn-sm {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.btn-sm:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.btn-success {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  border: none;
+}
+
+.btn-success:hover {
+  background: linear-gradient(135deg, #218838 0%, #1ea085 100%);
+}
+
+.btn-outline-success:hover {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  border-color: #28a745;
+}
+
+.btn-outline-primary {
+  border-width: 2px;
+  font-weight: 600;
+}
+
+.btn-outline-primary:hover {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+  transform: translateY(-2px);
+}
+
+/* Card Hover Effects */
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+/* Alert Styling */
+.alert-warning {
+  background-color: #fff3cd;
+  border-color: #ffeaa7;
+  color: #856404;
+  border-radius: 6px;
+  font-size: 0.8rem;
+}
+
+/* Icon Enhancements */
+.bi-person-fill, .bi-bookmark-fill {
+  font-size: 0.9rem;
+}
+
+.bi-lightning-fill {
+  color: #ffc107;
+}
+
+.bi-cart-plus {
+  font-size: 0.9rem;
+}
+
+/* Book Card Enhancements */
+.book-card {
+  border: 1px solid rgba(0,0,0,0.08);
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.book-card:hover {
+  border-color: rgba(13, 110, 253, 0.3);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+}
+
+/* Image Container */
+.book-card .position-relative {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+/* Badge Improvements */
+.badge.bg-secondary {
+  background: linear-gradient(135deg, #6c757d 0%, #495057 100%) !important;
+  font-size: 0.7rem;
+  font-weight: 500;
+}
+
+.badge.bg-danger {
+  background: linear-gradient(135deg, #dc3545 0%, #c82333 100%) !important;
+  font-size: 0.7rem;
+  font-weight: 600;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+/* Quick Action Buttons */
+.btn.rounded-circle {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10px);
+  background: rgba(255,255,255,0.9) !important;
+  border: 1px solid rgba(0,0,0,0.1);
+}
+
+.btn.rounded-circle:hover {
+  background: rgba(255,255,255,1) !important;
+  transform: scale(1.1);
+}
+
+/* Modern Hero Section */
+.modern-hero-section {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+}
+
+.hero-bg-pattern {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 0%, transparent 50%),
+    radial-gradient(circle at 40% 80%, rgba(255,255,255,0.1) 0%, transparent 50%);
+  animation: float 20s ease-in-out infinite;
+}
+
+.hero-floating-shapes {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+}
+
+.floating-shape {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  animation: floatShape 15s ease-in-out infinite;
+}
+
+.shape-1 {
+  width: 100px;
+  height: 100px;
+  top: 20%;
+  left: 10%;
+  animation-delay: 0s;
+}
+
+.shape-2 {
+  width: 150px;
+  height: 150px;
+  top: 60%;
+  right: 15%;
+  animation-delay: 5s;
+}
+
+.shape-3 {
+  width: 80px;
+  height: 80px;
+  bottom: 20%;
+  left: 70%;
+  animation-delay: 10s;
+}
+
+@keyframes floatShape {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(180deg); }
+}
+
+/* Hero Content */
+.hero-badge {
+  display: inline-block;
+  margin-bottom: 1rem;
+}
+
+.badge-text {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 0.5rem 1.5rem;
+  border-radius: 50px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: white;
+  display: inline-block;
+}
+
+.hero-main-title {
+  font-size: 3.5rem;
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 1.5rem;
+}
+
+.text-gradient {
+  background: linear-gradient(45deg, #ffd700, #ffed4e);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-description {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  opacity: 0.9;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Removed stats cards styles - no longer needed */
+
+/* Hero CTA Button */
+.btn-hero-primary {
+  background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+  border: none;
+  border-radius: 50px;
+  padding: 1rem 2.5rem;
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: white;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
+}
+
+.btn-hero-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 40px rgba(255, 107, 107, 0.4);
+  color: white;
+}
+
+/* Mobile Search Filter Improvements */
+.search-filter-card {
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.filter-toggle {
+  border-radius: 20px;
+  padding: 0.25rem 0.75rem;
+}
+
+.mobile-filter-form {
+  padding: 0.5rem 0;
+}
+
+.input-group-mobile {
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
+}
+
+.input-group-mobile.focused {
+  box-shadow: 0 4px 12px rgba(13, 110, 253, 0.15);
+  transform: translateY(-1px);
+}
+
+.filter-toggle.active {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+  color: white;
+}
+
+.form-control-mobile {
+  border-radius: 8px;
+  padding: 0.6rem 0.75rem;
+  font-size: 0.9rem;
+}
+
+.btn-mobile {
+  border-radius: 10px;
+  padding: 0.6rem 1rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+/* Responsive Improvements */
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 1.6rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem !important;
+  }
+  
+  .stat-card {
+    padding: 0.75rem 0.5rem !important;
+  }
+  
+  .stat-number {
+    font-size: 0.8rem;
+  }
+  
+  .stat-label {
+    font-size: 0.7rem;
+  }
+  
+  .book-card {
+    margin-bottom: 1rem;
+  }
+  
+  .price-section {
+    margin-left: -0.5rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+  
+  .search-filter-card .card-header {
+    padding: 1rem 1rem 0.5rem 1rem;
+  }
+  
+  .mobile-filter-form {
+    padding: 0.5rem 0 1rem 0;
+  }
+  
+  .form-label {
+    margin-bottom: 0.25rem;
+    font-size: 0.85rem;
+  }
+  
+  .input-group-text {
+    padding: 0.5rem 0.75rem;
+  }
+  
+  .form-control, .form-select {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .modern-hero-section {
+    min-height: 40vh;
+    padding: 3rem 0;
+  }
+  
+  .hero-main-title {
+    font-size: 2.2rem;
+  }
+  
+  .hero-description {
+    font-size: 1rem;
+    margin-bottom: 2rem !important;
+  }
+  
+  .btn-hero-primary {
+    padding: 0.8rem 2rem;
+    font-size: 1rem;
+  }
+  
+  /* Mobile Results Summary */
+  .results-summary-container {
+    padding: 1rem;
+    margin: 0 -0.25rem;
+    border-radius: 12px;
+  }
+  
+  .results-title {
+    font-size: 1.3rem;
+  }
+  
+  .results-stats {
+    font-size: 0.85rem;
+  }
+  
+  .btn-view {
+    font-size: 0.85rem;
+    padding: 0.5rem 0.8rem;
+  }
+  
+  .view-controls {
+    gap: 0.75rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .modern-hero-section {
+    min-height: 35vh;
+    padding: 2rem 0;
+  }
+  
+  .hero-main-title {
+    font-size: 1.8rem;
+    margin-bottom: 1rem !important;
+  }
+  
+  .hero-description {
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem !important;
+  }
+  
+  .badge-text {
+    padding: 0.4rem 1rem;
+    font-size: 0.8rem;
+  }
+  
+  .btn-hero-primary {
+    padding: 0.7rem 1.5rem;
+    font-size: 0.9rem;
+  }
+  
+  .floating-shape {
+    display: none; /* Hide floating shapes on very small screens */
+  }
+}
+
+/* Responsive Hero Styles */
+@media (min-width: 992px) {
+  .hero-main-title {
+    font-size: 4rem;
+  }
+  
+  .hero-description {
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 991px) {
+  .hero-main-title {
+    font-size: 2.8rem;
+  }
+  
+  .hero-description {
+    font-size: 1.1rem;
+  }
+}
+
 @media (max-width: 768px) {
   .display-4 {
     font-size: 2rem;
@@ -376,23 +1179,53 @@
 <!-- JavaScript for Enhanced Functionality -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+  // Category navigation smooth scrolling
+  const categoryNavBtns = document.querySelectorAll('.category-nav-btn');
+  categoryNavBtns.forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      const targetId = this.getAttribute('href');
+      const targetElement = document.querySelector(targetId);
+      if (targetElement) {
+        targetElement.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+        
+        // Add highlight effect
+        targetElement.style.transition = 'background-color 0.3s ease';
+        targetElement.style.backgroundColor = '#f8f9fa';
+        setTimeout(() => {
+          targetElement.style.backgroundColor = '';
+        }, 1000);
+      }
+    });
+  });
+
   // View toggle functionality
   const gridView = document.getElementById('grid-view');
-  const listView = document.getElementById('list-view');
-  const booksContainer = document.getElementById('books-container');
+  const listLayout = document.getElementById('list-layout');
+  const booksContainers = document.querySelectorAll('[id^="books-container"]');
   
-  if (listView) {
-    listView.addEventListener('change', function() {
+  if (listLayout) {
+    listLayout.addEventListener('change', function() {
       if (this.checked) {
-        booksContainer.className = 'row g-3';
-        const bookItems = document.querySelectorAll('.book-item');
-        bookItems.forEach(item => {
-          item.className = 'col-12 book-item';
-          const card = item.querySelector('.card');
-          card.classList.add('flex-row');
-          const img = card.querySelector('.card-img-top').parentElement;
-          img.style.width = '200px';
-          img.style.height = 'auto';
+        booksContainers.forEach(container => {
+          container.className = 'row g-3';
+          const bookItems = container.querySelectorAll('.col-xl-3, .col-lg-4, .col-md-6');
+          bookItems.forEach(item => {
+            item.className = 'col-12';
+            const card = item.querySelector('.card');
+            if (card) {
+              card.classList.add('flex-row');
+              const imgContainer = card.querySelector('.position-relative');
+              if (imgContainer) {
+                imgContainer.style.width = '200px';
+                imgContainer.style.height = '150px';
+                imgContainer.style.flexShrink = '0';
+              }
+            }
+          });
         });
       }
     });
@@ -401,31 +1234,100 @@ document.addEventListener('DOMContentLoaded', function() {
   if (gridView) {
     gridView.addEventListener('change', function() {
       if (this.checked) {
-        booksContainer.className = 'row g-4';
-        const bookItems = document.querySelectorAll('.book-item');
-        bookItems.forEach(item => {
-          item.className = 'col-xl-3 col-lg-4 col-md-6 book-item';
-          const card = item.querySelector('.card');
-          card.classList.remove('flex-row');
-          const img = card.querySelector('.card-img-top').parentElement;
-          img.style.width = 'auto';
-          img.style.height = '280px';
+        booksContainers.forEach(container => {
+          container.className = 'row g-4';
+          const bookItems = container.querySelectorAll('.col-12');
+          bookItems.forEach(item => {
+            item.className = 'col-xl-3 col-lg-4 col-md-6';
+            const card = item.querySelector('.card');
+            if (card) {
+              card.classList.remove('flex-row');
+              const imgContainer = card.querySelector('.position-relative');
+              if (imgContainer) {
+                imgContainer.style.width = 'auto';
+                imgContainer.style.height = '280px';
+                imgContainer.style.flexShrink = '';
+              }
+            }
+          });
         });
       }
     });
   }
   
-  // Enhanced filter collapse
-  const filterToggle = document.querySelector('[data-bs-target="#filterCollapse"]');
+  // Enhanced filter collapse with mobile improvements
+  const filterToggle = document.querySelector('.filter-toggle');
   const filterCollapse = document.getElementById('filterCollapse');
   
   if (filterToggle && filterCollapse) {
+    // Auto-collapse on mobile by default
+    if (window.innerWidth <= 768) {
+      filterCollapse.classList.remove('show');
+    }
+    
     filterCollapse.addEventListener('shown.bs.collapse', function() {
       filterToggle.innerHTML = '<i class="bi bi-chevron-up"></i>';
+      filterToggle.classList.add('active');
     });
     
     filterCollapse.addEventListener('hidden.bs.collapse', function() {
       filterToggle.innerHTML = '<i class="bi bi-chevron-down"></i>';
+      filterToggle.classList.remove('active');
+    });
+    
+    // Smooth scroll to filters when opened on mobile
+    filterCollapse.addEventListener('shown.bs.collapse', function() {
+      if (window.innerWidth <= 768) {
+        setTimeout(() => {
+          filterCollapse.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 300);
+      }
+    });
+  }
+  
+  // Mobile form enhancements
+  const mobileInputs = document.querySelectorAll('.form-control-mobile, .input-group-mobile .form-control, .input-group-mobile .form-select');
+  mobileInputs.forEach(input => {
+    input.addEventListener('focus', function() {
+      this.closest('.input-group-mobile')?.classList.add('focused');
+    });
+    
+    input.addEventListener('blur', function() {
+      this.closest('.input-group-mobile')?.classList.remove('focused');
+    });
+  });
+
+  // Auto-update category counts (for dynamic updates)
+  function updateCategoryCounts() {
+    const categoryBtns = document.querySelectorAll('.category-nav-btn');
+    categoryBtns.forEach(btn => {
+      const categoryId = btn.getAttribute('href');
+      const categorySection = document.querySelector(categoryId);
+      if (categorySection) {
+        const bookCount = categorySection.querySelectorAll('.col-xl-3, .col-lg-4, .col-md-6, .col-12').length;
+        const badge = btn.querySelector('.badge');
+        if (badge) {
+          badge.textContent = bookCount;
+        }
+      }
+    });
+  }
+
+  // Call update function on page load
+  updateCategoryCounts();
+  
+  // Smooth scroll for hero CTA button
+  const heroCTA = document.querySelector('.btn-hero-primary');
+  if (heroCTA) {
+    heroCTA.addEventListener('click', function(e) {
+      e.preventDefault();
+      const target = document.querySelector('#books-section');
+      if (target) {
+        target.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
     });
   }
 });

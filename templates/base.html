@@ -68,9 +68,959 @@
     });
   </script>
   
+  
+  <!-- Enhanced Floating Chatbot Widget with Accessibility -->
+  <div class="chatbot-widget" role="complementary" aria-label="Customer Support Chat">
+    <!-- Floating Chat Button -->
+    <button class="chatbot-bubble" id="chatbot-bubble" 
+            role="button" 
+            aria-label="Open customer support chat" 
+            aria-expanded="false"
+            aria-haspopup="dialog"
+            tabindex="0">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M20 2H4C2.9 2 2 2.9 2 4V22L6 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2ZM20 16H5.17L4 17.17V4H20V16Z" fill="currentColor"/>
+        <circle cx="7" cy="9" r="1" fill="currentColor"/>
+        <circle cx="12" cy="9" r="1" fill="currentColor"/>
+        <circle cx="17" cy="9" r="1" fill="currentColor"/>
+      </svg>
+      <span class="sr-only">Chat with Easy2Learning Support</span>
+    </button>
+
+    <!-- Chat Window -->
+    <div class="chatbot-window" id="chatbot-window" 
+         role="dialog" 
+         aria-labelledby="chatbot-title" 
+         aria-describedby="chatbot-description"
+         aria-modal="true"
+         aria-hidden="true"
+         tabindex="-1">
+      <!-- Chat Header -->
+      <div class="chatbot-header">
+        <div class="chatbot-header-info">
+          <img src="/static/icons/logo.png" alt="Easy2Learning logo" class="chatbot-logo">
+          <div>
+            <h6 class="chatbot-title mb-0" id="chatbot-title">Easy2Learning Assistant</h6>
+            <small class="chatbot-status" aria-live="polite">Online • Ready to help</small>
+            <div id="chatbot-description" class="sr-only">Customer support chat for Easy2Learning courses and services</div>
+          </div>
+        </div>
+        <button class="chatbot-close" id="chatbot-close" 
+                aria-label="Close chat window"
+                tabindex="0">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Chat Messages -->
+      <div class="chatbot-messages" id="chatbot-messages" 
+           role="log" 
+           aria-label="Chat conversation"
+           aria-live="polite"
+           aria-relevant="additions">
+        <div class="chatbot-message bot-message" role="article" aria-label="Support message">
+          <div class="message-content">
+            <p>👋 Welcome to Easy2Learning!</p>
+            <p>I'm your virtual assistant.</p>
+            <p>🎯 I can help you with:</p>
+            <ul style="margin: 0; padding-left: 20px;">
+              <li>Course information and enrollment</li>
+              <li>Payment assistance</li>
+              <li>Selling books and courses</li>
+              <li>Technical support</li>
+              <li>General platform questions</li>
+            </ul>
+            <div class="quick-action-buttons" style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
+              <a href="#" class="quick-action-btn courses-btn" style="display: inline-block; background: #3498db; color: white; padding: 10px 15px; border-radius: 25px; text-decoration: none; text-align: center; font-weight: bold;">📚 Courses</a>
+              <a href="#" class="quick-action-btn payment-btn" style="display: inline-block; background: #2ecc71; color: white; padding: 10px 15px; border-radius: 25px; text-decoration: none; text-align: center; font-weight: bold;">💳 Payment</a>
+              <a href="#" class="quick-action-btn sell-books-btn" style="display: inline-block; background: #f39c12; color: white; padding: 10px 15px; border-radius: 25px; text-decoration: none; text-align: center; font-weight: bold;">📖 Sell Books</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chat Input -->
+      <div class="chatbot-input" role="form" aria-label="Send message">
+        <div class="input-group">
+          <label for="chatbot-message-input" class="sr-only">Type your message</label>
+          <input type="text" 
+                 class="form-control chatbot-text-input" 
+                 placeholder="Type your message..." 
+                 id="chatbot-message-input"
+                 aria-label="Message input"
+                 autocomplete="off"
+                 maxlength="500">
+          <button class="btn chatbot-send-btn" 
+                  type="button" 
+                  id="chatbot-send"
+                  aria-label="Send message"
+                  tabindex="0">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M22 2L11 13M22 2L15 22L11 13M22 2L2 9L11 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="sr-only">Send</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Enhanced Easy2Learning Chatbot with Accessibility, Mobile Support & Polish
+    document.addEventListener('DOMContentLoaded', function() {
+      const chatBubble = document.getElementById('chatbot-bubble');
+      const chatWindow = document.getElementById('chatbot-window');
+      const chatClose = document.getElementById('chatbot-close');
+      const chatInput = document.getElementById('chatbot-message-input');
+      const chatSend = document.getElementById('chatbot-send');
+      const chatMessages = document.getElementById('chatbot-messages');
+
+      // Accessibility and Mobile Enhancement Variables
+      let isOpen = false;
+      let touchStartY = 0;
+      let touchStartTime = 0;
+      let debounceTimer = null;
+      let lastFocusedElement = null;
+
+      // Detect mobile device
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      // Enhanced chat window toggle with accessibility
+      function openChat() {
+        if (isOpen) return;
+        
+        isOpen = true;
+        lastFocusedElement = document.activeElement;
+        
+        // Update ARIA attributes
+        chatBubble.setAttribute('aria-expanded', 'true');
+        chatWindow.setAttribute('aria-hidden', 'false');
+        
+        // Lock body scroll on mobile
+        document.body.style.overflow = 'hidden';
+        
+        // Add classes with enhanced animation
+        chatWindow.classList.add('show');
+        chatBubble.classList.add('chatbot-hidden');
+        
+        // Focus management for accessibility
+        setTimeout(() => {
+          chatInput.focus();
+          // Announce to screen readers
+          announceToScreenReader('Chat window opened. Type your message.');
+        }, prefersReducedMotion ? 0 : 300);
+      }
+
+      function closeChat() {
+        if (!isOpen) return;
+        
+        isOpen = false;
+        
+        // Update ARIA attributes
+        chatBubble.setAttribute('aria-expanded', 'false');
+        chatWindow.setAttribute('aria-hidden', 'true');
+        
+        // Restore body scroll
+        document.body.style.overflow = '';
+        
+        // Remove classes
+        chatWindow.classList.remove('show');
+        chatBubble.classList.remove('chatbot-hidden');
+        
+        // Restore focus for accessibility
+        setTimeout(() => {
+          if (lastFocusedElement) {
+            lastFocusedElement.focus();
+          } else {
+            chatBubble.focus();
+          }
+          // Announce to screen readers
+          announceToScreenReader('Chat window closed.');
+        }, prefersReducedMotion ? 0 : 300);
+      }
+
+      // Screen reader announcements
+      function announceToScreenReader(message) {
+        const announcement = document.createElement('div');
+        announcement.setAttribute('aria-live', 'assertive');
+        announcement.setAttribute('aria-atomic', 'true');
+        announcement.className = 'sr-only';
+        announcement.textContent = message;
+        document.body.appendChild(announcement);
+        
+        setTimeout(() => {
+          document.body.removeChild(announcement);
+        }, 1000);
+      }
+
+      // Enhanced event listeners with accessibility
+      chatBubble.addEventListener('click', openChat);
+      chatBubble.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openChat();
+        }
+      });
+
+      chatClose.addEventListener('click', closeChat);
+      chatClose.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          closeChat();
+        }
+      });
+
+      // Enhanced keyboard navigation
+      document.addEventListener('keydown', function(e) {
+        if (!isOpen) return;
+        
+        // Escape to close
+        if (e.key === 'Escape') {
+          closeChat();
+          return;
+        }
+        
+        // Tab trapping within chat window
+        if (e.key === 'Tab') {
+          const focusableSelector = "a[href], area[href], input:not([disabled]):not([type='hidden']), select, textarea, button:not([disabled]), [tabindex]:not([tabindex='-1']), [contenteditable='true']";
+          const focusableElements = chatWindow.querySelectorAll(focusableSelector);
+          const firstElement = focusableElements[0];
+          const lastElement = focusableElements[focusableElements.length - 1];
+          
+          if (e.shiftKey && document.activeElement === firstElement) {
+            e.preventDefault();
+            lastElement.focus();
+          } else if (!e.shiftKey && document.activeElement === lastElement) {
+            e.preventDefault();
+            firstElement.focus();
+          }
+        }
+      });
+
+      // Mobile touch gestures
+      if (isMobile) {
+        chatWindow.addEventListener('touchstart', function(e) {
+          touchStartY = e.touches[0].clientY;
+          touchStartTime = Date.now();
+        }, { passive: true });
+
+        chatWindow.addEventListener('touchmove', function(e) {
+          const touchY = e.touches[0].clientY;
+          const deltaY = touchY - touchStartY;
+          const deltaTime = Date.now() - touchStartTime;
+          
+          // Swipe down to close (only from header area)
+          if (deltaY > 50 && deltaTime < 300 && e.target.closest('.chatbot-header')) {
+            closeChat();
+          }
+        }, { passive: true });
+      }
+
+      // Message Processing Engine
+      const messageProcessor = {
+        // Word-boundary regex patterns for intent detection
+        patterns: {
+          greeting: /\b(hi|hello|hey|good\s+morning|good\s+afternoon|good\s+evening)\b/i,
+          courseList: /\b(courses|show\s+me\s+your\s+courses|course\s+list|what\s+courses\s+do\s+you\s+offer)\b/i,
+          payment: /\b(payment|how\s+to\s+pay|payment\s+methods|make\s+a\s+payment)\b/i,
+          sellBooks: /\b(sell\s+books|selling\s+books|how\s+to\s+sell|book\s+selling)\b/i,
+          jee: /\b(jee|jee\s+main|jee\s+advanced)\b/i,
+          diploma: /\b(diploma|diploma\s+courses)\b/i,
+          btech: /\b(btech|b\.tech|btech\s+course)\b/i,
+          autocad: /\b(autocad)\b/i,
+          wbjee: /\b(wbjee|state\s+entrance)\b/i,
+          govtExams: /\b(ssc-je|rrb-je|wbsedcl|wbpsc-je|wbsetcl)\b/i,
+          about: /\b(about|about\s+you|about\s+easy2learning|who\s+are\s+you)\b/i,
+          generalEnquiry: /\b(join\s+a\s+course|tell\s+me\s+about\s+your\s+classes|know\s+about\s+your\s+courses)\b/i
+        },
+
+        // Priority order for intent detection (specific to generic)
+        intentPriority: [
+          'greeting', 'courseList', 'payment', 'sellBooks', 'jee', 'diploma', 'btech', 'autocad', 'wbjee', 'govtExams', 'about', 'generalEnquiry'
+        ],
+
+        // Detect user intent from message using prioritized regex patterns
+        detectIntent: function(message) {
+          for (const intent of this.intentPriority) {
+            if (this.patterns[intent] && this.patterns[intent].test(message)) {
+              return intent;
+            }
+          }
+          return 'unknown';
+        },
+
+        // Process message and return response
+        processMessage: function(message) {
+          const intent = this.detectIntent(message);
+          return responseGenerator.generateResponse(intent, message);
+        }
+      };
+
+      // App Store Links
+      const DIPLOMA_APP = 'https://play.google.com/store/apps/details?id=com.easy2learning2.appx';
+      const BTECH_APP = 'https://play.google.com/store/apps/details?id=co.edvin.ubglj';
+
+      // Response Generator
+      const responseGenerator = {
+        generateResponse: function(intent, originalMessage) {
+          // Check for specific questions that aren't covered by intents
+          if (originalMessage.toLowerCase().includes("how can i make a payment")) {
+            return {
+              text: `You can make payments for courses and books through multiple methods:\n\n` +
+                    `**Online Payment Options:**\n` +
+                    `• Credit/Debit Cards\n` +
+                    `• UPI (PhonePe, Google Pay, Paytm)\n` +
+                    `• Net Banking\n\n` +
+                    `**Offline Payment Options:**\n` +
+                    `• Visit our center\n` +
+                    `• Bank transfer\n\n` +
+                    `For assistance with payments, please contact us at:\n` +
+                    `📞 +91 85848 64783\n` +
+                    `✉️ payments@easy2learning.in`,
+              hasWhatsApp: false
+            };
+          } else if (originalMessage.toLowerCase().includes("how can i sell books")) {
+            return {
+              text: `You can sell your academic books through our platform:\n\n` +
+                    `**Steps to sell books:**\n` +
+                    `1. Register/Login to your account\n` +
+                    `2. Go to "My Profile" > "Sell Books"\n` +
+                    `3. Upload book details (title, author, condition, price)\n` +
+                    `4. Add clear photos of the book\n` +
+                    `5. Submit for review\n\n` +
+                    `Our team will review your listing within 24-48 hours. Once approved, your books will be visible to potential buyers.\n\n` +
+                    `For any questions about selling books, contact us at:\n` +
+                    `📞 +91 85848 64783`,
+              hasWhatsApp: false
+            };
+          }
+          
+          switch (intent) {
+            case 'greeting':
+              return {
+                text: `👋 Welcome to Easy2Learning!\n\n` +
+                      `I'm your virtual assistant.\n\n` +
+                      `🎯 I can help you with:\n` +
+                      `• Course information and enrollment\n` +
+                      `• Payment assistance\n` +
+                      `• Selling books and courses\n` +
+                      `• Technical support\n` +
+                      `• General platform questions`,
+                hasWhatsApp: false
+              };
+
+            case 'courseList':
+              return {
+                text: `We offer the following courses at Easy2learning:\n\n` +
+                      `**Foundation Courses**\n` +
+                      `• All Diploma Courses (Semester-wise)\n` +
+                      `• B.Tech Courses (Semester-wise)\n\n` +
+                      `**Certificate Courses**\n` +
+                      `• AutoCAD\n` +
+                      `• Solar Internship\n` +
+                      `• Software Courses\n\n` +
+                      `**Competitive Exams Preparation**\n` +
+                      `• JEE (Main & Advanced)\n` +
+                      `• SSC-JE\n` +
+                      `• RRB-JE\n` +
+                      `• WBSEDCL\n` +
+                      `• WBSETCL\n` +
+                      `• WBPSC-JE\n` +
+                      `• WBJEE & Other State Engineering Entrance Exams\n\n` +
+                      `Want to know more about any specific course? Just type the course name (e.g., JEE, AutoCAD, WBJEE, etc.)\n\n` +
+                      `**Download Our Apps for Study Materials & Classes:**\n` +
+                      `• Diploma Students App: ${DIPLOMA_APP}\n` +
+                      `• B-Tech & JELET App: ${BTECH_APP}`,
+                hasWhatsApp: false
+              };
+
+            case 'jee':
+              return {
+                text: `Our JEE (Main & Advanced) program is designed for serious aspirants aiming for top engineering colleges.\n\n` +
+                      `• Faculty from IITs & NITs\n` +
+                      `• Mock Tests & Performance Analysis\n` +
+                      `• One-on-one doubt sessions\n` +
+                      `• Study material with PYQs\n` +
+                      `• Personalised attention & strategic mentoring\n\n` +
+                      `Call us for more info: +91 85848 64783`,
+                hasWhatsApp: false
+              };
+
+            case 'diploma':
+              return {
+                text: `We offer semester-wise coaching for all Diploma engineering subjects.\n\n` +
+                      `• Conceptual clarity & exam-focused teaching\n` +
+                      `• One-on-one doubt clearing\n` +
+                      `• Weekly assessments & progress tracking\n\n` +
+                      `Download our app for Diploma Students:\n` +
+                      `${DIPLOMA_APP}`,
+                hasWhatsApp: false
+              };
+
+            case 'btech':
+              return {
+                text: `Our B.Tech semester-wise coaching helps students with university and competitive exam preparation.\n\n` +
+                      `• Topic-wise lectures\n` +
+                      `• Smart classroom support\n` +
+                      `• Study materials & assignments\n\n` +
+                      `Download our app for B-Tech Students:\n` +
+                      `${BTECH_APP}`,
+                hasWhatsApp: false
+              };
+
+            case 'autocad':
+              return {
+                text: `Our AutoCAD certificate course includes:\n\n` +
+                      `• Hands-on practical training\n` +
+                      `• Real-time projects\n` +
+                      `• Certificate upon completion\n` +
+                      `• Expert instructors\n\n` +
+                      `Call us to enroll: +91 85848 64783`,
+                hasWhatsApp: false
+              };
+
+            case 'wbjee':
+              return {
+                text: `Get ready for WBJEE & other State Engineering Entrance Exams with our expert-designed program.\n\n` +
+                      `• Subject-wise coaching\n` +
+                      `• Exam-focused strategies\n` +
+                      `• Mock tests & practice sessions\n` +
+                      `• Doubt-clearing support\n\n` +
+                      `Contact us for guidance: +91 85848 64783`,
+                hasWhatsApp: false
+              };
+
+            case 'govtExams':
+              return {
+                text: `We provide dedicated coaching for technical government exams like SSC-JE, RRB-JE, WBSEDCL, WBSETCL, and WBPSC-JE.\n\n` +
+                      `• Syllabus-wise structured classes\n` +
+                      `• Previous year questions\n` +
+                      `• Technical concept clearing\n` +
+                      `• Mock tests & assignments\n\n` +
+                      `Call us to join: +91 85848 64783`,
+                hasWhatsApp: false
+              };
+
+            case 'about':
+              return {
+                text: `Easy2learning is a premier coaching institute for engineering and competitive exams.\n\n` +
+                      `We help students achieve top results through:\n` +
+                      `• Academic excellence\n` +
+                      `• Expert faculty from IITs, NITs & PhDs\n` +
+                      `• One-on-one doubt sessions\n` +
+                      `• Mock tests & personalised mentoring\n` +
+                      `• Scholarships & affordable fees\n\n` +
+                      `Phone: +91 85848 64783\n` +
+                      `Email: contact@easy2learning.in\n` +
+                      `Address: 19D, Bhagabati Chatterjee St, Belghariya, Kolkata\n\n` +
+                      `Feel free to visit or reach out for any help!`,
+                hasWhatsApp: false
+              };
+
+            case 'payment':
+              return {
+                text: `You can make payments for courses and books through multiple methods:\n\n` +
+                      `**Online Payment Options:**\n` +
+                      `• Credit/Debit Cards\n` +
+                      `• UPI (PhonePe, Google Pay, Paytm)\n` +
+                      `• Net Banking\n\n` +
+                      `**Offline Payment Options:**\n` +
+                      `• Visit our center\n` +
+                      `• Bank transfer\n\n` +
+                      `For assistance with payments, please contact us at:\n` +
+                      `📞 +91 85848 64783\n` +
+                      `✉️ payments@easy2learning.in`,
+                hasWhatsApp: false
+              };
+              
+            case 'sellBooks':
+              return {
+                text: `You can sell your academic books through our platform:\n\n` +
+                      `**Steps to sell books:**\n` +
+                      `1. Register/Login to your account\n` +
+                      `2. Go to "My Profile" > "Sell Books"\n` +
+                      `3. Upload book details (title, author, condition, price)\n` +
+                      `4. Add clear photos of the book\n` +
+                      `5. Submit for review\n\n` +
+                      `Our team will review your listing within 24-48 hours. Once approved, your books will be visible to potential buyers.\n\n` +
+                      `For any questions about selling books, contact us at:\n` +
+                      `📞 +91 85848 64783`,
+                hasWhatsApp: false
+              };
+
+            case 'generalEnquiry':
+              return {
+                text: `We offer a wide range of programs including Diploma & B.Tech coaching, competitive exam prep (like JEE, SSC-JE), and certificate courses (AutoCAD, Solar Internship, etc.)\n\n` +
+                      `Download our apps for access to class schedules and materials:\n` +
+                      `• Diploma: ${DIPLOMA_APP}\n` +
+                      `• B.Tech & JELET: ${BTECH_APP}\n\n` +
+                      `Need info on a specific course? Just type the course name!`,
+                hasWhatsApp: false
+              };
+
+            default:
+              return {
+                text: `Sorry, I didn't quite catch that.\n\n` +
+                      `You can try typing:\n` +
+                      `• courses – to view our course list\n` +
+                      `• payment – for payment options\n` +
+                      `• sell books – to learn how to sell books\n` +
+                      `• A course name like JEE, AutoCAD, Diploma – for details\n` +
+                      `• about – to know about us\n\n` +
+                      `Or contact us directly at +91 85848 64783\n\n` +
+                      `I'm here to help! If you need immediate assistance, please message us on WhatsApp.`,
+                hasWhatsApp: true
+              };
+          }
+        }
+      };
+
+      // Process line content with clickable links and formatting
+      function processLineContent(text, parentElement) {
+        const phoneRegex = /(\+91\s*\d{10}|\+91\s*\d{5}\s*\d{5})/g;
+        const emailRegex = /([\w\.-]+@[\w\.-]+\.\w+)/g;
+        
+        let processedText = text;
+        const elements = [];
+        
+        // First, handle bold text (text between **)
+        if (processedText.includes('**')) {
+          const boldParts = processedText.split('**');
+          boldParts.forEach((part, i) => {
+            if (i % 2 === 1) {
+              // This is bold text
+              elements.push({ type: 'bold', content: part });
+            } else if (part) {
+              // Regular text - check for phone/email
+              addTextWithLinks(part, elements);
+            }
+          });
+        } else {
+          // No bold text - just check for phone/email
+          addTextWithLinks(processedText, elements);
+        }
+        
+        // Add all elements to parent
+        elements.forEach(element => {
+          switch (element.type) {
+            case 'text':
+              parentElement.appendChild(document.createTextNode(element.content));
+              break;
+            case 'bold':
+              const bold = document.createElement('strong');
+              // Check for links in bold text too
+              addTextWithLinks(element.content, [], bold);
+              if (bold.childNodes.length === 0) {
+                bold.textContent = element.content;
+              }
+              parentElement.appendChild(bold);
+              break;
+            case 'phone':
+              const phoneLink = document.createElement('a');
+              phoneLink.href = `tel:${element.content.replace(/\s/g, '')}`;
+              phoneLink.textContent = element.content;
+              phoneLink.style.color = 'var(--chat-blue-1)';
+              phoneLink.style.textDecoration = 'none';
+              parentElement.appendChild(phoneLink);
+              break;
+            case 'email':
+              const emailLink = document.createElement('a');
+              emailLink.href = `mailto:${element.content}`;
+              emailLink.textContent = element.content;
+              emailLink.style.color = 'var(--chat-blue-1)';
+              emailLink.style.textDecoration = 'none';
+              parentElement.appendChild(emailLink);
+              break;
+          }
+        });
+      }
+      
+      // Helper function to add text with links
+      function addTextWithLinks(text, elements, parentElement = null) {
+        const phoneRegex = /(\+91\s*\d{10}|\+91\s*\d{5}\s*\d{5})/g;
+        const emailRegex = /([\w\.-]+@[\w\.-]+\.\w+)/g;
+        
+        let lastIndex = 0;
+        let match;
+        
+        // Find phone numbers
+        while ((match = phoneRegex.exec(text)) !== null) {
+          // Add text before phone
+          if (match.index > lastIndex) {
+            const beforeText = text.substring(lastIndex, match.index);
+            if (parentElement) {
+              parentElement.appendChild(document.createTextNode(beforeText));
+            } else {
+              elements.push({ type: 'text', content: beforeText });
+            }
+          }
+          
+          // Add phone link
+          if (parentElement) {
+            const phoneLink = document.createElement('a');
+            phoneLink.href = `tel:${match[1].replace(/\s/g, '')}`;
+            phoneLink.textContent = match[1];
+            phoneLink.style.color = 'var(--chat-blue-1)';
+            phoneLink.style.textDecoration = 'none';
+            parentElement.appendChild(phoneLink);
+          } else {
+            elements.push({ type: 'phone', content: match[1] });
+          }
+          
+          lastIndex = phoneRegex.lastIndex;
+        }
+        
+        // Reset regex
+        phoneRegex.lastIndex = 0;
+        
+        // Find emails in remaining text
+        const remainingText = text.substring(lastIndex);
+        let emailLastIndex = 0;
+        
+        while ((match = emailRegex.exec(remainingText)) !== null) {
+          // Add text before email
+          if (match.index > emailLastIndex) {
+            const beforeText = remainingText.substring(emailLastIndex, match.index);
+            if (parentElement) {
+              parentElement.appendChild(document.createTextNode(beforeText));
+            } else {
+              elements.push({ type: 'text', content: beforeText });
+            }
+          }
+          
+          // Add email link
+          if (parentElement) {
+            const emailLink = document.createElement('a');
+            emailLink.href = `mailto:${match[1]}`;
+            emailLink.textContent = match[1];
+            emailLink.style.color = 'var(--chat-blue-1)';
+            emailLink.style.textDecoration = 'none';
+            parentElement.appendChild(emailLink);
+          } else {
+            elements.push({ type: 'email', content: match[1] });
+          }
+          
+          emailLastIndex = emailRegex.lastIndex;
+        }
+        
+        // Add remaining text
+        const finalText = remainingText.substring(emailLastIndex);
+        if (finalText) {
+          if (parentElement) {
+            parentElement.appendChild(document.createTextNode(finalText));
+          } else {
+            elements.push({ type: 'text', content: finalText });
+          }
+        }
+        
+        // If no matches found and no parent, add as text
+        if (lastIndex === 0 && emailLastIndex === 0 && !parentElement) {
+          elements.push({ type: 'text', content: text });
+        }
+      }
+
+      // Enhanced message creation with HTML support
+      function createBotMessage(responseData) {
+        const botMessage = document.createElement('div');
+        botMessage.className = 'chatbot-message bot-message';
+        botMessage.setAttribute('role', 'article');
+        botMessage.setAttribute('aria-label', 'Support message');
+        
+        const botMessageContent = document.createElement('div');
+        botMessageContent.className = 'message-content';
+        
+        // Split text by newlines and create proper paragraphs
+        const lines = responseData.text.split('\n');
+        lines.forEach((line, index) => {
+          if (line.trim()) {
+            const p = document.createElement('p');
+            p.style.margin = '0';
+            if (index > 0) p.style.marginTop = '8px';
+            
+            // Process line content with clickable links and bold text
+            processLineContent(line, p);
+            
+            botMessageContent.appendChild(p);
+          }
+        });
+        
+        // Add app download links if needed
+        if (responseData.hasAppLinks) {
+          const appContainer = document.createElement('div');
+          appContainer.style.cssText = 'margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap;';
+          
+          const androidBtn = document.createElement('a');
+          androidBtn.href = APP_ANDROID;
+          androidBtn.target = '_blank';
+          androidBtn.rel = 'noopener noreferrer';
+          androidBtn.style.cssText = `
+            display: inline-block;
+            background: #34A853;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: background 0.2s ease;
+          `;
+          androidBtn.textContent = '📱 Google Play';
+          androidBtn.addEventListener('mouseenter', () => androidBtn.style.background = '#2E8B47');
+          androidBtn.addEventListener('mouseleave', () => androidBtn.style.background = '#34A853');
+          
+          const iosBtn = document.createElement('a');
+          iosBtn.href = APP_IOS;
+          iosBtn.target = '_blank';
+          iosBtn.rel = 'noopener noreferrer';
+          iosBtn.style.cssText = `
+            display: inline-block;
+            background: #007AFF;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: background 0.2s ease;
+          `;
+          iosBtn.textContent = '🍎 App Store';
+          iosBtn.addEventListener('mouseenter', () => iosBtn.style.background = '#0056CC');
+          iosBtn.addEventListener('mouseleave', () => iosBtn.style.background = '#007AFF');
+          
+          appContainer.appendChild(androidBtn);
+          appContainer.appendChild(iosBtn);
+          botMessageContent.appendChild(appContainer);
+        }
+
+        // Add WhatsApp button if needed
+        if (responseData.hasWhatsApp) {
+          const whatsappBtn = document.createElement('a');
+          const prefilledMessage = encodeURIComponent('Hi! I need help with Easy2Learning courses and services.');
+          whatsappBtn.href = `https://wa.me/918584864783?text=${prefilledMessage}`;
+          whatsappBtn.target = '_blank';
+          whatsappBtn.rel = 'noopener noreferrer';
+          whatsappBtn.classList.add('chatbot-whatsapp-btn');
+          whatsappBtn.textContent = '💬 Chat on WhatsApp';
+          
+          botMessageContent.appendChild(whatsappBtn);
+        }
+        
+        botMessage.appendChild(botMessageContent);
+        return botMessage;
+      }
+
+      // Show typing indicator
+      function showTypingIndicator() {
+        const typingMessage = document.createElement('div');
+        typingMessage.className = 'chatbot-message bot-message typing-indicator';
+        typingMessage.innerHTML = `
+          <div class="message-content">
+            <div class="typing-dots">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </div>
+        `;
+        chatMessages.appendChild(typingMessage);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        return typingMessage;
+      }
+
+      // Enhanced send message functionality
+      function sendMessage() {
+        const message = chatInput.value.trim();
+        if (message && message.length <= 500) {
+          // Add user message with accessibility attributes
+          const userMessage = document.createElement('div');
+          userMessage.className = 'chatbot-message user-message';
+          userMessage.setAttribute('role', 'article');
+          userMessage.setAttribute('aria-label', 'Your message');
+          
+          const userMessageContent = document.createElement('div');
+          userMessageContent.className = 'message-content';
+          
+          const userMessageP = document.createElement('p');
+          userMessageP.textContent = message;
+          userMessageP.style.margin = '0';
+          
+          userMessageContent.appendChild(userMessageP);
+          userMessage.appendChild(userMessageContent);
+          chatMessages.appendChild(userMessage);
+          
+          // Observe for animations
+          observeMessage(userMessage);
+          
+          // Clear input and scroll
+          chatInput.value = '';
+          chatMessages.scrollTop = chatMessages.scrollHeight;
+          
+          // Show typing indicator
+          const typingIndicator = showTypingIndicator();
+          
+          // Process message and respond with enhanced timing
+          const responseDelay = prefersReducedMotion ? 500 : (1000 + Math.random() * 1000);
+          
+          setTimeout(() => {
+            // Remove typing indicator
+            if (typingIndicator && typingIndicator.parentNode) {
+              chatMessages.removeChild(typingIndicator);
+            }
+            
+            // Generate and add bot response
+            const responseData = messageProcessor.processMessage(message);
+            const botMessage = createBotMessage(responseData);
+            chatMessages.appendChild(botMessage);
+            
+            // Observe for animations
+            observeMessage(botMessage);
+            
+            // Enhanced scrolling with smooth animation
+            if (prefersReducedMotion) {
+              chatMessages.scrollTop = chatMessages.scrollHeight;
+            } else {
+              chatMessages.scrollTo({
+                top: chatMessages.scrollHeight,
+                behavior: 'smooth'
+              });
+            }
+            
+            // Focus input for next message with accessibility announcement
+            chatInput.focus();
+            announceToScreenReader('Bot response received. You can type your next message.');
+          }, responseDelay)
+        }
+      }
+
+      // Enhanced message input handling with debouncing
+      function debouncedSendMessage() {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(sendMessage, 100);
+      }
+
+      // Enhanced event listeners with accessibility and mobile support
+      chatSend.addEventListener('click', debouncedSendMessage);
+      chatSend.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          debouncedSendMessage();
+        }
+      });
+
+      chatInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          debouncedSendMessage();
+        }
+      });
+      
+      // Quick action buttons functionality
+      document.addEventListener('click', function(e) {
+        // Check if the clicked element is a quick action button
+        if (e.target.closest('.quick-action-btn')) {
+          e.preventDefault();
+          const button = e.target.closest('.quick-action-btn');
+          
+          // Determine which button was clicked
+          if (button.classList.contains('courses-btn')) {
+            // Simulate user typing "courses"
+            chatInput.value = "courses";
+            sendMessage();
+          } else if (button.classList.contains('payment-btn')) {
+            // Simulate user asking about payment
+            chatInput.value = "How can I make a payment?";
+            sendMessage();
+          } else if (button.classList.contains('sell-books-btn')) {
+            // Simulate user asking about selling books
+            chatInput.value = "How can I sell books?";
+            sendMessage();
+          }
+        }
+      });
+
+      // Enhanced input experience for mobile
+      if (isMobile) {
+
+
+
+      }
+
+      // Handle orientation changes
+      window.addEventListener('orientationchange', function() {
+        setTimeout(() => {
+          if (isOpen) {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+          }
+        }, 100);
+      });
+
+      // Handle window resize for better responsiveness
+      let resizeTimer;
+      window.addEventListener('resize', function() {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+          if (isOpen) {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+          }
+        }, 250);
+      });
+
+      // Enhanced performance with Intersection Observer for animations
+      const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '10px'
+      };
+
+      const messageObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('animate-in');
+            messageObserver.unobserve(entry.target);
+          }
+        });
+      }, observerOptions);
+
+      // Observe new messages for animations
+      function observeMessage(messageElement) {
+        messageObserver.observe(messageElement);
+      }
+
+      // Performance optimization: cleanup on page unload
+      window.addEventListener('beforeunload', function() {
+        messageObserver.disconnect();
+        clearTimeout(debounceTimer);
+        clearTimeout(resizeTimer);
+      });
+    });
+  </script>
+
+  <style>
+    /* Typing indicator animation */
+    .typing-indicator .typing-dots {
+      display: flex;
+      gap: 4px;
+      padding: 8px 0;
+    }
+    
+    .typing-dots span {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: #999;
+      animation: typing 1.4s infinite ease-in-out;
+    }
+    
+    .typing-dots span:nth-child(1) { animation-delay: -0.32s; }
+    .typing-dots span:nth-child(2) { animation-delay: -0.16s; }
+    
+    @keyframes typing {
+      0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
+      40% { transform: scale(1); opacity: 1; }
+    }
+  </style>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

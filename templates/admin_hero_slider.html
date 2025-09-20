@@ -4,23 +4,80 @@
 {% block content %}
 <div class="container py-5">
  <h2>Manage Hero Slider</h2>
+ <div class="alert alert-info">
+   <strong>⚠️ Exact Image Size Requirements:</strong><br>
+   • <strong>PC Image:</strong> 1920×620 pixels (aspect ratio 3.1:1)<br>
+   • <strong>Mobile Image:</strong> 1440×630 pixels (aspect ratio 2.3:1)<br>
+   <small class="text-muted">Images will be automatically cropped to fit these exact dimensions</small>
+ </div>
 <form method="POST" enctype="multipart/form-data">
   {{ form.hidden_tag() }}
-  <div class="form-group">{{ form.title.label }} {{ form.title(class="form-control") }}</div>
-  <div class="form-group">{{ form.description.label }} {{ form.description(class="form-control") }}</div>
-  <div class="form-group">{{ form.button_text.label }} {{ form.button_text(class="form-control") }}</div>
-  <div class="form-group">{{ form.image.label }} {{ form.image(class="form-control") }}</div>
+  <div class="form-group mb-3">
+    {{ form.title.label(class="form-label") }} 
+    {{ form.title(class="form-control") }}
+  </div>
+  <div class="form-group mb-3">
+    {{ form.description.label(class="form-label") }} 
+    {{ form.description(class="form-control") }}
+  </div>
+  <div class="form-group mb-3">
+    {{ form.button_text.label(class="form-label") }} 
+    {{ form.button_text(class="form-control") }}
+  </div>
+  <div class="form-group mb-3">
+    {{ form.button_url.label(class="form-label") }} 
+    {{ form.button_url(class="form-control", placeholder="e.g., /courses or https://example.com") }}
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="form-group mb-3">
+        {{ form.image.label(class="form-label") }} 
+        {{ form.image(class="form-control") }}
+        <small class="form-text text-muted">Recommended: 1920×620 pixels</small>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group mb-3">
+        {{ form.mobile_image.label(class="form-label") }} 
+        {{ form.mobile_image(class="form-control") }}
+        <small class="form-text text-muted">Recommended: 1440×630 pixels</small>
+      </div>
+    </div>
+  </div>
   {{ form.submit(class="btn btn-success") }}
 </form>
 
 <hr>
 <h3>All Slides</h3>
 {% for slide in slides %}
-  <div style="margin-bottom: 20px;">
+  <div style="margin-bottom: 30px;" class="border p-3 rounded">
     <strong>{{ slide.title }}</strong><br>
     {{ slide.description }}<br>
-    <img src="{{ url_for('static', filename=slide.image) }}" width="200">
-    <p><em>Last updated: {{ slide.updated_at }}</em></p>
+    <p><strong>Button:</strong> {{ slide.button_text }} <small class="text-muted">(URL: {{ slide.button_url }})</small></p>
+    
+    <div class="row">
+      <div class="col-md-6">
+        <h6>PC Image (1920×620)</h6>
+        {% if slide.image %}
+          <img src="{{ url_for('static', filename=slide.image) }}" class="img-fluid" style="max-width: 300px; border: 1px solid #ddd;">
+        {% else %}
+          <div class="alert alert-warning">No PC image uploaded</div>
+        {% endif %}
+      </div>
+      <div class="col-md-6">
+        <h6>Mobile Image (1440×630)</h6>
+        {% if slide.mobile_image %}
+          <img src="{{ url_for('static', filename=slide.mobile_image) }}" class="img-fluid" style="max-width: 300px; border: 1px solid #ddd;">
+        {% else %}
+          <div class="alert alert-warning">No mobile image uploaded</div>
+        {% endif %}
+      </div>
+    </div>
+    
+    <p class="mt-3"><em>Last updated: {{ slide.updated_at }}</em></p>
+    <form action="{{ url_for('delete_hero_slide', slide_id=slide.id) }}" method="POST" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this slide?');">
+      <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+    </form>
   </div>
 {% endfor %}
 {% endblock %}

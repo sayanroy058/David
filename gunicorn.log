@@ -1,17 +1,26 @@
 nohup: ignoring input
-[2025-06-05 16:44:51 +0000] [238542] [INFO] Starting gunicorn 23.0.0
-[2025-06-05 16:44:51 +0000] [238542] [INFO] Listening at: http://0.0.0.0:5000 (238542)
-[2025-06-05 16:44:51 +0000] [238542] [INFO] Using worker: sync
-[2025-06-05 16:44:51 +0000] [238544] [INFO] Booting worker with pid: 238544
+[2025-06-30 16:45:08 +0000] [870190] [INFO] Starting gunicorn 23.0.0
+[2025-06-30 16:45:08 +0000] [870190] [INFO] Listening at: http://0.0.0.0:5000 (870190)
+[2025-06-30 16:45:08 +0000] [870190] [INFO] Using worker: sync
+[2025-06-30 16:45:08 +0000] [870192] [INFO] Booting worker with pid: 870192
 /root/David/myenv/lib/python3.12/site-packages/razorpay/client.py:4: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
   import pkg_resources
-[2025-06-05 16:45:31 +0000] [238542] [INFO] Handling signal: hup
-[2025-06-05 16:45:31 +0000] [238542] [INFO] Hang up: Master
-[2025-06-05 16:45:31 +0000] [238542] [ERROR] Worker (pid:238544) was sent SIGHUP!
-[2025-06-05 16:45:31 +0000] [238686] [INFO] Booting worker with pid: 238686
+[2025-07-03 17:33:35 +0000] [870190] [ERROR] Worker (pid:870192) was sent SIGHUP!
+[2025-07-03 17:33:35 +0000] [870190] [INFO] Handling signal: hup
+[2025-07-03 17:33:35 +0000] [870190] [INFO] Hang up: Master
+[2025-07-03 17:33:36 +0000] [944904] [INFO] Booting worker with pid: 944904
 /root/David/myenv/lib/python3.12/site-packages/razorpay/client.py:4: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
   import pkg_resources
-[2025-06-06 06:55:46,994] ERROR in app: Exception on /admin/add-book [POST]
+[2025-07-05 10:57:06,623] ERROR in app: Exception on /register [POST]
+Traceback (most recent call last):
+  File "/root/David/myenv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1963, in _exec_single_context
+    self.dialect.do_execute(
+  File "/root/David/myenv/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 943, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.IntegrityError: UNIQUE constraint failed: users.email
+
+The above exception was the direct cause of the following exception:
+
 Traceback (most recent call last):
   File "/root/David/myenv/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
     response = self.full_dispatch_request()
@@ -25,196 +34,63 @@ Traceback (most recent call last):
   File "/root/David/myenv/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
     return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/root/David/admin_routes.py", line 20, in decorated_function
-    return f(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^
-  File "/root/David/admin_routes.py", line 306, in add_book
-    image.save(os.path.join(current_app.config['UPLOAD_FOLDER'], 'books', image_filename))
-  File "/root/David/myenv/lib/python3.12/site-packages/werkzeug/datastructures/file_storage.py", line 129, in save
-    dst = open(dst, "wb")
-          ^^^^^^^^^^^^^^^
-FileNotFoundError: [Errno 2] No such file or directory: 'static/uploads/books/WhatsApp_Image_2025-06-06_at_12.22.42.jpeg'
-[2025-06-06 06:56:07,703] ERROR in app: Exception on /admin/add-book [POST]
-Traceback (most recent call last):
-  File "/root/David/myenv/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
-    response = self.full_dispatch_request()
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/root/David/myenv/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
-    rv = self.handle_user_exception(e)
-         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/root/David/myenv/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
-    rv = self.dispatch_request()
-         ^^^^^^^^^^^^^^^^^^^^^^^
-  File "/root/David/myenv/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
-    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/root/David/admin_routes.py", line 20, in decorated_function
-    return f(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^
-  File "/root/David/admin_routes.py", line 306, in add_book
-    image.save(os.path.join(current_app.config['UPLOAD_FOLDER'], 'books', image_filename))
-  File "/root/David/myenv/lib/python3.12/site-packages/werkzeug/datastructures/file_storage.py", line 129, in save
-    dst = open(dst, "wb")
-          ^^^^^^^^^^^^^^^
-FileNotFoundError: [Errno 2] No such file or directory: 'static/uploads/books/WhatsApp_Image_2025-06-06_at_12.22.42.jpeg'
-[2025-06-06 06:56:13,473] ERROR in app: Exception on /admin/add-book [POST]
-Traceback (most recent call last):
-  File "/root/David/myenv/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
-    response = self.full_dispatch_request()
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/root/David/myenv/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
-    rv = self.handle_user_exception(e)
-         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/root/David/myenv/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
-    rv = self.dispatch_request()
-         ^^^^^^^^^^^^^^^^^^^^^^^
-  File "/root/David/myenv/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
-    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/root/David/admin_routes.py", line 20, in decorated_function
-    return f(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^
-  File "/root/David/admin_routes.py", line 306, in add_book
-    image.save(os.path.join(current_app.config['UPLOAD_FOLDER'], 'books', image_filename))
-  File "/root/David/myenv/lib/python3.12/site-packages/werkzeug/datastructures/file_storage.py", line 129, in save
-    dst = open(dst, "wb")
-          ^^^^^^^^^^^^^^^
-FileNotFoundError: [Errno 2] No such file or directory: 'static/uploads/books/WhatsApp_Image_2025-06-06_at_12.22.42.jpeg'
-[2025-06-06 06:57:01,344] ERROR in app: Exception on /admin/add-book [POST]
-Traceback (most recent call last):
-  File "/root/David/myenv/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
-    response = self.full_dispatch_request()
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/root/David/myenv/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
-    rv = self.handle_user_exception(e)
-         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/root/David/myenv/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
-    rv = self.dispatch_request()
-         ^^^^^^^^^^^^^^^^^^^^^^^
-  File "/root/David/myenv/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
-    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/root/David/admin_routes.py", line 20, in decorated_function
-    return f(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^
-  File "/root/David/admin_routes.py", line 306, in add_book
-    image.save(os.path.join(current_app.config['UPLOAD_FOLDER'], 'books', image_filename))
-  File "/root/David/myenv/lib/python3.12/site-packages/werkzeug/datastructures/file_storage.py", line 129, in save
-    dst = open(dst, "wb")
-          ^^^^^^^^^^^^^^^
-FileNotFoundError: [Errno 2] No such file or directory: 'static/uploads/books/WhatsApp_Image_2025-06-06_at_12.22.42.jpeg'
-[2025-06-06 06:58:13,976] ERROR in app: Exception on /admin/add-book [POST]
-Traceback (most recent call last):
-  File "/root/David/myenv/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
-    response = self.full_dispatch_request()
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/root/David/myenv/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
-    rv = self.handle_user_exception(e)
-         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/root/David/myenv/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
-    rv = self.dispatch_request()
-         ^^^^^^^^^^^^^^^^^^^^^^^
-  File "/root/David/myenv/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
-    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/root/David/admin_routes.py", line 20, in decorated_function
-    return f(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^
-  File "/root/David/admin_routes.py", line 306, in add_book
-    image.save(os.path.join(current_app.config['UPLOAD_FOLDER'], 'books', image_filename))
-  File "/root/David/myenv/lib/python3.12/site-packages/werkzeug/datastructures/file_storage.py", line 129, in save
-    dst = open(dst, "wb")
-          ^^^^^^^^^^^^^^^
-FileNotFoundError: [Errno 2] No such file or directory: 'static/uploads/books/WhatsApp_Image_2025-06-06_at_12.22.42.jpeg'
-[2025-06-06 07:09:04,614] ERROR in app: Exception on /admin/add-book [POST]
-Traceback (most recent call last):
-  File "/root/David/myenv/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
-    response = self.full_dispatch_request()
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/root/David/myenv/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
-    rv = self.handle_user_exception(e)
-         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/root/David/myenv/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
-    rv = self.dispatch_request()
-         ^^^^^^^^^^^^^^^^^^^^^^^
-  File "/root/David/myenv/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
-    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/root/David/admin_routes.py", line 20, in decorated_function
-    return f(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^
-  File "/root/David/admin_routes.py", line 306, in add_book
-    image.save(os.path.join(current_app.config['UPLOAD_FOLDER'], 'books', image_filename))
-  File "/root/David/myenv/lib/python3.12/site-packages/werkzeug/datastructures/file_storage.py", line 129, in save
-    dst = open(dst, "wb")
-          ^^^^^^^^^^^^^^^
-FileNotFoundError: [Errno 2] No such file or directory: 'static/uploads/books/WhatsApp_Image_2025-06-06_at_12.22.42.jpeg'
-[2025-06-06 07:09:11,148] ERROR in app: Exception on /admin/add-book [POST]
-Traceback (most recent call last):
-  File "/root/David/myenv/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
-    response = self.full_dispatch_request()
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/root/David/myenv/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
-    rv = self.handle_user_exception(e)
-         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/root/David/myenv/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
-    rv = self.dispatch_request()
-         ^^^^^^^^^^^^^^^^^^^^^^^
-  File "/root/David/myenv/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
-    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/root/David/admin_routes.py", line 20, in decorated_function
-    return f(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^
-  File "/root/David/admin_routes.py", line 306, in add_book
-    image.save(os.path.join(current_app.config['UPLOAD_FOLDER'], 'books', image_filename))
-  File "/root/David/myenv/lib/python3.12/site-packages/werkzeug/datastructures/file_storage.py", line 129, in save
-    dst = open(dst, "wb")
-          ^^^^^^^^^^^^^^^
-FileNotFoundError: [Errno 2] No such file or directory: 'static/uploads/books/WhatsApp_Image_2025-06-06_at_12.22.42.jpeg'
-[2025-06-06 07:09:16,229] ERROR in app: Exception on /admin/add-book [POST]
-Traceback (most recent call last):
-  File "/root/David/myenv/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
-    response = self.full_dispatch_request()
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/root/David/myenv/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
-    rv = self.handle_user_exception(e)
-         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/root/David/myenv/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
-    rv = self.dispatch_request()
-         ^^^^^^^^^^^^^^^^^^^^^^^
-  File "/root/David/myenv/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
-    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/root/David/admin_routes.py", line 20, in decorated_function
-    return f(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^
-  File "/root/David/admin_routes.py", line 306, in add_book
-    image.save(os.path.join(current_app.config['UPLOAD_FOLDER'], 'books', image_filename))
-  File "/root/David/myenv/lib/python3.12/site-packages/werkzeug/datastructures/file_storage.py", line 129, in save
-    dst = open(dst, "wb")
-          ^^^^^^^^^^^^^^^
-FileNotFoundError: [Errno 2] No such file or directory: 'static/uploads/books/WhatsApp_Image_2025-06-06_at_12.22.42.jpeg'
-[2025-06-06 07:10:28,974] ERROR in app: Exception on /admin/add-book [POST]
-Traceback (most recent call last):
-  File "/root/David/myenv/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
-    response = self.full_dispatch_request()
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/root/David/myenv/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
-    rv = self.handle_user_exception(e)
-         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/root/David/myenv/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
-    rv = self.dispatch_request()
-         ^^^^^^^^^^^^^^^^^^^^^^^
-  File "/root/David/myenv/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
-    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/root/David/admin_routes.py", line 20, in decorated_function
-    return f(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^
-  File "/root/David/admin_routes.py", line 306, in add_book
-    image.save(os.path.join(current_app.config['UPLOAD_FOLDER'], 'books', image_filename))
-  File "/root/David/myenv/lib/python3.12/site-packages/werkzeug/datastructures/file_storage.py", line 129, in save
-    dst = open(dst, "wb")
-          ^^^^^^^^^^^^^^^
-FileNotFoundError: [Errno 2] No such file or directory: 'static/uploads/books/WhatsApp_Image_2025-06-06_at_12.22.42.jpeg'
+  File "/root/David/app.py", line 61, in register
+    db.session.commit()
+  File "/root/David/myenv/lib/python3.12/site-packages/sqlalchemy/orm/scoping.py", line 599, in commit
+    return self._proxied.commit()
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/David/myenv/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2032, in commit
+    trans.commit(_to_root=True)
+  File "<string>", line 2, in commit
+  File "/root/David/myenv/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py", line 139, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/root/David/myenv/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1313, in commit
+    self._prepare_impl()
+  File "<string>", line 2, in _prepare_impl
+  File "/root/David/myenv/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py", line 139, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/root/David/myenv/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1288, in _prepare_impl
+    self.session.flush()
+  File "/root/David/myenv/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 4345, in flush
+    self._flush(objects)
+  File "/root/David/myenv/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 4480, in _flush
+    with util.safe_reraise():
+  File "/root/David/myenv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 224, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "/root/David/myenv/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 4441, in _flush
+    flush_context.execute()
+  File "/root/David/myenv/lib/python3.12/site-packages/sqlalchemy/orm/unitofwork.py", line 466, in execute
+    rec.execute(self)
+  File "/root/David/myenv/lib/python3.12/site-packages/sqlalchemy/orm/unitofwork.py", line 642, in execute
+    util.preloaded.orm_persistence.save_obj(
+  File "/root/David/myenv/lib/python3.12/site-packages/sqlalchemy/orm/persistence.py", line 93, in save_obj
+    _emit_insert_statements(
+  File "/root/David/myenv/lib/python3.12/site-packages/sqlalchemy/orm/persistence.py", line 1233, in _emit_insert_statements
+    result = connection.execute(
+             ^^^^^^^^^^^^^^^^^^^
+  File "/root/David/myenv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1415, in execute
+    return meth(
+           ^^^^^
+  File "/root/David/myenv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py", line 523, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/David/myenv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1637, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/David/myenv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1842, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/David/myenv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1982, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "/root/David/myenv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2351, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/root/David/myenv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1963, in _exec_single_context
+    self.dialect.do_execute(
+  File "/root/David/myenv/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 943, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.IntegrityError: (sqlite3.IntegrityError) UNIQUE constraint failed: users.email
+[SQL: INSERT INTO users (email, phone, password_hash, reset_token, reset_token_expiration) VALUES (?, ?, ?, ?, ?)]
+[parameters: ('uwomewujoya714@gmail.com', '4442261733', 'scrypt:32768:8:1$yp1cepNoMKCHmF7y$0654730c483a7fe982ebddf646a9fe046f569a403f5de17d034205dd1f4ad2dd98fbed03902a8a224367cf5bc14fe507aeddaf2c68b83e4af6a3f99e133fdd79', None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)

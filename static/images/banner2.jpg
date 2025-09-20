@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="500" viewBox="0 0 1200 500">
+  <rect width="1200" height="500" fill="#6a4aaf"/>
+  <text x="600" y="200" font-family="Arial" font-size="48" text-anchor="middle" fill="white">PW Yogya Scheme</text>
+  <text x="600" y="270" font-family="Arial" font-size="32" text-anchor="middle" fill="white">Only For Underprivileged Students</text>
+  <rect x="450" y="320" width="300" height="60" rx="30" fill="#FFD32C"/>
+  <text x="600" y="360" font-family="Arial" font-size="24" text-anchor="middle" fill="black">90% SCHOLARSHIP</text>
+</svg>

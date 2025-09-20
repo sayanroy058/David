@@ -1,4 +1,4 @@
-{% extends 'admin/base_admin.html' %}
+{% extends 'admin_base.html' %}
 {% block title %}Manage Teachers | Admin Dashboard{% endblock %}
 
 {% block extra_css %}
@@ -108,49 +108,27 @@
           <tbody>
             {% if teachers %}
               {% for teacher in teachers %}
-                <tr>
-                  <td>
-                    <img src="{{ url_for('static', filename='uploads/teachers/' + teacher.photo) }}" 
-                         alt="{{ teacher.name }}" 
-                         class="teacher-image-thumbnail">
-                  </td>
-                  <td>{{ teacher.name }}</td>
-                  <td>{{ teacher.title }}</td>
-                  <td>
-                    <div class="d-flex gap-2">
-                      <a href="{{ url_for('admin.edit_teacher', teacher_id=teacher.id) }}" class="btn btn-sm btn-outline-primary action-btn">
-                        <i class="bi bi-pencil"></i>
-                      </a>
-                      <button type="button" class="btn btn-sm btn-outline-danger action-btn" 
-                              data-bs-toggle="modal" 
-                              data-bs-target="#deleteTeacherModal{{ teacher.id }}">
-                        <i class="bi bi-trash"></i>
-                      </button>
-                    </div>
-                    
-                    <!-- Delete Modal -->
-                    <div class="modal fade" id="deleteTeacherModal{{ teacher.id }}" tabindex="-1" aria-hidden="true">
-                      <div class="modal-dialog">
-                        <div class="modal-content">
-                          <div class="modal-header">
-                            <h5 class="modal-title">Confirm Delete</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                          </div>
-                          <div class="modal-body">
-                            <p>Are you sure you want to delete teacher <strong>{{ teacher.name }}</strong>?</p>
-                            <p class="text-danger"><small>This action cannot be undone.</small></p>
-                          </div>
-                          <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <form action="{{ url_for('admin.delete_teacher', teacher_id=teacher.id) }}" method="POST" class="d-inline">
-                              <button type="submit" class="btn btn-danger">Delete</button>
-                            </form>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </td>
-                </tr>
+              <tr>
+                <td>
+                  <img src="{{ url_for('static', filename='uploads/teachers/' + teacher.photo) }}" 
+                       alt="{{ teacher.name }}" 
+                       class="teacher-image-thumbnail">
+                </td>
+                <td>{{ teacher.name }}</td>
+                <td>{{ teacher.title }}</td>
+                <td>
+                  <div class="d-flex gap-2">
+                    <a href="{{ url_for('admin.edit_teacher', teacher_id=teacher.id) }}" class="btn btn-sm btn-outline-primary action-btn" title="Edit">
+                      <i class="bi bi-pencil"></i>
+                    </a>
+                    <button type="button" class="btn btn-sm btn-outline-danger action-btn" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#deleteTeacherModal{{ teacher.id }}" title="Delete">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
               {% endfor %}
             {% else %}
               <tr>
@@ -165,4 +143,28 @@
     </div>
   </div>
 </div>
+
+<!-- Move all delete modals outside of table to prevent Bootstrap flicker -->
+{% for teacher in teachers %}
+<div class="modal fade" id="deleteTeacherModal{{ teacher.id }}" tabindex="-1" aria-labelledby="deleteTeacherModalLabel{{ teacher.id }}" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteTeacherModalLabel{{ teacher.id }}">Confirm Delete</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete teacher <strong>{{ teacher.name }}</strong>?</p>
+        <p class="text-danger"><small>This action cannot be undone.</small></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <form action="{{ url_for('admin.delete_teacher', teacher_id=teacher.id) }}" method="POST" class="d-inline">
+          <button type="submit" class="btn btn-danger">Delete</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
 {% endblock %}

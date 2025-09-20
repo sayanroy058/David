@@ -125,6 +125,21 @@ h2::after {
   animation: zoomEffect 20s infinite alternate;
 }
 
+@keyframes float {
+  0%   { transform: translateY(0px); }
+  100% { transform: translateY(20px); }
+}
+
+@media (max-width: 768px) {
+  .carousel-item h1 {
+    font-size: 2rem !important;
+  }
+  .carousel-item p {
+    font-size: 1rem !important;
+  }
+}
+
+
 /* Responsive adjustment for smaller screens */
 @media (max-width: 767px) {
   .hero-image img {
@@ -244,7 +259,7 @@ h2::after {
 /* Large Desktop */
 @media (min-width: 1200px) {
   .hero-section {
-    height: 90vh;
+    height: 50vh;
   }
 
   .hero-content {
@@ -711,12 +726,340 @@ h2::after {
   100% { transform: scale(1.05); }
 }
 
+    .course-cards-container {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            padding: 2rem 1rem;
+            margin: 2rem 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #2c3e50;
+            font-weight: 700;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, #007bff, #28a745);
+            border-radius: 2px;
+        }
+
+        .course-card {
+            transition: all 0.3s ease;
+            border-radius: 15px;
+            overflow: hidden;
+            height: 100%;
+            background: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .course-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .course-card .card-img-top {
+            height: 180px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .course-card:hover .card-img-top {
+            transform: scale(1.05);
+        }
+
+        .card-body {
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .card-title i {
+            font-size: 1.2rem;
+            margin-right: 0.5rem;
+        }
+
+        .card-text {
+            flex-grow: 1;
+            color: #6c757d;
+            line-height: 1.5;
+        }
+
+        .course-btn {
+            margin-top: auto;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .course-btn:hover {
+            transform: scale(1.02);
+        }
+
+        .card-footer {
+            padding: 0.75rem 1.25rem;
+            background: rgba(248, 249, 250, 0.8);
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .course-badge {
+            font-size: 0.75rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+
+        /* Responsive Grid System */
+        @media (min-width: 1400px) {
+            .course-grid {
+                grid-template-columns: repeat(6, 1fr);
+            }
+        }
+
+        @media (min-width: 1200px) and (max-width: 1399px) {
+            .course-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        @media (min-width: 992px) and (max-width: 1199px) {
+            .course-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (min-width: 768px) and (max-width: 991px) {
+            .course-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 767px) {
+            .course-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .course-cards-container {
+                padding: 1.5rem 0.75rem;
+                margin: 1rem 0;
+            }
+            
+            .course-card .card-img-top {
+                height: 160px;
+            }
+        }
+
+        .course-grid {
+            display: grid;
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        /* Loading animation for images */
+        .card-img-top {
+            background: linear-gradient(90deg, #f0f0f0 25%, transparent 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+
+        .card-img-top[src] {
+            background: none;
+            animation: none;
+        }
+
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* Custom scrollbar for mobile horizontal scroll fallback */
+        .horizontal-scroll-container {
+            scrollbar-width: thin;
+            scrollbar-color: #007bff transparent;
+        }
+
+        .horizontal-scroll-container::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .horizontal-scroll-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .horizontal-scroll-container::-webkit-scrollbar-thumb {
+            background-color: #007bff;
+            border-radius: 3px;
+        }
+.banner-container {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  margin: 0 auto;
+}
+
+.banner-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+/* PC Banner Dimensions - 1920×620 */
+@media (min-width: 768px) {
+  .banner-container {
+    max-width: 1920px;
+    height: 620px;
+    aspect-ratio: 1920/620;
+  }
+  .banner-image, .banner-placeholder {
+    height: 620px;
+  }
+}
+
+/* Mobile Banner Dimensions - 1440×630 */
+@media (max-width: 767px) {
+  .banner-container {
+    max-width: 1440px;
+    height: 630px;
+    aspect-ratio: 1440/630;
+  }
+  .banner-image, .banner-placeholder {
+    height: 630px;
+  }
+}
+
+/* Ensure proper aspect ratio maintenance */
+.banner-image {
+  display: block;
+  width: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Responsive image sizing */
+@media (min-width: 768px) {
+  .banner-image {
+    width: 100%;
+    max-width: 1920px;
+    height: 620px;
+  }
+}
+
+@media (max-width: 767px) {
+  .banner-image {
+    width: 100%;
+    max-width: 1440px;
+    height: 630px;
+  }
+}
+
+/* Banner placeholder styles */
+.banner-placeholder {
+  width: 100%;
+  background: linear-gradient(135deg, var(--dark-grey) 0%, var(--dark-grey-lighter) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-align: center;
+}
+
+.placeholder-content h3 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: var(--primary-yellow);
+}
+
+.placeholder-content p {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  max-width: 600px;
+}
+
+/* Placeholder dimensions */
+@media (min-width: 768px) {
+  .banner-placeholder {
+    height: 620px;
+    max-width: 1920px;
+  }
+}
+
+@media (max-width: 767px) {
+  .banner-placeholder {
+    height: 630px;
+    max-width: 1440px;
+  }
+}
+
+/* Ensure banner maintains exact dimensions across all screen sizes */
+@media (max-width: 480px) {
+  .banner-container {
+    max-width: 1440px;
+    height: 630px;
+    aspect-ratio: 1440/630;
+  }
+  .banner-image, .banner-placeholder {
+    height: 630px;
+  }
+}
+
+/* Tablet uses PC dimensions */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .banner-container {
+    max-width: 1920px;
+    height: 620px;
+    aspect-ratio: 1920/620;
+  }
+  .banner-image, .banner-placeholder {
+    height: 620px;
+  }
+}
+
+/* Desktop view - 2 cards per row and larger card size */
+@media (min-width: 992px) {
+  .popular-courses-section .row > div {
+    flex: 0 0 50%;   /* 2 cards per row */
+    max-width: 50%;
+  }
+
+  .popular-courses-section .course-card {
+    max-width: 60% !important; /* Let the card stretch */
+    height: auto;               /* Adjust height naturally */
+  }
+
+  .popular-courses-section .course-card img {
+    height: 290px;       /* Adjust image size */
+    object-fit: cover;   /* Crop nicely if image is larger */
+  }
+}
+
+
+
 </style>
 {% endblock %}
 
 {% block content %}
 <!-- Hero Slider Section -->
-<section style="position: relative; overflow: hidden; min-height: 500px; display: flex; align-items: center; background: linear-gradient(135deg, rgba(228,114,27,0.95) 0%, rgba(245,229,87,0.85) 100%); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+<section style="position: relative; overflow: hidden;  display: flex; align-items: center; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
 
   <!-- Background Texture Overlay -->
   <div style="position: absolute; inset: 0; background-image: url('data:image/svg+xml;base64,...'); opacity: 0.1; z-index: 1;"></div>
@@ -726,132 +1069,341 @@ h2::after {
   <div style="position: absolute; width: 300px; height: 300px; border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%); bottom: -50px; left: -50px; z-index: 1; animation: float 13s infinite alternate-reverse ease-in-out;"></div>
 
   <!-- Carousel Container -->
-  <div id="heroCarousel" class="carousel slide w-100" data-bs-ride="carousel" style="position: relative; z-index: 2;">
+  <div id="heroCarousel" class="carousel slide w-100" data-bs-ride="carousel" data-bs-touch="false" style="position: relative; z-index: 2;">
     <div class="carousel-inner">
       {% for slide in hero_slides %}
       <div class="carousel-item {% if loop.index == 1 %}active{% endif %}">
-        <div style="display: flex; flex-wrap: wrap; align-items: center; padding: 60px 20px; max-width: 1400px; margin: auto;">
-          
-          <!-- Text Content -->
-          <div style="flex: 1 1 500px; color: #fff; animation: slideInLeft 1s ease-out; padding: 20px;">
-            <h1 style="font-size: 3rem; font-weight: 700; margin-bottom: 20px; line-height: 1.2; text-shadow: 0 2px 10px rgba(0,0,0,0.1); position: relative;">
-              {{ slide.title }}
-              <span style="position: absolute; bottom: -10px; left: 0; width: 100px; height: 4px; background: #fff; border-radius: 2px; animation: expandWidth 1.2s ease-out forwards;"></span>
-            </h1>
 
-            <p style="font-size: 1.125rem; max-width: 600px; margin-bottom: 30px; line-height: 1.6; text-shadow: 0 1px 5px rgba(0,0,0,0.1); opacity: 0; animation: fadeIn 1s ease-out 0.4s forwards;">
-              {{ slide.description }}
-            </p>
+        <!-- Full Slide Clickable -->
+        <a href="{{ slide.button_url }}" class="d-block w-100 h-100 position-relative" style="text-decoration: none;">
 
-            {% if slide.button_text %}
-            <button style="background-color: #fff; color: #2980b9; border: none; padding: 12px 30px; border-radius: 30px; font-weight: 600; font-size: 16px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 5px 15px rgba(0,0,0,0.1); opacity: 0; animation: fadeIn 1s ease-out 0.6s forwards;"
-              onclick="window.location.href='#';"
-              onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.15)'; this.style.backgroundColor='#f8f9fa';"
-              onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 5px 15px rgba(0,0,0,0.1)'; this.style.backgroundColor='#fff';">
-              {{ slide.button_text }}
-            </button>
-            {% endif %}
+          <!-- Banner Image Section -->
+<!-- Banner Image Section (Fully Responsive, Inline CSS) -->
+<div 
+  class="banner-container" 
+  style="position :static; width: 100%; height: auto;  overflow: hidden;">
+  {% if slide.image %}
+    <img 
+      src="{{ url_for('static', filename=slide.image) }}"
+      alt="{{ slide.title }}"
+      style="
+        width: 100%;
+        height: auto;
+        object-fit:contain;
+        display: block;
+      "
+      loading="lazy">
+  {% else %}
+    <div 
+      style="
+        width: 100%;
+        height: auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: transparent;
+      ">
+      <div style="text-align: center;">
+        <h3 style="margin: 0;">{{ slide.title }}</h3>
+        <p style="margin: 0;">{{ slide.description }}</p>
+      </div>
+    </div>
+  {% endif %}
+</div>
+
+
+
+          <!-- Optional Text Overlay -->
+          <div class="position-absolute top-50 start-50 translate-middle text-center text-white px-3"
+               style="max-width: 90%; z-index: 2; text-shadow: 0 2px 10px rgba(0,0,0,0.4);">
+            <!-- <h1 style="font-size: 3rem; font-weight: bold;">{{ slide.title }}</h1>
+            <p style="font-size: 1.25rem;">{{ slide.description }}</p> -->
           </div>
 
-          <!-- Image -->
-          <div style="flex: 1 1 500px; position: relative; min-height: 400px; overflow: hidden; clip-path: polygon(10% 0%, 100% 0%, 100% 100%, 0% 100%); animation: slideInRight 1s ease-out;">
-            <img src="{{ url_for('static', filename=slide.image) }}" alt="{{ slide.title }}" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; animation: zoomScale 20s infinite alternate linear;">
-          </div>
-
-        </div>
+        </a>
       </div>
       {% endfor %}
     </div>
 
     <!-- Carousel Controls -->
-    <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+    <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev" style="z-index: 5;">
       <span class="carousel-control-prev-icon" aria-hidden="true"></span>
       <span class="visually-hidden">Previous</span>
     </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+    <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next" style="z-index: 5;">
       <span class="carousel-control-next-icon" aria-hidden="true"></span>
       <span class="visually-hidden">Next</span>
     </button>
   </div>
+
 </section>
-
-
-
 <!-- Popular Courses Section -->
-<section style="text-align: center; padding: 40px 20px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #f9f9f9 0%, #f0f4f8 100%); position: relative; overflow: hidden;">
-  <div style="max-width: 1000px; margin: 0 auto; position: relative; z-index: 2;">
-    <h2 style="margin-bottom: 30px; font-size: 32px; color: #2c3e50; font-weight: 600; position: relative; display: inline-block; animation: fadeInDown 0.8s ease-out;">Popular Courses
-      <span style="position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); width: 60px; height: 3px; background: linear-gradient(to right, #3498db, #2ecc71); border-radius: 2px; animation: expandWidth 1s ease-out forwards;"></span>
+<section class="popular-courses-section py-3 position-relative">
+  <div class="container text-center position-relative z-2">
+    <!-- Section Title -->
+    <h2 class="section-title h4 mb-3">
+      Browse Our Courses
+      <span class="section-underline"></span>
     </h2>
-    
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
-      {% for course in courses %}
-        <div style="border: none; border-radius: 10px; overflow: hidden; background-color: #fff; box-shadow: 0 8px 20px rgba(0,0,0,0.06); transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1); cursor: pointer; position: relative; opacity: 0; animation: fadeIn 0.6s ease-out forwards; animation-delay: calc(0.1s * {{ loop.index }}); transform: translateY(20px);"
-             onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 12px 25px rgba(52, 152, 219, 0.12)'; this.querySelector('.course-title-underline').style.width='60%';"
-             onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.06)'; this.querySelector('.course-title-underline').style.width='30px';">
-          
-          <div style="position: relative; overflow: hidden; height: 160px;">
-            {% if course.image %}
-              <img src="{{ url_for('static', filename='uploads/courses/' + course.image) if course.image else url_for('static', filename='uploads/default_course.jpg') }}" alt="{{ course.title }}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-            {% else %}
-              <img src="{{ url_for('static', filename='uploads/default_course.jpg') }}" alt="Default Image" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-            {% endif %}
-            <div style="position: absolute; top: 10px; right: 10px; background-color: rgba(46, 204, 113, 0.9); color: white; font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 20px; letter-spacing: 0.5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">POPULAR</div>
-          </div>
-          
-          <div style="padding: 18px; text-align: left;">
-            <h3 style="margin: 0 0 12px; font-size: 18px; color: #2c3e50; position: relative; padding-bottom: 8px;">{{ course.title }}
-              <span class="course-title-underline" style="position: absolute; bottom: 0; left: 0; width: 30px; height: 2px; background-color: #3498db; transition: width 0.3s ease;"></span>
-            </h3>
-            <p style="margin: 0; color: #7f8c8d; font-size: 14px; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; height: 42px;">{{ course.description }}</p>
-            <div style="margin-top: 15px; display: flex; justify-content: space-between; align-items: center;">
-              <span style="background-color: #f1f9ff; color: #3498db; padding: 4px 10px; border-radius: 15px; font-size: 12px; font-weight: 500;">Online</span>
-              <a href="{{ url_for('enroll_course', course_id=course.id) }}" style="background: linear-gradient(to right, #3498db, #2980b9); color: white; border: none; padding: 6px 14px; border-radius: 5px; font-weight: 500; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 3px 6px rgba(52, 152, 219, 0.2); text-decoration: none; display: inline-block;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 5px 10px rgba(52, 152, 219, 0.3)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 3px 6px rgba(52, 152, 219, 0.2)';">Enroll Now</a>
+
+    <!-- Responsive Grid -->
+    <div class="row g-4">
+      
+      <!-- Card 1 -->
+      <div class="col-6 col-md-4 col-lg-2">
+        <a href="https://easy2learning.classx.co.in/" target="_blank" class="course-link">
+          <div class="course-card card h-100 mx-auto" style="max-width: 220px;">
+            <img src="https://img.freepik.com/free-vector/color-theory-online-studying-web-design-basics-drawing-tutorial-interior-designer-female-artist-cartoon-character-holding-pencil_335657-3275.jpg"
+                 class="card-img-top" alt="Diploma Programs">
+            <div class="card-body">
+              <h6 class="card-title text-success"><i class="bi bi-award"></i> Diploma Programs</h6>
+            </div>
+            <div class="card-footer text-end">
+              <span class="badge bg-success">Diploma</span>
             </div>
           </div>
-        </div>
-      {% else %}
-        <div style="grid-column: 1 / -1; padding: 40px 20px; background-color: rgba(255,255,255,0.7); border-radius: 10px; border: 2px dashed #e0e0e0; animation: pulse 2s infinite;">
-          <img src="{{ url_for('static', filename='images/empty-courses.svg') }}" alt="No Courses" style="width: 100px; margin-bottom: 15px; opacity: 0.6;">
-          <p style="font-size: 18px; color: #7f8c8d; margin: 0;">No courses available at the moment. Check back soon!</p>
-        </div>
-      {% endfor %}
+        </a>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="col-6 col-md-4 col-lg-2">
+        <a href="https://easylearning.akamai.net.in/" target="_blank" class="course-link">
+          <div class="course-card card h-100 mx-auto" style="max-width: 220px;">
+            <img src="https://img.freepik.com/free-vector/learning-management-system-abstract-concept-illustration-educational-technology-online-learning-delivery-software-application-training-course-tutoring-program-access_335657-3474.jpg"
+                 class="card-img-top" alt="B.Tech Programs">
+            <div class="card-body">
+              <h6 class="card-title text-primary"><i class="bi bi-cpu"></i> B.Tech Programs</h6>
+            </div>
+            <div class="card-footer text-end">
+              <span class="badge bg-primary">B.Tech</span>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="col-6 col-md-4 col-lg-2">
+        <a href="https://easylearning.akamai.net.in/" target="_blank" class="course-link">
+          <div class="course-card card h-100 mx-auto" style="max-width: 220px;">
+            <img src="https://img.freepik.com/free-vector/internet-lessons-searching-remote-university-educational-programs-online-classes-website-high-school-student-with-magnifying-glass-cartoon-character_335657-3269.jpg"
+                 class="card-img-top" alt="Competitive Exams">
+            <div class="card-body">
+              <h6 class="card-title text-danger"><i class="bi bi-bookmarks-fill"></i> Competitive Exams</h6>
+            </div>
+            <div class="card-footer text-end">
+              <span class="badge bg-danger">Exams</span>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="col-6 col-md-4 col-lg-2">
+        <a href="https://easylearning.akamai.net.in/" target="_blank" class="course-link">
+          <div class="course-card card h-100 mx-auto" style="max-width: 220px;">
+            <img src="https://img.freepik.com/free-vector/college-admissions-concept-illustration_114360-11244.jpg"
+                 class="card-img-top" alt="Entrance Exams">
+            <div class="card-body">
+              <h6 class="card-title text-warning"><i class="bi bi-journal-text"></i> Entrance Exams</h6>
+            </div>
+            <div class="card-footer text-end">
+              <span class="badge bg-warning text-dark">Entrance</span>
+            </div>
+          </div>
+        </a>
+      </div>
+
     </div>
   </div>
-  
-  <!-- Background animation elements -->
-  <div style="position: absolute; width: 200px; height: 200px; border-radius: 50%; background: linear-gradient(45deg, rgba(52, 152, 219, 0.05), rgba(46, 204, 113, 0.05)); top: -100px; right: -50px; z-index: 1; animation: float 15s infinite alternate ease-in-out;"></div>
-  <div style="position: absolute; width: 150px; height: 150px; border-radius: 50%; background: linear-gradient(45deg, rgba(155, 89, 182, 0.05), rgba(231, 76, 60, 0.05)); bottom: -60px; left: -30px; z-index: 1; animation: float 12s infinite alternate-reverse ease-in-out;"></div>
-  
-  <style>
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    @keyframes fadeInDown {
-      from { opacity: 0; transform: translateY(-20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    @keyframes expandWidth {
-      from { width: 0; }
-      to { width: 60px; }
-    }
-    
-    @keyframes float {
-      0% { transform: translate(0, 0) rotate(0deg); }
-      50% { transform: translate(15px, 15px) rotate(3deg); }
-      100% { transform: translate(-15px, 8px) rotate(-3deg); }
-    }
-    
-    @keyframes pulse {
-      0% { box-shadow: 0 0 0 0 rgba(52, 152, 219, 0.4); }
-      70% { box-shadow: 0 0 0 8px rgba(52, 152, 219, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(52, 152, 219, 0); }
-    }
-  </style>
 </section>
+
+
+<!-- ===== CSS Styling ===== -->
+<style>
+.popular-courses-section {
+  background: linear-gradient(135deg,#f9f9f9 0%,#f0f4f8 100%);
+}
+.section-title {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #2c3e50;
+  position: relative;
+  display: inline-block;
+}
+.section-underline {
+  position: absolute;
+  bottom: -8px; left: 50%;
+  transform: translateX(-50%);
+  width: 60px; height: 3px;
+  background: linear-gradient(to right,#3498db,#2ecc71);
+  border-radius: 2px;
+}
+.course-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+.course-card {
+  border: none;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(0,0,0,.08);
+  transition: all .3s ease;
+  cursor: pointer;
+}
+.course-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 24px rgba(0,0,0,.12);
+}
+.course-card img {
+  height: 160px; object-fit: cover;
+}
+.course-card {
+  max-width: 220px;
+  margin: 0 auto;
+  font-size: 0.85rem;
+}
+
+.course-card img {
+  height: 120px;
+  object-fit: cover;
+}
+
+.course-card .card-body {
+  padding: 0.5rem 0.75rem;
+}
+
+.course-card .card-title {
+  font-size: 0.9rem;
+  margin-bottom: 0.4rem;
+}
+
+.course-card .card-footer {
+  padding: 0.4rem 0.6rem;
+}
+
+.course-card .badge {
+  font-size: 0.7rem;
+  padding: 0.3em 0.5em;
+}
+
+</style>
+
+
+<!-- Conveyor Belt Book Section -->
+<section style="text-align: center; padding: 40px 20px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #f9f9f9 0%, #f0f4f8 100%); position: relative; overflow: hidden;">
+  <div style="max-width: 1200px; margin: 0 auto; position: relative; z-index: 2;">
+    <!-- Section Heading -->
+    <h2 style="margin-bottom: 30px; font-size: 32px; color: #2c3e50; font-weight: 600; position: relative; display: inline-block; animation: fadeInDown 0.8s ease-out;">
+      Explore Our Book Collection
+      <span style="position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); width: 60px; height: 3px; background: linear-gradient(to right, #3498db, #2ecc71); border-radius: 2px; animation: expandWidth 1s ease-out forwards;"></span>
+    </h2>
+
+    {% if books %}
+    <div class="book-carousel-container border rounded-3 p-3 bg-white">
+      <div class="book-carousel d-flex align-items-stretch">
+        {% for book in books %}
+        <div class="book-item text-center me-3 flex-shrink-0" style="width: 200px;">
+          <!-- Book Image -->
+          <div class="position-relative rounded overflow-hidden mb-2 bg-light" style="height: 250px;">
+            {% if book.images %}
+            <img src="{{ url_for('static', filename='uploads/books/' + book.images[0].image_filename) }}"
+                 alt="{{ book.title }}"
+                 class="w-100 h-100"
+                 style="object-fit: contain;">
+            {% else %}
+            <div class="w-100 h-100 d-flex align-items-center justify-content-center">
+              <i class="bi bi-book text-muted" style="font-size: 3rem;"></i>
+            </div>
+            {% endif %}
+          </div>
+
+          <!-- Book Title -->
+          <h6 class="fw-semibold mb-1 text-truncate">{{ book.title }}</h6>
+
+          <!-- Author -->
+          <div class="text-muted small mb-1 text-truncate">
+            <i class="bi bi-person me-1"></i>{{ book.author }}
+          </div>
+
+          <!-- Price -->
+          <div class="fw-semibold text-success small mb-2">
+            ₹{{ "%.2f"|format(book.price) }}
+            {% if book.original_price and book.original_price > book.price %}
+              <span class="text-muted text-decoration-line-through small ms-1">
+                ₹{{ "%.2f"|format(book.original_price) }}
+              </span>
+            {% endif %}
+          </div>
+
+          <!-- Buy Now -->
+          <a href="{{ url_for('buy_now', book_id=book.id) }}" class="btn btn-sm btn-outline-primary w-100">
+            Buy Now
+          </a>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+      <i class="bi bi-search text-muted" style="font-size: 3rem;"></i>
+      <p class="text-muted mt-3">No books available at the moment.</p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<!-- Conveyor Belt Styles -->
+<style>
+  .book-carousel-container {
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .book-carousel {
+    animation: scroll-left 60s linear infinite;
+    display: inline-flex;
+    width: max-content;
+  }
+
+  @keyframes scroll-left {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  .book-item {
+    background-color: #fff;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .book-item img {
+    transition: transform 0.3s ease;
+  }
+
+  .book-item img:hover {
+    transform: scale(1.05);
+  }
+
+  @media (max-width: 768px) {
+    .book-carousel {
+      animation: none;
+      overflow-x: scroll;
+    }
+  }
+</style>
+
+
 
 <!-- Enhanced About Us Section -->
 

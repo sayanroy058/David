@@ -3,7 +3,7 @@ from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
 from functools import wraps
-from models import  db, Course, Teacher, BookImage, Admin, Certificate, User, UserCourse
+from models import  db, Course, Teacher, BookImage, BookReview, Admin, Certificate, User, UserCourse
 from forms import CourseForm, TeacherForm, AdminLoginForm, AdminRegistrationForm, CertificateUploadForm
 from models import db, Book, Order, OrderItem, Transaction
 from forms import BookForm
@@ -19,6 +19,16 @@ def admin_login_required(f):
         if 'admin_id' not in session:
             flash('Please log in to access this page.', 'warning')
             return redirect(url_for('admin.login'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+# User login required decorator
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'user_id' not in session:
+            flash('Please log in to continue.', 'warning')
+            return redirect('/login')  # Adjust this if your login route is different
         return f(*args, **kwargs)
     return decorated_function
 
@@ -184,41 +194,41 @@ def upload_certificate():
     form = CertificateUploadForm()
     if form.validate_on_submit():
         # Validate user exists
-        user = User.query.filter_by(email=form.user_email.data).first()
+        user = User.query.filter_by(email=form.user_search_value.data).first()
         if not user:
             flash('User with this email does not exist.', 'danger')
             return render_template('admin/upload_certificate.html', form=form)
-        
-        # Validate course exists
-        course = db.session.get(Course, form.course_id.data)
-        if not course:
-            flash('Course with this ID does not exist.', 'danger')
-            return render_template('admin/upload_certificate.html', form=form)
-        
+
+        # If online certificate → validate course ID
+        course = None
+        if not form.is_offline.data:
+            course = db.session.get(Course, form.course_id.data)
+            if not course:
+                flash('Course with this ID does not exist.', 'danger')
+                return render_template('admin/upload_certificate.html', form=form)
+
         # Save certificate file
         filename = secure_filename(form.certificate.data.filename)
         filepath = os.path.join(current_app.config['UPLOAD_FOLDER'], 'certificates', filename)
-        
-        # Ensure directory exists
         os.makedirs(os.path.dirname(filepath), exist_ok=True)
         form.certificate.data.save(filepath)
-        
+
         # Create certificate record
         certificate = Certificate(
             user_id=user.id,
-            course_id=course.id,
+            course_id=course.id if course else None,
+            course_name=form.course_name.data if form.is_offline.data else None,
+            is_offline=form.is_offline.data,
             filename=filename
         )
         db.session.add(certificate)
         db.session.commit()
-        
+
         flash('Certificate uploaded successfully!', 'success')
         return redirect(url_for('admin.dashboard'))
-    
-    # Get all users for dropdown
-    users = User.query.all()
-    
-    return render_template('admin/upload_certificate.html', form=form, users=users)
+
+    return render_template('admin/upload_certificate.html', form=form)
+
 
 @admin_bp.route('/certificate/<int:certificate_id>')
 @admin_login_required
@@ -352,4 +362,22 @@ def edit_user(user_id):
         return redirect(url_for('admin.dashboard'))
     
     return render_template('admin/edit_user.html', user=user)
+
+@admin_bp.route('/book-reviews')
+@admin_login_required
+def manage_book_reviews():
+    reviews = BookReview.query.order_by(BookReview.created_at.desc()).all()
+    return render_template('admin/manage_reviews.html', reviews=reviews)
+
+@admin_bp.route('/book-reviews/delete/<int:review_id>', methods=['POST'])
+@admin_login_required
+def delete_review(review_id):
+    review = db.session.get(BookReview, review_id)
+    if not review:
+        abort(404)
+    
+    db.session.delete(review)
+    db.session.commit()
+    flash('Review deleted successfully!', 'success')
+    return redirect(url_for('admin.manage_book_reviews'))
 

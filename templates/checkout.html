@@ -82,7 +82,7 @@
   .book-image {
     width: 60px;
     height: 80px;
-    object-fit: cover;
+    object-fit: contain;
     border-radius: 5px;
   }
 </style>
@@ -119,17 +119,48 @@
               {% for item in cart %}
               <tr>
                 <td>
-                  {% if item.image %}
-                  <img src="{{ url_for('static', filename='uploads/' ~ item.image) }}" alt="{{ item.title }}" class="book-image">
-                  {% else %}
-                  <div class="book-image bg-light d-flex align-items-center justify-content-center">
-                    <i class="bi bi-book text-muted"></i>
+                  {% if item.get('type') == 'bundle' %}
+                  <div class="book-image bg-primary d-flex align-items-center justify-content-center">
+                    <i class="bi bi-collection text-white"></i>
                   </div>
+                  {% elif item.get('type') == 'course' %}
+                    {% if item.image %}
+                    <img src="{{ url_for('static', filename='uploads/courses/' ~ item.image) }}" alt="{{ item.title }}" class="book-image">
+                    {% else %}
+                    <div class="book-image bg-light d-flex align-items-center justify-content-center">
+                      <i class="bi bi-play-circle text-muted"></i>
+                    </div>
+                    {% endif %}
+                  {% else %}
+                    {% if item.image %}
+                    <img src="{{ url_for('static', filename='uploads/books/' ~ item.image) }}" alt="{{ item.title }}" class="book-image">
+                    {% else %}
+                    <div class="book-image bg-light d-flex align-items-center justify-content-center">
+                      <i class="bi bi-book text-muted"></i>
+                    </div>
+                    {% endif %}
                   {% endif %}
                 </td>
                 <td>
+                  {% if item.get('type') == 'bundle' %}
+                  <h6 class="mb-1">{{ item.title }} <span class="badge bg-primary ms-2">Bundle</span></h6>
+                  <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#bundleBooks{{ item.id }}" aria-expanded="false">
+                    <i class="bi bi-chevron-down me-1"></i>View Books ({{ item.books|length }})
+                  </button>
+                  <div class="collapse mt-2" id="bundleBooks{{ item.id }}">
+                    <div class="border rounded p-2 bg-light">
+                      {% for book in item.books %}
+                      <small class="d-block text-muted">• {{ book.title }} by {{ book.author }}</small>
+                      {% endfor %}
+                    </div>
+                  </div>
+                  {% elif item.get('type') == 'course' %}
+                  <h6 class="mb-1">{{ item.title }} <span class="badge bg-success ms-2">Course</span></h6>
+                  <small class="text-muted">Certificate Course - Online Learning</small>
+                  {% else %}
                   <h6 class="mb-0">{{ item.title }}</h6>
                   <small class="text-muted">{{ item.author }}</small>
+                  {% endif %}
                 </td>
                 <td class="text-center">{{ item.quantity }}</td>
                 <td class="text-end">₹{{ "%.2f"|format(item.price * item.quantity) }}</td>
@@ -150,20 +181,39 @@
         <form id="customer-info-form">
           <div class="row g-3">
             <div class="col-md-6">
-              <label for="name" class="form-label">Full Name</label>
-              <input type="text" class="form-control" id="name" required>
+              <label for="full_name" class="form-label">Full Name *</label>
+              <input type="text" class="form-control" id="full_name" name="full_name" required>
+              <div class="invalid-feedback">Full name is required</div>
             </div>
             <div class="col-md-6">
-              <label for="email" class="form-label">Email</label>
-              <input type="email" class="form-control" id="email" value="{{ session.get('email', '') }}" {% if session.get('email') %}readonly{% endif %}>
+              <label for="email" class="form-label">Email *</label>
+              <input type="email" class="form-control" id="email" name="email" value="{{ session.get('email', '') }}" {% if session.get('email') %}readonly{% endif %} required>
+              <div class="invalid-feedback">Valid email is required</div>
             </div>
             <div class="col-md-6">
-              <label for="phone" class="form-label">Phone</label>
-              <input type="tel" class="form-control" id="phone" value="{{ session.get('phone', '') }}">
+              <label for="phone" class="form-label">Mobile Number *</label>
+              <input type="tel" class="form-control" id="phone" name="phone" value="{{ session.get('phone', '') }}" minlength="10" maxlength="15" required>
+              <div class="invalid-feedback">Mobile number (10-15 digits) is required</div>
+            </div>
+            <div class="col-md-12">
+              <label for="street_address" class="form-label">Street Address *</label>
+              <input type="text" class="form-control" id="street_address" name="street_address" placeholder="House number, street name, area" required>
+              <div class="invalid-feedback">Street address is required</div>
             </div>
             <div class="col-md-6">
-              <label for="address" class="form-label">Address</label>
-              <input type="text" class="form-control" id="address" required>
+              <label for="city" class="form-label">City *</label>
+              <input type="text" class="form-control" id="city" name="city" required>
+              <div class="invalid-feedback">City is required</div>
+            </div>
+            <div class="col-md-6">
+              <label for="state" class="form-label">State *</label>
+              <input type="text" class="form-control" id="state" name="state" required>
+              <div class="invalid-feedback">State is required</div>
+            </div>
+            <div class="col-md-6">
+              <label for="pincode" class="form-label">Pincode *</label>
+              <input type="text" class="form-control" id="pincode" name="pincode" pattern="[0-9]{6}" maxlength="6" placeholder="6-digit pincode" required>
+              <div class="invalid-feedback">Valid 6-digit pincode is required</div>
             </div>
           </div>
         </form>
@@ -193,10 +243,8 @@
   <div class="checkout-step">
     <h5 class="mb-4">Order Total</h5>
 
-    {% set tax = total_price * 0.05 %}
-    {% set subtotal_with_tax = total_price + tax %}
-    {% set delivery_charge = 60 if subtotal_with_tax < 500 else 0 %}
-    {% set final_total = subtotal_with_tax + delivery_charge %}
+    {% set delivery_charge = 60 if total_price < 500 else 0 %}
+    {% set final_total = total_price + delivery_charge %}
 
     <div class="order-summary">
       <div class="order-summary-item">
@@ -206,10 +254,6 @@
       <div class="order-summary-item">
         <span>Shipping</span>
         <span>₹{{ "%.2f"|format(delivery_charge) }}</span>
-      </div>
-      <div class="order-summary-item">
-        <span>Tax (5%)</span>
-        <span>₹{{ "%.2f"|format(tax) }}</span>
       </div>
       <div class="order-summary-item">
         <strong>Total</strong>
@@ -242,40 +286,75 @@
     element.classList.add('selected');
     element.querySelector('input[type="radio"]').checked = true;
   }
-  
-  document.getElementById('rzp-button').addEventListener('click', function(e) {
+
+  document.getElementById('rzp-button').addEventListener('click', async function (e) {
     e.preventDefault();
-    
-    // Validate form
+
     const form = document.getElementById('customer-info-form');
     if (!form.checkValidity()) {
       form.reportValidity();
       return;
     }
-    
-    // Get form values
-    const name = document.getElementById('name').value;
-    const email = document.getElementById('email').value;
-    const phone = document.getElementById('phone').value;
-    
-    // Calculate amount in paise (Razorpay uses smallest currency unit)
-    // Calculate amount in paise
-    const amount = {{ (total_price * 1.05 + (total_price * 1.05 < 500 and 60 or 0)) * 100 | round|int }};
 
-    
+    // Get form values
+    const full_name = document.getElementById('full_name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const street_address = document.getElementById('street_address').value.trim();
+    const city = document.getElementById('city').value.trim();
+    const state = document.getElementById('state').value.trim();
+    const pincode = document.getElementById('pincode').value.trim();
+
+    // Validate pincode format
+    if (!/^[0-9]{6}$/.test(pincode)) {
+      alert('Please enter a valid 6-digit pincode');
+      document.getElementById('pincode').focus();
+      return;
+    }
+
+    // Store customer info in the session (backend)
+    try {
+      const response = await fetch('/store-customer-info', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ 
+          full_name, 
+          email, 
+          phone, 
+          street_address, 
+          city, 
+          state, 
+          pincode 
+        })
+      });
+      
+      const result = await response.json();
+      if (result.status === 'error') {
+        alert(result.message || 'Error saving customer info. Please try again.');
+        return;
+      }
+    } catch (error) {
+      alert('Error saving customer info. Please try again.');
+      return;
+    }
+
+    // Calculate amount in paise (Razorpay uses the smallest currency unit)
+    const amount = {{ (total_price + (total_price < 500 and 60 or 0)) * 100 | round | int }};
+
     var options = {
-      key: "rzp_test_vntVc372QhJLXH",
+      key: "{{ razorpay_key }}",
       amount: amount,
       currency: "INR",
       name: "Easy2Learning",
       description: "Purchase from Easy2Learning",
       image: "/static/icons/logo.png",
-      handler: function(response) {
-        // On successful payment
+      handler: function (response) {
         window.location.href = "/payment/success?payment_id=" + response.razorpay_payment_id;
       },
       prefill: {
-        name: name,
+        name: full_name,
         email: email,
         contact: phone
       },
@@ -283,9 +362,10 @@
         color: "#F4E21D"
       }
     };
-    
+
     var rzp = new Razorpay(options);
     rzp.open();
   });
 </script>
+
 {% endblock %}

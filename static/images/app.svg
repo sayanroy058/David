@@ -1,0 +1,57 @@
+<svg viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="800" height="400" fill="#f8f9fa" />
+  
+  <!-- Left Section - Text Content -->
+  <g transform="translate(50, 50)">
+    <!-- Title -->
+    <text x="0" y="30" font-family="Arial" font-size="24" font-weight="bold" fill="#333">Join 15 Million students on the app today!</text>
+    
+    <!-- Features List -->
+    <g transform="translate(0, 60)">
+      <!-- Feature 1 -->
+      <circle cx="12" cy="12" r="12" fill="#ffc107" />
+      <path d="M8,12 L11,15 L16,9" stroke="white" stroke-width="2" fill="none" />
+      <text x="30" y="16" font-family="Arial" font-size="16" fill="#333">Live & recorded classes available at ease</text>
+      
+      <!-- Feature 2 -->
+      <circle cx="12" cy="50" r="12" fill="#ffc107" />
+      <path d="M8,50 L11,53 L16,47" stroke="white" stroke-width="2" fill="none" />
+      <text x="30" y="54" font-family="Arial" font-size="16" fill="#333">Dashboard for progress tracking</text>
+      
+      <!-- Feature 3 -->
+      <circle cx="12" cy="88" r="12" fill="#ffc107" />
+      <path d="M8,88 L11,91 L16,85" stroke="white" stroke-width="2" fill="none" />
+      <text x="30" y="92" font-family="Arial" font-size="16" fill="#333">Lakhs of practice questions</text>
+    </g>
+    
+    <!-- App Store Buttons -->
+    <g transform="translate(0, 180)">
+      <!-- Google Play Button -->
+      <rect x="0" y="0" width="180" height="54" rx="8" fill="#333" />
+      <text x="90" y="30" font-family="Arial" font-size="16" fill="white" text-anchor="middle">Get it on Google Play</text>
+      
+      <!-- App Store Button -->
+      <rect x="190" y="0" width="180" height="54" rx="8" fill="#fff" stroke="#333" stroke-width="1" />
+      <text x="280" y="30" font-family="Arial" font-size="16" fill="#333" text-anchor="middle">Download on App Store</text>
+    </g>
+  </g>
+  
+  <!-- Right Section - App Screenshot -->
+  <g transform="translate(500, 50)">
+    <!-- Phone Frame -->
+    <rect x="0" y="0" width="220" height="300" rx="20" fill="#333" />
+    <rect x="10" y="10" width="200" height="280" rx="12" fill="#fff" />
+    
+    <!-- App UI Elements -->
+    <rect x="20" y="30" width="180" height="50" rx="8" fill="#007bff" />
+    <text x="110" y="60" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Easy2Learning</text>
+    
+    <!-- Content Blocks -->
+    <rect x="20" y="90" width="180" height="40" rx="4" fill="#f0f0f0" />
+    <rect x="20" y="140" width="180" height="40" rx="4" fill="#f0f0f0" />
+    <rect x="20" y="190" width="180" height="40" rx="4" fill="#f0f0f0" />
+    <rect x="20" y="240" width="85" height="30" rx="15" fill="#007bff" />
+    <text x="62.5" y="260" font-family="Arial" font-size="12" fill="white" text-anchor="middle">Start Now</text>
+  </g>
+</svg>

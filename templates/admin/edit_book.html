@@ -1,4 +1,4 @@
-{% extends 'admin/base_admin.html' %}
+{% extends 'admin_base.html' %}
 {% block title %}Edit Book | Admin Dashboard{% endblock %}
 
 {% block content %}
@@ -9,7 +9,7 @@
       <form method="POST" enctype="multipart/form-data" action="{{ url_for('admin.edit_book', book_id=book.id) }}">
         {{ form.hidden_tag() }}
 
-        {% for field in [form.title, form.author, form.category, form.subject, form.quantity, form.original_price, form.price] %}
+        {% for field in [form.title, form.author, form.quantity, form.original_price, form.price] %}
           <div class="mb-3">
             {{ field.label(class="form-label fw-semibold") }}
             {{ field(class="form-control") }}
@@ -24,6 +24,48 @@
           {{ form.description(class="form-control", rows="4") }}
         </div>
 
+        <!-- Categories & Subcategories -->
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Categories</label>
+            <div class="border rounded p-3" style="max-height: 200px; overflow-y: auto;">
+              {% for category in all_categories %}
+              <div class="form-check mb-2">
+                <input class="form-check-input" type="checkbox" name="categories" value="{{ category.id }}" 
+                       id="cat{{ category.id }}" 
+                       {% if category.id in form.categories.data %}checked{% endif %}>
+                <label class="form-check-label {% if category.id in form.categories.data %}fw-bold text-primary{% endif %}" 
+                       for="cat{{ category.id }}">
+                  {{ category.name }}
+                  {% if category.id in form.categories.data %}
+                    <span class="badge bg-primary ms-1">Selected</span>
+                  {% endif %}
+                </label>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Subcategories</label>
+            <div class="border rounded p-3" style="max-height: 200px; overflow-y: auto;">
+              {% for subcategory in all_subcategories %}
+              <div class="form-check mb-2">
+                <input class="form-check-input" type="checkbox" name="subcategories" value="{{ subcategory.id }}" 
+                       id="subcat{{ subcategory.id }}" 
+                       {% if subcategory.id in form.subcategories.data %}checked{% endif %}>
+                <label class="form-check-label {% if subcategory.id in form.subcategories.data %}fw-bold text-primary{% endif %}" 
+                       for="subcat{{ subcategory.id }}">
+                  {{ subcategory.name }}
+                  {% if subcategory.id in form.subcategories.data %}
+                    <span class="badge bg-primary ms-1">Selected</span>
+                  {% endif %}
+                </label>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+
         <!-- Current Images -->
         {% if book.images %}
         <div class="mb-3">
@@ -33,7 +75,7 @@
             <div class="col-4">
               <div class="position-relative">
                 <img src="{{ url_for('static', filename='uploads/books/' + image.image_filename) }}" 
-                     class="img-thumbnail" alt="Book image">
+                     class="img-thumbnail" alt="Book image" style="width: 100%; height: 200px; object-fit: contain;">
                 <div class="form-check position-absolute" style="top: 5px; right: 5px;">
                   <input class="form-check-input" type="checkbox" name="delete_images" value="{{ image.id }}" id="img{{ image.id }}">
                   <label class="form-check-label visually-hidden" for="img{{ image.id }}">Delete</label>
@@ -51,6 +93,30 @@
           {{ form.images(class="form-control", multiple=True) }}
           <div class="form-text">Upload new images (optional)</div>
         </div>
+
+        <!-- Book Rating Section -->
+        <!-- <div class="card mb-3 border-primary">
+          <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Book Rating</h5>
+          </div>
+          <div class="card-body">
+            <form method="POST" action="{{ url_for('admin.set_book_rating', book_id=book.id) }}">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label class="form-label fw-semibold">Average Rating (0-5)</label>
+                  <input type="number" name="rating" class="form-control" min="0" max="5" step="0.1" value="{{ book.avg_rating }}" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label class="form-label fw-semibold">Number of Reviews</label>
+                  <input type="number" name="review_count" class="form-control" min="0" value="{{ book.review_count }}" required>
+                </div>
+              </div>
+              <div class="d-grid">
+                <button type="submit" class="btn btn-primary">Update Rating</button>
+              </div>
+            </form>
+          </div>
+        </div> -->
 
         <div class="d-grid gap-2">
           <button type="submit" class="btn btn-primary">Update Book</button>

@@ -1,4 +1,4 @@
-{% extends 'admin/base_admin.html' %}
+{% extends 'admin_base.html' %}
 {% block title %}Add Course{% endblock %}
 {% block content %}
   <div class="container mt-5" style="max-width: 800px;">
@@ -9,16 +9,16 @@
           {{ form.hidden_tag() }}
 
           <div class="mb-4">
-            {{ form.title.label(class="form-label fw-semibold") }}
-            {{ form.title(class="form-control form-control-lg", placeholder="Enter course title") }}
+            {{ form.title.label(class="form-label") }}
+            {{ form.title(class="form-control", placeholder="Enter course title") }}
             {% if form.title.errors %}
               <div class="form-text text-danger">{{ form.title.errors[0] }}</div>
             {% endif %}
           </div>
 
           <div class="mb-4">
-            {{ form.description.label(class="form-label fw-semibold") }}
-            {{ form.description(class="form-control form-control-lg", rows=5, placeholder="Enter course description") }}
+            {{ form.description.label(class="form-label") }}
+            {{ form.description(class="form-control", rows=5, placeholder="Enter course description") }}
             {% if form.description.errors %}
               <div class="form-text text-danger">{{ form.description.errors[0] }}</div>
             {% endif %}
@@ -26,18 +26,18 @@
 
           <div class="row mb-4">
             <div class="col-md-6">
-              {{ form.price.label(class="form-label fw-semibold") }}
+              {{ form.price.label(class="form-label") }}
               <div class="input-group">
                 <span class="input-group-text">₹</span>
-                {{ form.price(class="form-control form-control-lg", placeholder="0.00") }}
+                {{ form.price(class="form-control", placeholder="0.00") }}
               </div>
               {% if form.price.errors %}
                 <div class="form-text text-danger">{{ form.price.errors[0] }}</div>
               {% endif %}
             </div>
             <div class="col-md-6">
-              {{ form.teacher_id.label(class="form-label fw-semibold") }}
-              {{ form.teacher_id(class="form-select form-select-lg") }}
+              {{ form.teacher_id.label(class="form-label") }}
+              {{ form.teacher_id(class="form-select") }}
               {% if form.teacher_id.errors %}
                 <div class="form-text text-danger">{{ form.teacher_id.errors[0] }}</div>
               {% endif %}
@@ -46,7 +46,7 @@
 
           <div class="mb-4">
             <div class="form-check form-switch">
-              {{ form.is_certification(class="form-check-input", role="switch", id="isCertification") }}
+              {{ form.is_certification(class="form-check-input", role="switch", id="isCertification", checked=true) }}
               {{ form.is_certification.label(class="form-check-label") }}
             </div>
           </div>
@@ -55,14 +55,14 @@
             <h5 class="mb-3">Certification Details</h5>
             <div class="row mb-3">
               <div class="col-md-6">
-                {{ form.subject.label(class="form-label fw-semibold") }}
+                {{ form.subject.label(class="form-label") }}
                 {{ form.subject(class="form-control", placeholder="e.g., Python Programming") }}
                 {% if form.subject.errors %}
                   <div class="form-text text-danger">{{ form.subject.errors[0] }}</div>
                 {% endif %}
               </div>
               <div class="col-md-6">
-                {{ form.difficulty_level.label(class="form-label fw-semibold") }}
+                {{ form.difficulty_level.label(class="form-label") }}
                 {{ form.difficulty_level(class="form-select") }}
                 {% if form.difficulty_level.errors %}
                   <div class="form-text text-danger">{{ form.difficulty_level.errors[0] }}</div>
@@ -70,7 +70,7 @@
               </div>
             </div>
             <div class="mb-3">
-              {{ form.duration.label(class="form-label fw-semibold") }}
+              {{ form.duration.label(class="form-label") }}
               {{ form.duration(class="form-control", placeholder="e.g., 4 weeks") }}
               {% if form.duration.errors %}
                 <div class="form-text text-danger">{{ form.duration.errors[0] }}</div>
@@ -79,15 +79,15 @@
           </div>
 
           <div class="mb-4">
-            {{ form.image.label(class="form-label fw-semibold") }}
-            {{ form.image(class="form-control form-control-lg", type="file") }}
+            {{ form.image.label(class="form-label") }}
+            {{ form.image(class="form-control", type="file") }}
             {% if form.image.errors %}
               <div class="form-text text-danger">{{ form.image.errors[0] }}</div>
             {% endif %}
           </div>
 
           <div class="d-grid">
-            <button type="submit" class="btn btn-primary btn-lg fw-semibold shadow-sm">Add Course</button>
+            <button type="submit" class="btn btn-warning btn-lg fw-semibold shadow-sm">ADD COURSE</button>
           </div>
         </form>
       </div>
@@ -99,8 +99,8 @@
       const isCertification = document.getElementById('isCertification');
       const certificationFields = document.getElementById('certificationFields');
       
-      // Initial state
-      certificationFields.style.display = isCertification.checked ? 'block' : 'none';
+      // Initial state - set to display block by default
+      certificationFields.style.display = 'block';
       
       // Toggle certification fields visibility
       isCertification.addEventListener('change', function() {
@@ -108,4 +108,29 @@
       });
     });
   </script>
+
+  <style>
+    .form-check-input:checked {
+      background-color: #0d6efd;
+      border-color: #0d6efd;
+    }
+    
+    .btn-warning {
+      background-color: #ffc107;
+      color: #000;
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+    
+    .form-control, .form-select {
+      border-radius: 0.25rem;
+      padding: 0.5rem 0.75rem;
+      border: 1px solid #ced4da;
+    }
+    
+    .form-label {
+      font-weight: normal;
+      margin-bottom: 0.5rem;
+    }
+  </style>
 {% endblock %}

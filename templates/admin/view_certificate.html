@@ -1,4 +1,4 @@
-{% extends 'admin/base_admin.html' %}
+{% extends 'admin_base.html' %}
 {% block title %}View Certificate | Admin Dashboard{% endblock %}
 
 {% block extra_css %}
@@ -153,7 +153,13 @@
   
   <div class="certificate-card">
     <div class="certificate-header">
-      <h2 class="certificate-title">{{ certificate.course.title }} Certificate</h2>
+      <h2 class="certificate-title">
+        {% if certificate.is_offline %}
+          {{ certificate.course_name }} (Offline Certificate)
+        {% else %}
+          {{ certificate.course.title }} Certificate
+        {% endif %}
+      </h2>
       <span class="badge bg-success">Issued</span>
     </div>
     
@@ -162,14 +168,23 @@
         <div class="meta-label">User:</div>
         <div class="meta-value">{{ certificate.user.email }}</div>
       </div>
+
       <div class="meta-item">
         <div class="meta-label">Course:</div>
-        <div class="meta-value">{{ certificate.course.title }}</div>
+        <div class="meta-value">
+          {% if certificate.is_offline %}
+            {{ certificate.course_name }}
+          {% else %}
+            {{ certificate.course.title }}
+          {% endif %}
+        </div>
       </div>
+
       <div class="meta-item">
         <div class="meta-label">Issue Date:</div>
         <div class="meta-value">{{ certificate.upload_date.strftime('%Y-%m-%d') }}</div>
       </div>
+
       <div class="meta-item">
         <div class="meta-label">File:</div>
         <div class="meta-value">{{ certificate.filename }}</div>
