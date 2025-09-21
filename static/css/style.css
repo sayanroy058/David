@@ -582,6 +582,9 @@ body {
   color: rgba(255, 255, 255, 0.9);
   text-decoration: none;
   transition: var(--transition);
+  word-break: break-word;
+  display: inline-block;
+  max-width: 100%;
 }
 
 .e2l-contact-value:hover {
