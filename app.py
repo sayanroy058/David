@@ -1311,55 +1311,95 @@ def admin_delete_full_order(order_id):
 
 @app.route('/search')
 def search():
-    query = request.args.get('q', '').strip().lower()
+    query = request.args.get('q', '').strip()
     if not query:
         return jsonify({'success': False, 'results': {}})
 
-    # Search for books in the database
-    books_query = Book.query.filter_by(is_deleted=False).filter(Book.title.ilike(f'%{query}%')).all()
-    books_results = [{
-        'id': book.id,
-        'title': book.title,
-        'author': book.author,
-        'description': book.description,
-        'price': book.price,
-        'category': book.category
-    } for book in books_query]
-    
-    # Search for courses (placeholder for now)
-    courses = []
-    
-    # Search for certifications (placeholder for now)
-    certifications = []
-
     results = {
-        'courses': courses,
-        'books': books_results,
-        'certifications': certifications,
+        'courses': [],          # TODO: Fill in when course model is ready
+        'books': [],
+        'certifications': []    # TODO: Fill in when certification model is ready
     }
+
+    # --- Books search ---
+    books_query = (
+        Book.query
+        .filter(Book.is_deleted == False)
+        .filter(
+            db.or_(
+                Book.title.ilike(f"%{query}%"),
+                Book.author.ilike(f"%{query}%"),
+                Book.description.ilike(f"%{query}%"),
+                Book.categories.any(Category.name.ilike(f"%{query}%")),
+                Book.subcategories.any(SubCategory.name.ilike(f"%{query}%"))
+            )
+        )
+        .limit(20)
+        .all()
+    )
+
+    for book in books_query:
+        results['books'].append({
+            'id': book.id,
+            'title': book.title,
+            'author': book.author,
+            'description': book.description or '',
+            'price': book.price,
+            'categories': [c.name for c in book.categories],
+            'subcategories': [s.name for s in book.subcategories],
+            'avg_rating': book.avg_rating,
+            'review_count': book.review_count
+        })
 
     return jsonify({'success': True, 'results': results})
 
+
 @app.route('/search/suggestions')
 def search_suggestions():
-    query = request.args.get('q', '').strip().lower()
+    query = request.args.get('q', '').strip()
     category = request.args.get('category', 'all')
-    
+
     if not query or len(query) < 2:
         return jsonify({'success': False, 'suggestions': []})
-    
+
     suggestions = []
-    
-    # Get book suggestions if category is 'all' or 'books'
-    if category == 'all' or category == 'books':
-        books = Book.query.filter_by(is_deleted=False).filter(Book.title.ilike(f'%{query}%')).limit(5).all()
+
+    # --- Book suggestions ---
+    if category in ('all', 'books'):
+        books = (
+            Book.query
+            .filter(Book.is_deleted == False)
+            .filter(Book.title.ilike(f"%{query}%"))
+            .limit(5)
+            .all()
+        )
         for book in books:
             suggestions.append({
                 'text': book.title,
                 'category': 'books',
                 'id': book.id
             })
-    
+
+    # --- Category suggestions ---
+    if category in ('all', 'books'):
+        cats = Category.query.filter(Category.name.ilike(f"%{query}%")).limit(5).all()
+        for cat in cats:
+            suggestions.append({
+                'text': cat.name,
+                'category': 'category',
+                'id': cat.id
+            })
+
+    # --- SubCategory suggestions ---
+    if category in ('all', 'books'):
+        subs = SubCategory.query.filter(SubCategory.name.ilike(f"%{query}%")).limit(5).all()
+        for sub in subs:
+            suggestions.append({
+                'text': sub.name,
+                'category': 'subcategory',
+                'id': sub.id
+            })
+
     return jsonify({'success': True, 'suggestions': suggestions})
 
 

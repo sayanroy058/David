@@ -864,7 +864,6 @@ function attachSearchEvents(inputEl, categoryEl, isMobile = false) {
 attachSearchEvents(desktopSearchInput, desktopSearchCategory, false);
 attachSearchEvents(mobileSearchInput, mobileSearchCategory, true);
 
-// Handle search (desktop + mobile) - rest remains the same
 async function handleSearch(event) {
   event.preventDefault();
 
@@ -977,6 +976,7 @@ async function handleSearch(event) {
 
   return false;
 }
+
 
 // Handle item click in search results
 function viewItem(category, itemId) {
