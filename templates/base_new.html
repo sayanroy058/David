@@ -316,7 +316,41 @@
   font-size: 0.7rem;
   padding: 0.3em 0.45em;
 }
+/* Add styles for mobile suggestions */
+.mobile-suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #dee2e6;
+  border-radius: 0.375rem;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  z-index: 1000;
+  max-height: 300px;
+  overflow-y: auto;
+}
 
+/* Ensure mobile search form has relative positioning for absolute suggestions */
+#mobileSearchForm {
+  position: relative;
+}
+
+/* Responsive adjustments for mobile suggestions */
+@media (max-width: 991.98px) {
+  .mobile-suggestions .search-suggestion-item {
+    padding: 0.5rem;
+    font-size: 0.875rem;
+  }
+  
+  .mobile-suggestions .suggestion-icon {
+    font-size: 0.875rem;
+  }
+  
+  .mobile-suggestions .badge {
+    font-size: 0.75rem;
+  }
+}
 /* Search bar refinements */
 .master-search-bar {
   display: flex;
@@ -404,96 +438,99 @@
 <body class="d-flex flex-column min-vh-100">
 
   <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg sticky-top bg-light shadow-sm">
-    <div class="container nav-align-center">
+  <!-- Navbar -->
+<nav class="navbar navbar-expand-lg sticky-top bg-light shadow-sm">
+  <div class="container nav-align-center">
 
-      <!-- Brand -->
-      <a class="navbar-brand d-flex align-items-center" href="/">
-        <img src="/static/icons/logo.png" alt="Logo" width="50" height="50" class="me-2">
-        <span class="brand-text fw-bold fs-5">Easy2Learning</span>
-      </a>
+    <!-- Brand -->
+    <a class="navbar-brand d-flex align-items-center" href="/">
+      <img src="/static/icons/logo.png" alt="Logo" width="50" height="50" class="me-2">
+      <span class="brand-text fw-bold fs-5">Easy2Learning</span>
+    </a>
 
-      <!-- Desktop Search (visible lg and up) -->
-      <div class="search-wrapper d-none d-lg-flex">
-  <form id="searchForm" class="w-100" onsubmit="return handleSearch(event)">
-    <div class="master-search-bar">
-      <select class="form-select form-select-sm search-category-dropdown" id="searchCategory">
-        <option value="all">All Categories</option>
-        <option value="courses">Courses</option>
-        <option value="books">Books</option>
-        <option value="certifications">Certifications</option>
-      </select>
-      <input class="form-control form-control-sm master-search-input" id="searchInput"
-             type="search" name="q" placeholder="Search..." autocomplete="off" required>
-      <button class="btn master-search-btn" type="submit">
-        <i class="bi bi-search"></i>
-      </button>
-    </div>
-  </form>
-  <div class="search-suggestions" id="searchSuggestions"></div>
-</div>
-
-
-      <!-- Toggler -->
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
-              data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" 
-              aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-
-      <!-- Right Icons / Links -->
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto align-items-lg-center">
-          <li class="nav-item"><a class="nav-link" href="/"><i class="bi bi-house-door"></i> Home</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('courses') }}"><i class="bi bi-journal-bookmark"></i> Courses</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('books') }}"><i class="bi bi-book"></i> Books</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('certifications') }}"><i class="bi bi-award"></i> Certifications</a></li>
-
-          <!-- Cart -->
-          <li class="nav-item">
-            <a class="nav-link position-relative" href="{{ url_for('cart') }}">
-              <i class="bi bi-cart3"></i> Cart
-              {% if session.cart and session.cart|length > 0 %}
-              <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                {{ session.cart|length }}
-              </span>
-              {% endif %}
-            </a>
-          </li>
-
-          <!-- Auth -->
-          {% if session.get('user_id') %}
-            <li class="nav-item"><a class="nav-link" href="{{ url_for('profile') }}"><i class="bi bi-person-check-fill"></i> {{ session.email }}</a></li>
-            <li class="nav-item"><a class="nav-link btn btn-outline-danger ms-lg-2" href="{{ url_for('logout') }}"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
-          {% else %}
-            <li class="nav-item"><a class="nav-link btn btn-primary ms-lg-2" href="{{ url_for('login') }}"><i class="bi bi-person-circle"></i> Login</a></li>
-          {% endif %}
-        </ul>
-      </div>
-    </div>
-
-    <!-- Mobile Search Bar (always visible below toggler) -->
-    <div class="d-lg-none bg-light px-3 py-2 border-top">
-      <form id="mobileSearchForm" onsubmit="return handleSearch(event)">
-        <div class="master-search-bar d-flex">
-          <select class="form-select form-select-sm search-category-dropdown" id="mobileSearchCategory">
-            <option value="all">All</option>
+    <!-- Desktop Search (visible on lg and up) -->
+    <div class="search-wrapper d-none d-lg-flex">
+      <form id="searchForm" class="w-100" onsubmit="return handleSearch(event)">
+        <div class="master-search-bar">
+          <select class="form-select form-select-sm search-category-dropdown" id="searchCategory">
+            <option value="all">All Categories</option>
             <option value="courses">Courses</option>
             <option value="books">Books</option>
-            <option value="certifications">Certs</option>
+            <option value="certifications">Certifications</option>
           </select>
-          <input class="form-control form-control-sm master-search-input" id="mobileSearchInput" 
-                 type="search" name="q" placeholder="Search..." aria-label="Search" required>
-          <button class="btn btn-primary master-search-btn" type="submit">
+          <input class="form-control form-control-sm master-search-input" 
+                 id="searchInput" type="search" name="q" 
+                 placeholder="Search..." autocomplete="off" required>
+          <button class="btn master-search-btn" type="submit">
             <i class="bi bi-search"></i>
           </button>
         </div>
       </form>
+      <div class="search-suggestions" id="searchSuggestions"></div>
     </div>
-  </nav>
+
+    <!-- Navbar Toggler -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+            data-bs-target="#navbarNav" aria-controls="navbarNav" 
+            aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Navbar Links -->
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto align-items-lg-center">
+        <li class="nav-item"><a class="nav-link" href="/"><i class="bi bi-house-door"></i> Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('courses') }}"><i class="bi bi-journal-bookmark"></i> Courses</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('books') }}"><i class="bi bi-book"></i> Books</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('certifications') }}"><i class="bi bi-award"></i> Certifications</a></li>
+
+        <!-- Cart -->
+        <li class="nav-item">
+          <a class="nav-link position-relative" href="{{ url_for('cart') }}">
+            <i class="bi bi-cart3"></i> Cart
+            {% if session.cart and session.cart|length > 0 %}
+              <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                {{ session.cart|length }}
+              </span>
+            {% endif %}
+          </a>
+        </li>
+
+        <!-- Auth Links -->
+        {% if session.get('user_id') %}
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('profile') }}"><i class="bi bi-person-check-fill"></i> Profile</a></li>
+          <li class="nav-item"><a class="nav-link btn btn-outline-danger ms-lg-2" href="{{ url_for('logout') }}"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
+        {% else %}
+          <li class="nav-item"><a class="nav-link btn btn-primary ms-lg-2" href="{{ url_for('login') }}"><i class="bi bi-person-circle"></i> Login</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+
+  <!-- Mobile Search (visible only on small screens) -->
+  <div class="d-lg-none bg-light px-3 py-2 border-top">
+    <form id="mobileSearchForm" onsubmit="return handleSearch(event)">
+      <div class="master-search-bar d-flex">
+        <select class="form-select form-select-sm search-category-dropdown" id="mobileSearchCategory">
+          <option value="all">All</option>
+          <option value="courses">Courses</option>
+          <option value="books">Books</option>
+          <option value="certifications">Certs</option>
+        </select>
+        <input class="form-control form-control-sm master-search-input" 
+               id="mobileSearchInput" type="search" name="q" 
+               placeholder="Search..." aria-label="Search" required>
+        <button class="btn btn-primary master-search-btn" type="submit">
+          <i class="bi bi-search"></i>
+        </button>
+      </div>
+      <!-- Mobile Search Suggestions -->
+      <div class="search-suggestions mobile-suggestions" id="mobileSearchSuggestions" style="display: none;"></div>
+    </form>
+  </div>
+</nav>
+
 </body>
-
-
 
   <!-- Content -->
   <main class="flex-grow-1">
@@ -720,529 +757,263 @@
     </div>
   </div>
 
+  
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
   <script>
-    let searchTimeout;
-    const searchInput = document.getElementById('searchInput');
-    const searchSuggestionsEl = document.getElementById('searchSuggestions');
-    const searchCategory = document.getElementById('searchCategory');
+let searchTimeout;
 
-    // Show search suggestions
-    async function showSearchSuggestions(query) {
-      if (!query || query.length < 2) {
-        searchSuggestionsEl.style.display = 'none';
-        return;
-      }
+// Desktop search elements
+const desktopSearchInput = document.getElementById('searchInput');
+const desktopSearchCategory = document.getElementById('searchCategory');
+const searchSuggestionsEl = document.getElementById('searchSuggestions');
 
-      const category = searchCategory.value;
+// Mobile search elements
+const mobileSearchInput = document.getElementById('mobileSearchInput');
+const mobileSearchCategory = document.getElementById('mobileSearchCategory');
+const mobileSearchSuggestionsEl = document.getElementById('mobileSearchSuggestions');
+
+// Show search suggestions - updated to handle both desktop and mobile
+async function showSearchSuggestions(query, category, isMobile = false) {
+  const suggestionsContainer = isMobile ? mobileSearchSuggestionsEl : searchSuggestionsEl;
+  
+  if (!query || query.length < 2) {
+    if (suggestionsContainer) suggestionsContainer.style.display = 'none';
+    return;
+  }
+
+  try {
+    const response = await fetch(`/search/suggestions?q=${encodeURIComponent(query)}&category=${category}`);
+    const data = await response.json();
+
+    if (data.success && data.suggestions && data.suggestions.length > 0) {
+      let html = '';
+      data.suggestions.forEach(suggestion => {
+        const icon = suggestion.category === 'courses' ? 'journal-bookmark' :
+                     suggestion.category === 'books' ? 'book' : 'award';
+
+        html += `
+          <div class="search-suggestion-item" 
+               onclick="selectSuggestion('${suggestion.text}', '${suggestion.category}', '${suggestion.id}', ${isMobile})">
+            <i class="bi bi-${icon} suggestion-icon"></i>
+            <span class="suggestion-text">${suggestion.text}</span>
+            <span class="badge bg-light text-dark rounded-pill ms-auto">${suggestion.category}</span>
+          </div>
+        `;
+      });
       
-      try {
-        // Fetch suggestions from server
-        const response = await fetch(`/search/suggestions?q=${encodeURIComponent(query)}&category=${category}`);
-        const data = await response.json();
-        
-        if (data.success && data.suggestions && data.suggestions.length > 0) {
-          let html = '';
-          data.suggestions.forEach(suggestion => {
-            const icon = suggestion.category === 'courses' ? 'journal-bookmark' :
-              suggestion.category === 'books' ? 'book' : 'award';
-              
-            html += `
-              <div class="search-suggestion-item" onclick="selectSuggestion('${suggestion.text}', '${suggestion.category}', '${suggestion.id}')">
-                <i class="bi bi-${icon} suggestion-icon"></i>
-                <span class="suggestion-text">${suggestion.text}</span>
-                <span class="badge bg-light text-dark rounded-pill ms-auto">${suggestion.category}</span>
+      if (suggestionsContainer) {
+        suggestionsContainer.innerHTML = html;
+        suggestionsContainer.style.display = 'block';
+      }
+    } else {
+      if (suggestionsContainer) suggestionsContainer.style.display = 'none';
+    }
+  } catch (error) {
+    console.error('Error fetching search suggestions:', error);
+    if (suggestionsContainer) suggestionsContainer.style.display = 'none';
+  }
+}
+
+// Select a suggestion - updated to handle both desktop and mobile
+function selectSuggestion(text, category, id, isMobile = false) {
+  if (isMobile && mobileSearchInput) {
+    mobileSearchInput.value = text;
+    if (mobileSearchSuggestionsEl) mobileSearchSuggestionsEl.style.display = 'none';
+  } else if (desktopSearchInput) {
+    desktopSearchInput.value = text;
+    if (searchSuggestionsEl) searchSuggestionsEl.style.display = 'none';
+  }
+
+  if (category === 'books' && id) {
+    window.location.href = `/book/${id}`;
+    return;
+  }
+  handleSearch({ preventDefault: () => {} });
+}
+
+// Hide suggestions when clicking outside - updated for both containers
+document.addEventListener('click', function (e) {
+  if (!e.target.closest('.search-wrapper') && !e.target.closest('.mobile-suggestions')) {
+    if (searchSuggestionsEl) searchSuggestionsEl.style.display = 'none';
+    if (mobileSearchSuggestionsEl) mobileSearchSuggestionsEl.style.display = 'none';
+  }
+});
+
+// Attach search events for desktop and mobile inputs - updated
+function attachSearchEvents(inputEl, categoryEl, isMobile = false) {
+  if (!inputEl || !categoryEl) return;
+
+  inputEl.addEventListener('input', function (e) {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => {
+      showSearchSuggestions(e.target.value, categoryEl.value, isMobile);
+    }, 300);
+  });
+
+  inputEl.addEventListener('focus', function (e) {
+    if (e.target.value.length >= 2) {
+      showSearchSuggestions(e.target.value, categoryEl.value, isMobile);
+    }
+  });
+}
+
+// Attach events for both desktop and mobile
+attachSearchEvents(desktopSearchInput, desktopSearchCategory, false);
+attachSearchEvents(mobileSearchInput, mobileSearchCategory, true);
+
+// Handle search (desktop + mobile) - rest remains the same
+async function handleSearch(event) {
+  event.preventDefault();
+
+  const query = desktopSearchInput?.value.trim() || mobileSearchInput?.value.trim();
+  if (!query) return false;
+
+  const category = desktopSearchCategory?.value || mobileSearchCategory?.value || 'all';
+
+  // Direct redirect for books
+  if (category === 'books') {
+    window.location.href = `/books?title=${encodeURIComponent(query)}`;
+    return false;
+  }
+
+  // Hide suggestions
+  if (searchSuggestionsEl) searchSuggestionsEl.style.display = 'none';
+  if (mobileSearchSuggestionsEl) mobileSearchSuggestionsEl.style.display = 'none';
+
+  // Show modal with loading state
+  const modal = new bootstrap.Modal(document.getElementById('searchResultModal'));
+  const resultsBody = document.getElementById('searchResultsBody');
+
+  resultsBody.innerHTML = `
+    <div class="search-loading">
+      <div class="loading-spinner me-3"></div>
+      <div>
+        <div class="fw-bold">Searching for "${query}"...</div>
+        <small class="text-muted">Please wait while we find the best matches</small>
+      </div>
+    </div>
+  `;
+
+  modal.show();
+
+  try {
+    const response = await fetch(`/search?q=${encodeURIComponent(query)}`);
+    const data = await response.json();
+
+    let content = '';
+
+    if (data.success && data.results) {
+      for (const [category, items] of Object.entries(data.results)) {
+        if (items.length > 0) {
+          const categoryIcon = category === 'courses' ? 'journal-bookmark' :
+                               category === 'books' ? 'book' : 'award';
+
+          content += `
+            <div class="search-result-category">
+              <h5 class="mb-3">
+                <i class="bi bi-${categoryIcon} me-2"></i>
+                ${category.charAt(0).toUpperCase() + category.slice(1)} 
+                <span class="badge bg-primary">${items.length}</span>
+              </h5>
+              <div class="row">
+          `;
+
+          items.forEach(item => {
+            content += `
+              <div class="col-md-6 mb-3">
+                <div class="result-item" onclick="viewItem('${category}', '${item.id || ''}')">
+                  <div class="result-title">${item.title}</div>
+                  ${item.author ? `<div class="result-description">by ${item.author}</div>` : ''}
+                  ${item.description ? `<div class="result-description">${item.description.substring(0, 100)}...</div>` : ''}
+                  ${item.price ? `<div class="result-meta">₹${item.price}</div>` : ''}
+                </div>
               </div>
             `;
           });
 
-          searchSuggestionsEl.innerHTML = html;
-          searchSuggestionsEl.style.display = 'block';
-        } else {
-          searchSuggestionsEl.style.display = 'none';
+          content += '</div></div>';
         }
-      } catch (error) {
-        console.error('Error fetching search suggestions:', error);
-        searchSuggestionsEl.style.display = 'none';
-      }
-    }
-
-    // Select a suggestion
-    function selectSuggestion(text, category, id) {
-      searchInput.value = text;
-      searchSuggestionsEl.style.display = 'none';
-      
-      // If it's a book with an ID, go directly to the book detail page
-      if (category === 'books' && id) {
-        window.location.href = `/book/${id}`;
-        return;
-      }
-      
-      handleSearch({ preventDefault: () => { } });
-    }
-
-    // Hide suggestions when clicking outside
-    document.addEventListener('click', function (e) {
-      if (!e.target.closest('.search-wrapper')) {
-        searchSuggestionsEl.style.display = 'none';
-      }
-    });
-    
-    // Function to view a specific item from search results
-    function viewItem(category, id) {
-      if (category === 'books' && id) {
-        window.location.href = `/book/${id}`;
-      } else if (category === 'courses' && id) {
-        window.location.href = `/course/${id}`;
-      } else if (category === 'certifications' && id) {
-        window.location.href = `/certification/${id}`;
-      }
-    }
-
-    // Search input event listener
-    if (searchInput) {
-      searchInput.addEventListener('input', function (e) {
-        clearTimeout(searchTimeout);
-        searchTimeout = setTimeout(() => {
-          showSearchSuggestions(e.target.value);
-        }, 300);
-      });
-
-      searchInput.addEventListener('focus', function (e) {
-        if (e.target.value.length >= 2) {
-          showSearchSuggestions(e.target.value);
-        }
-      });
-    }
-
-    // Enhanced search handler
-    async function handleSearch(event) {
-      event.preventDefault();
-
-      const query = searchInput?.value.trim() ||
-        document.querySelector('#mobileSearchForm input[name="q"]')?.value.trim();
-
-      if (!query) return false;
-      
-      const category = searchCategory?.value || 'all';
-      
-      // If category is specifically books, redirect directly to books page with search parameter
-      if (category === 'books') {
-        window.location.href = `/books?title=${encodeURIComponent(query)}`;
-        return false;
       }
 
-      // Hide suggestions
-      if (searchSuggestionsEl) {
-        searchSuggestionsEl.style.display = 'none';
-      }
-
-      // Show modal with loading state
-      const modal = new bootstrap.Modal(document.getElementById('searchResultModal'));
-      const resultsBody = document.getElementById('searchResultsBody');
-
-      resultsBody.innerHTML = `
-      <div class="search-loading">
-        <div class="loading-spinner me-3"></div>
-        <div>
-          <div class="fw-bold">Searching for "${query}"...</div>
-          <small class="text-muted">Please wait while we find the best matches</small>
-        </div>
-      </div>
-    `;
-
-      modal.show();
-
-      try {
-        const response = await fetch(`/search?q=${encodeURIComponent(query)}`);
-        const data = await response.json();
-
-        let content = '';
-
-        if (data.success && data.results) {
-          for (const [category, items] of Object.entries(data.results)) {
-            if (items.length > 0) {
-              const categoryIcon = category === 'courses' ? 'journal-bookmark' :
-                category === 'books' ? 'book' : 'award';
-
-              content += `
-              <div class="search-result-category">
-                <h5 class="mb-3">
-                  <i class="bi bi-${categoryIcon} me-2"></i>
-                  ${category.charAt(0).toUpperCase() + category.slice(1)} 
-                  <span class="badge bg-primary">${items.length}</span>
-                </h5>
-                <div class="row">
-            `;
-
-              items.forEach(item => {
-                content += `
-                <div class="col-md-6 mb-3">
-                  <div class="result-item" onclick="viewItem('${category}', '${item.id || ''}')">
-                    <div class="result-title">${item.title}</div>
-                    ${item.author ? `<div class="result-description">by ${item.author}</div>` : ''}
-                    ${item.description ? `<div class="result-description">${item.description.substring(0, 100)}...</div>` : ''}
-                    ${item.price ? `<div class="result-meta">₹${item.price}</div>` : ''}
-                  </div>
-                </div>
-              `;
-              });
-
-              content += '</div></div>';
-            }
-          }
-
-          if (content === '') {
-            content = `
-            <div class="text-center py-5">
-              <i class="bi bi-search fs-1 text-muted mb-3"></i>
-              <h4>No results found</h4>
-              <p class="text-muted mb-4">We couldn't find anything matching "${query}". Try different keywords or browse our categories.</p>
-              <div class="d-flex gap-2 justify-content-center flex-wrap">
-                <a href="${'{{ url_for("courses") }}'}" class="btn btn-outline-primary">Browse Courses</a>
-                <a href="${'{{ url_for("books") }}'}" class="btn btn-outline-primary">Browse Books</a>
-                <a href="${'{{ url_for("certifications") }}'}" class="btn btn-outline-primary">Browse Certifications</a>
-              </div>
-            </div>
-          `;
-          }
-        } else {
-          content = `
+      if (content === '') {
+        content = `
           <div class="text-center py-5">
-            <i class="bi bi-exclamation-triangle fs-1 text-warning mb-3"></i>
-            <h4>Search Error</h4>
-            <p class="text-muted">There was an error processing your search. Please try again.</p>
-            <button class="btn btn-primary" onclick="modal.hide(); searchInput.focus();">Try Again</button>
+            <i class="bi bi-search fs-1 text-muted mb-3"></i>
+            <h4>No results found</h4>
+            <p class="text-muted mb-4">We couldn't find anything matching "${query}". Try different keywords or browse our categories.</p>
+            <div class="d-flex gap-2 justify-content-center flex-wrap">
+              <a href="/courses" class="btn btn-outline-primary">Browse Courses</a>
+              <a href="/books" class="btn btn-outline-primary">Browse Books</a>
+              <a href="/certifications" class="btn btn-outline-primary">Browse Certifications</a>
+            </div>
           </div>
         `;
-        }
-
-        resultsBody.innerHTML = content;
-      } catch (error) {
-        resultsBody.innerHTML = `
+      }
+    } else {
+      content = `
         <div class="text-center py-5">
-          <i class="bi bi-wifi-off fs-1 text-danger mb-3"></i>
-          <h4>Connection Error</h4>
-          <p class="text-muted">Please check your internet connection and try again.</p>
-          <button class="btn btn-primary" onclick="location.reload();">Reload Page</button>
+          <i class="bi bi-exclamation-triangle fs-1 text-warning mb-3"></i>
+          <h4>Search Error</h4>
+          <p class="text-muted">There was an error processing your search. Please try again.</p>
+          <button class="btn btn-primary" onclick="modal.hide(); (mobileSearchInput || desktopSearchInput).focus();">Try Again</button>
         </div>
       `;
-      }
-
-      return false;
     }
 
-    // Handle item click in search results
-    function viewItem(category, itemId) {
-      // Redirect to appropriate page based on category
-      let url = '/';
-      switch (category) {
-        case 'courses':
-          url = `${'{{ url_for("courses") }}'}${itemId ? '?id=' + itemId : ''}`;
-          break;
-        case 'books':
-          url = `${'{{ url_for("books") }}'}${itemId ? '?id=' + itemId : ''}`;
-          break;
-        case 'certifications':
-          url = `${'{{ url_for("certifications") }}'}${itemId ? '?id=' + itemId : ''}`;
-          break;
-      }
-      window.location.href = url;
+    resultsBody.innerHTML = content;
+  } catch (error) {
+    resultsBody.innerHTML = `
+      <div class="text-center py-5">
+        <i class="bi bi-wifi-off fs-1 text-danger mb-3"></i>
+        <h4>Connection Error</h4>
+        <p class="text-muted">Please check your internet connection and try again.</p>
+        <button class="btn btn-primary" onclick="location.reload();">Reload Page</button>
+      </div>
+    `;
+  }
+
+  return false;
+}
+
+// Handle item click in search results
+function viewItem(category, itemId) {
+  let url = '/';
+  switch (category) {
+    case 'courses':
+      url = `/courses${itemId ? '?id=' + itemId : ''}`;
+      break;
+    case 'books':
+      url = `/books${itemId ? '?id=' + itemId : ''}`;
+      break;
+    case 'certifications':
+      url = `/certifications${itemId ? '?id=' + itemId : ''}`;
+      break;
+  }
+  window.location.href = url;
+}
+
+const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
+const navbarCollapse = document.getElementById('navbarNav');
+navLinks.forEach(function(link) {
+  link.addEventListener('click', function() {
+    if (navbarCollapse.classList.contains('show')) {
+      const bsCollapse = new bootstrap.Collapse(navbarCollapse, {toggle: false});
+      bsCollapse.hide();
     }
-  </script>
+  });
+});
+
+</script>
+
+
 
 
  <!-- Bootstrap 5 CSS & Icons -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
-<style>
-/* --------- Modal & Floating Button Styling ---------- */
-@keyframes modalFadeIn {
-  from { opacity: 0; transform: scale(0.94);}
-  to { opacity: 1; transform: scale(1);}
-}
-.chatbot-modal-content {
-  animation: modalFadeIn 0.4s cubic-bezier(.23,1,.32,1);
-  border-radius: 18px;
-  box-shadow: 0 12px 32px rgba(0,0,0,0.07);
-}
-
-/* --------- Chat Bubble Animation & Layout ---------- */
-@keyframes bubbleSlideIn {
-  from { opacity: 0; transform: translateY(24px);}
-  to { opacity: 1; transform: translateY(0);}
-}
-.msg-bubble {
-  animation: bubbleSlideIn 0.3s ease;
-  max-width: 75%;
-  border-radius: 15px;
-  padding: 10px 14px;
-  font-size: 1rem;
-  margin-bottom: 4px;
-  box-shadow: 0 2px 10px rgba(13,110,253,0.07);
-  transition: box-shadow 0.18s;
-}
-.chat-message {
-  margin-bottom: 14px;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-}
-.user-msg { justify-content: flex-end; }
-.bot-msg { justify-content: flex-start; }
-.user-msg .msg-bubble {
-  background: linear-gradient(135deg, #0d6efd 90%, #3db0ef 100%);
-  color: #fff;
-  border-bottom-right-radius: 0;
-  font-weight: 500;
-}
-.bot-msg .msg-bubble {
-  background: linear-gradient(135deg, #e9ecef 80%, #f7fafc 100%);
-  color: #212529;
-  border-bottom-left-radius: 0;
-  font-weight: 400;
-}
-.avatar {
-  border-radius: 50%;
-  box-shadow: 0 2px 8px rgba(32,32,32,0.10);
-}
-
-/* --------- Input and Floating Button ---------- */
-#userInput {
-  border-radius: 12px;
-  border: 1px solid #dee2e6;
-  transition: border-color 0.2s;
-}
-#userInput:focus {
-  border-color: #0d6efd;
-  box-shadow: 0 0 0 2px rgba(13,110,253,0.11);
-}
-.shadow-floating-chat {
-  position: fixed; bottom: 20px; right: 20px;
-  box-shadow: 0 4px 18px rgba(13,110,253,0.19);
-  width: 54px; height: 54px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.8rem;
-  transition: box-shadow 0.23s, transform 0.1s;
-}
-.shadow-floating-chat:hover {
-  transform: scale(1.06);
-  box-shadow: 0 8px 24px rgba(13,110,253,0.33);
-}
-
-/* --------- Responsive Tuning ---------- */
-@media (max-width: 480px) {
-  .modal-dialog { max-width: 99vw; margin: 0 auto; }
-  .msg-bubble { font-size: 1.09rem; padding: 12px 10px; }
-}
-</style>
-
-<!-- ---------- Chatbot Modal ---------- -->
-<div class="modal fade" id="chatbotModal" tabindex="-1" aria-labelledby="chatbotModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-sm">
-    <div class="modal-content chatbot-modal-content">
-      <!-- Modal Header -->
-      <div class="modal-header bg-primary text-white">
-        <h5 class="modal-title" id="chatbotModalLabel">
-          <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp" alt="Bot" class="avatar me-2" width="32" />
-          Easy2learning Chatbot
-        </h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <!-- Modal Body -->
-      <div class="modal-body p-2 overflow-auto" style="height:400px;" id="chatBody">
-        <div class="bot-msg chat-message">
-          <div class="msg-bubble p-2 rounded bg-light">
-            Hi! Welcome to Easy2learning — your trusted destination for engineering and competitive exam coaching.<br>
-            Contact us: +91 85848 64783<br>
-            Feel free to reach out with any questions.<br>
-            If you’d like to know about our courses, just type <b>courses</b>.
-          </div>
-        </div>
-      </div>
-      <!-- Modal Footer -->
-      <div class="modal-footer p-2 gap-2">
-        <input type="text" class="form-control form-control-sm" id="userInput" placeholder="Type your message here..." autocomplete="off">
-        <button type="button" class="btn btn-primary btn-sm" onclick="sendMessage()" aria-label="Send">
-          <span class="material-icons">send</span>
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ---------- Floating Chat Button ---------- -->
-<button class="btn btn-primary rounded-circle shadow-floating-chat"
-        data-bs-toggle="modal"
-        data-bs-target="#chatbotModal"
-        aria-label="Open Chatbot">
-  💬
-</button>
-
-<!-- ---------- JS Chatbot Logic ---------- -->
-<script>
-// Chat Elements
-const chatBody = document.getElementById('chatBody');
-const userInput = document.getElementById('userInput');
-const chatbotModal = new bootstrap.Modal(document.getElementById('chatbotModal'));
-
-const botReplies = [
-  {
-    triggers: ['hi', 'hello', 'hey', 'good morning', 'good evening'],
-    reply: `Hi!<br>Welcome to Easy2learning — your trusted destination for engineering and competitive exam coaching.<br>Contact us: +91 85848 64783<br>Feel free to reach out with any questions.<br>If you’d like to know about our courses, just type <b>courses</b>.`
-  },
-  {
-    triggers: ['courses', 'course list', 'show me your courses', 'what courses do you offer'],
-    reply: `We offer the following courses at Easy2learning:<br><br>
-    <b>Foundation Courses:</b><br>• All Diploma Courses (Semester-wise)<br>• B.Tech Courses (Semester-wise)<br><br>
-    <b>Certificate Courses:</b><br>• AutoCAD<br>• Solar Internship<br>• Software Courses<br><br>
-    <b>Competitive Exams Preparation:</b><br>• JEE (Main & Advanced)<br>• SSC-JE<br>• RRB-JE<br>• WBSEDCL<br>• WBSETCL<br>• WBPSC-JE<br>• WBJEE & Other State Engineering Entrance Exams<br><br>
-    Want to know more about any specific course? Just type the course name (e.g., JEE, AutoCAD, WBJEE, etc.)<br><br>
-    📲 Download Our Apps:<br>
-    • <a href="https://play.google.com/store/apps/details?id=com.easy2learning2.appx" target="_blank">Diploma Students App</a><br>
-    • <a href="https://play.google.com/store/apps/details?id=co.edvin.ubglj" target="_blank">B-Tech & JELET App</a>`
-  },
-  {
-    triggers: ['jee', 'jee main', 'jee advanced'],
-    reply: `Our <b>JEE (Main & Advanced)</b> program is designed for serious aspirants aiming for top engineering colleges.<br><br>
-    • Faculty from IITs & NITs<br>
-    • Mock Tests & Performance Analysis<br>
-    • One-on-one doubt sessions<br>
-    • Study material with PYQs<br>
-    • Personalised attention & strategic mentoring<br><br>
-    📞 Call us for more info: +91 85848 64783`
-  },
-  {
-    triggers: ['diploma', 'diploma courses'],
-    reply: `We offer semester-wise coaching for all Diploma engineering subjects.<br><br>
-    • Conceptual clarity & exam-focused teaching<br>
-    • One-on-one doubt clearing<br>
-    • Weekly assessments & progress tracking<br><br>
-    📲 <a href="https://play.google.com/store/apps/details?id=com.easy2learning2.appx" target="_blank">Want to know more about the course? Click here</a>`
-  },
-  {
-    triggers: ['btech', 'b.tech', 'btech course'],
-    reply: `Our <b>B.Tech</b> semester-wise coaching helps students with university and competitive exam preparation.<br><br>
-    • Topic-wise lectures<br>
-    • Smart classroom support<br>
-    • Study materials & assignments<br><br>
-    📲 <a href="https://play.google.com/store/apps/details?id=co.edvin.ubglj" target="_blank">Want to know more about the course? Click here</a>`
-  },
-  {
-    triggers: ['autocad'],
-    reply: `Our <b>AutoCAD</b> certificate course includes:<br><br>
-    • Hands-on practical training<br>
-    • Real-time projects<br>
-    • Certificate upon completion<br>
-    • Expert instructors<br><br>
-    📞 Call us to enroll: +91 85848 64783`
-  },
-  {
-    triggers: ['wbjee', 'state entrance'],
-    reply: `Get ready for <b>WBJEE & other State Engineering Entrance Exams</b> with our expert-designed program.<br><br>
-    • Subject-wise coaching<br>
-    • Exam-focused strategies<br>
-    • Mock tests & practice sessions<br>
-    • Doubt-clearing support<br><br>
-    📞 Contact us for guidance: +91 85848 64783`
-  },
-  {
-    triggers: ['ssc-je', 'rrb-je', 'wbsedcl', 'wbpsc-je', 'wbsetcl'],
-    reply: `We provide dedicated coaching for technical government exams like <b>SSC-JE, RRB-JE, WBSEDCL, WBSETCL, and WBPSC-JE</b>.<br><br>
-    • Syllabus-wise structured classes<br>
-    • Previous year questions<br>
-    • Technical concept clearing<br>
-    • Mock tests & assignments<br><br>
-    📞 Call us to join: +91 85848 64783`
-  },
-  {
-    triggers: ['about', 'about you', 'about easy2learning', 'who are you'],
-    reply: `Easy2learning is a premier coaching institute for engineering and competitive exams.<br><br>
-    We help students achieve top results through:<br>
-    • Academic excellence<br>
-    • Expert faculty from IITs, NITs & PhDs<br>
-    • One-on-one doubt sessions<br>
-    • Mock tests & personalised mentoring<br>
-    • Scholarships & affordable fees<br><br>
-    📞 Phone: +91 85848 64783<br>
-    📧 Email: contact@easy2learning.in<br>
-    📍 Address: 19D, Bhagabati Chatterjee St, Belghariya, Kolkata`
-  },
-  {
-    triggers: ['i want to join a course', 'can you tell me about your classes', 'i want to know about your courses', 'class info', 'classes'],
-    reply: `We offer a wide range of programs including Diploma & B.Tech coaching, competitive exam prep (like JEE, SSC-JE), and certificate courses (AutoCAD, Solar Internship, etc.)<br><br>
-    📲 Download our apps:<br>
-    • <a href="https://play.google.com/store/apps/details?id=com.easy2learning2.appx" target="_blank">Diploma App</a><br>
-    • <a href="https://play.google.com/store/apps/details?id=co.edvin.ubglj" target="_blank">B-Tech & JELET App</a><br><br>
-    🌐 Explore full course info: <a href="#" target="_blank">Visit Website</a><br><br>
-    Need info on a specific course? Just type the course name!`
-  }
-];
-
-// Send Message Function
-function sendMessage() {
-  const userText = userInput.value.trim();
-  if (!userText) return;
-
-  const userMsg = document.createElement('div');
-  userMsg.classList.add('chat-message', 'user-msg');
-  userMsg.innerHTML = `<div class="msg-bubble">${userText}</div>`;
-  chatBody.appendChild(userMsg);
-
-  userInput.value = '';
-  chatBody.scrollTop = chatBody.scrollHeight;
-
-  const lowerText = userText.toLowerCase();
-  const matchedReply = botReplies.find(item =>
-    item.triggers.some(trigger => lowerText.includes(trigger))
-  )?.reply;
-
-  const botMsg = document.createElement('div');
-  botMsg.classList.add('chat-message', 'bot-msg');
-  botMsg.innerHTML = `<div class="msg-bubble bot-loader" style="background:#e9ecef;">
-    <span class="spinner-border spinner-border-sm me-2"></span>Typing...</div>`;
-  chatBody.appendChild(botMsg);
-  chatBody.scrollTop = chatBody.scrollHeight;
-
-  setTimeout(() => {
-    botMsg.innerHTML = `<div class="msg-bubble">
-      ${matchedReply || `Sorry, I didn’t quite catch that.<br><br>
-      You can try typing:<br>
-      • <b>courses</b> – to view our course list<br>
-      • A course name like <b>JEE, AutoCAD, Diploma</b> – for details<br>
-      • <b>about</b> – to know about us<br><br>
-      📞 +91 85848 64783<br>
-      📧 contact@easy2learning.in<br>
-      📍 19D, Bhagabati Chatterjee St, Belghariya, Kolkata`}
-    </div>`;
-    chatBody.scrollTop = chatBody.scrollHeight;
-  }, Math.random() * 800 + 600);
-}
-
-// Auto-open chatbot on first page load
-window.addEventListener('load', () => {
-  chatbotModal.show(); // opens modal automatically
-
-  // Add intro guide message after short delay
-  setTimeout(() => {
-    const botMsg = document.createElement('div');
-    botMsg.classList.add('chat-message', 'bot-msg');
-    botMsg.innerHTML = `<div class="msg-bubble p-2 rounded bg-light">
-      How may I help you today?
-    </div>`;
-    chatBody.appendChild(botMsg);
-    chatBody.scrollTop = chatBody.scrollHeight;
-  }, 1000);
-});
-
-// Send message on Enter
-userInput.addEventListener('keypress', function (e) {
-  if (e.key === 'Enter') sendMessage();
-});
-</script>
-
 
 
 <!-- Bootstrap JS Bundle -->
