@@ -157,7 +157,7 @@
             <div class="mb-4">
                 <h4 class="h6 fw-semibold mb-2">Description</h4>
                 <div class="text-muted text-break small" style="line-height: 1.5; word-wrap: break-word;">
-                    {{ book.description | nl2br }}
+                    {{ book.description | safe }}
                 </div>
             </div>
             {% endif %}
