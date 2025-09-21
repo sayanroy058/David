@@ -1356,13 +1356,28 @@ def search():
 
 @app.route('/search/suggestions')
 def search_suggestions():
-    query = request.args.get('q', '').strip()
+    query = request.args.get('q', '').strip().lower()
     category = request.args.get('category', 'all')
 
     if not query or len(query) < 2:
         return jsonify({'success': False, 'suggestions': []})
 
     suggestions = []
+
+    # Direct matches for courses and certifications
+    if 'course'.startswith(query):
+        suggestions.append({
+            'text': 'Courses',
+            'category': 'courses',
+            'id': 0
+        })
+
+    if 'certification'.startswith(query):
+        suggestions.append({
+            'text': 'Certifications',
+            'category': 'certifications',
+            'id': 0
+        })
 
     # --- Book suggestions ---
     if category in ('all', 'books'):

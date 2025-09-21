@@ -830,6 +830,12 @@ function selectSuggestion(text, category, id, isMobile = false) {
   if (category === 'books' && id) {
     window.location.href = `/book/${id}`;
     return;
+  } else if (category === 'courses') {
+    window.location.href = `/courses`;
+    return;
+  } else if (category === 'certifications') {
+    window.location.href = `/certifications`;
+    return;
   }
   handleSearch({ preventDefault: () => {} });
 }
@@ -872,9 +878,15 @@ async function handleSearch(event) {
 
   const category = desktopSearchCategory?.value || mobileSearchCategory?.value || 'all';
 
-  // Direct redirect for books
+  // Direct redirect based on category
   if (category === 'books') {
     window.location.href = `/books?title=${encodeURIComponent(query)}`;
+    return false;
+  } else if (category === 'courses') {
+    window.location.href = `/courses`;
+    return false;
+  } else if (category === 'certifications') {
+    window.location.href = `/certifications`;
     return false;
   }
 
