@@ -285,7 +285,7 @@
                     {% endfor %}
                   </div>
                   <span class="text-muted small">
-                    {{ "%.1f"|format(book.avg_rating) }} ({{ book.review_count - 1}})
+                    {{ "%.1f"|format(book.avg_rating) }} ({{ (book.review_count - 1) if book.review_count > 0 else 0 }})
                   </span>
                 </div>
 
