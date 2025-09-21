@@ -4,21 +4,22 @@
 {% block extra_css %}
 <style>
   .admin-dashboard {
-    padding: 30px 0;
+    padding: 20px 0;
   }
   .dashboard-header {
     background: linear-gradient(135deg, #667eea, #764ba2);
     color: white;
-    padding: 30px;
+    padding: 20px;
     border-radius: 10px;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
   }
   .book-table {
     background-color: white;
     border-radius: 10px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    overflow: hidden;
+    overflow-x: auto;
+    width: 100%;
   }
   .book-table th {
     background-color: #f8f9fa;
@@ -45,6 +46,48 @@
   }
   .search-box {
     max-width: 300px;
+  }
+  
+  /* Mobile responsiveness */
+  @media (max-width: 991px) {
+    .dashboard-header {
+      padding: 15px;
+    }
+    .dashboard-header h1 {
+      font-size: 1.5rem;
+    }
+    .search-box {
+      max-width: 100%;
+      margin-bottom: 15px;
+    }
+    .filter-row {
+      flex-direction: column;
+    }
+    .filter-row > div {
+      margin-bottom: 10px;
+      width: 100%;
+    }
+  }
+  
+  @media (max-width: 767px) {
+    .book-table {
+      font-size: 14px;
+    }
+    .book-table th, 
+    .book-table td {
+      padding: 8px;
+    }
+    .action-btn {
+      width: 32px;
+      height: 32px;
+    }
+    .book-image-thumbnail {
+      width: 40px;
+      height: 40px;
+    }
+    .table-responsive {
+      border: 0;
+    }
   }
 </style>
 {% endblock %}

@@ -1304,22 +1304,24 @@ h2::after {
       <div class="book-carousel d-flex align-items-stretch">
         {% for book in books %}
         <div class="book-item text-center me-3 flex-shrink-0" style="width: 200px;">
-          <!-- Book Image -->
-          <div class="position-relative rounded overflow-hidden mb-2 bg-light" style="height: 250px;">
-            {% if book.images %}
-            <img src="{{ url_for('static', filename='uploads/books/' + book.images[0].image_filename) }}"
-                 alt="{{ book.title }}"
-                 class="w-100 h-100"
-                 style="object-fit: contain;">
-            {% else %}
-            <div class="w-100 h-100 d-flex align-items-center justify-content-center">
-              <i class="bi bi-book text-muted" style="font-size: 3rem;"></i>
+          <!-- Book Image - Clickable -->
+          <a href="{{ url_for('book_detail', book_id=book.id) }}" class="text-decoration-none">
+            <div class="position-relative rounded overflow-hidden mb-2 bg-light" style="height: 250px;">
+              {% if book.images %}
+              <img src="{{ url_for('static', filename='uploads/books/' + book.images[0].image_filename) }}"
+                   alt="{{ book.title }}"
+                   class="w-100 h-100"
+                   style="object-fit: contain;">
+              {% else %}
+              <div class="w-100 h-100 d-flex align-items-center justify-content-center">
+                <i class="bi bi-book text-muted" style="font-size: 3rem;"></i>
+              </div>
+              {% endif %}
             </div>
-            {% endif %}
-          </div>
 
-          <!-- Book Title -->
-          <h6 class="fw-semibold mb-1 text-truncate">{{ book.title }}</h6>
+            <!-- Book Title - Clickable -->
+            <h6 class="fw-semibold mb-1 text-truncate">{{ book.title }}</h6>
+          </a>
 
           <!-- Author -->
           <div class="text-muted small mb-1 text-truncate">
@@ -1336,9 +1338,16 @@ h2::after {
             {% endif %}
           </div>
 
+          <!-- Action Buttons -->
+          <div class="d-flex gap-2 mb-2">
+            <a href="{{ url_for('book_detail', book_id=book.id) }}" class="btn btn-sm btn-outline-primary flex-fill">
+              <i class="bi bi-eye me-1"></i>View Details
+            </a>
+          </div>
+          
           <!-- Buy Now -->
-          <a href="{{ url_for('buy_now', book_id=book.id) }}" class="btn btn-sm btn-outline-primary w-100">
-            Buy Now
+          <a href="{{ url_for('buy_now', book_id=book.id) }}" class="btn btn-sm btn-success w-100">
+            <i class="bi bi-cart-fill me-1"></i>Buy Now
           </a>
         </div>
         {% endfor %}
@@ -1397,7 +1406,7 @@ h2::after {
 
   @media (max-width: 768px) {
     .book-carousel {
-      animation: none;
+      animation: scroll-left 60s linear infinite;
       overflow-x: scroll;
     }
   }

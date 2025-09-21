@@ -89,7 +89,7 @@
     .admin-content {
       background: #f8f9fa;
       min-height: calc(100vh - 76px);
-      padding-top: 20px;
+      padding: 15px 10px;
     }
     
     /* Mobile responsiveness */
@@ -101,9 +101,60 @@
         margin-top: 10px;
       }
       
+      .admin-navbar .nav-link {
+        padding: 10px !important;
+        margin-bottom: 5px;
+        font-size: 14px;
+      }
+      
+      .admin-navbar .dropdown-menu {
+        background: rgba(0,0,0,0.2);
+        border: none;
+        padding: 0;
+        margin-top: 5px;
+        margin-bottom: 10px;
+      }
+      
+      .admin-navbar .dropdown-item {
+        color: rgba(255,255,255,0.8) !important;
+        padding: 8px 15px;
+        font-size: 13px;
+      }
+      
+      .admin-navbar .dropdown-item:hover {
+        background: rgba(255,255,255,0.1);
+        color: #fff !important;
+      }
+      
+      .admin-welcome {
+        text-align: center;
+        margin: 10px 0;
+        display: block;
+      }
+      
       .logout-btn {
         margin-top: 10px;
         width: 100%;
+      }
+      
+      .container {
+        padding-left: 10px;
+        padding-right: 10px;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .admin-content {
+        padding: 10px 5px;
+      }
+      
+      .admin-navbar .navbar-brand {
+        font-size: 16px;
+      }
+      
+      .admin-badge {
+        font-size: 0.6rem;
+        padding: 2px 6px;
       }
     }
   </style>

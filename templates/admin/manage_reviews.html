@@ -1,6 +1,60 @@
 {% extends 'admin_base.html' %}
 {% block title %}Manage Book Reviews{% endblock %}
 
+{% block extra_css %}
+<style>
+    .card {
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        overflow: hidden;
+    }
+    .card-header {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        padding: 15px 20px;
+    }
+    .card-title {
+        margin-bottom: 0;
+        font-weight: 600;
+    }
+    .table-responsive {
+        width: 100%;
+    }
+    .review-text {
+        max-width: 300px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    
+    /* Mobile responsiveness */
+    @media (max-width: 991px) {
+        .container-fluid {
+            padding: 10px;
+        }
+        .card-header {
+            padding: 12px 15px;
+        }
+        .card-title {
+            font-size: 1.2rem;
+        }
+    }
+    
+    @media (max-width: 767px) {
+        .table {
+            font-size: 14px;
+        }
+        .table th, 
+        .table td {
+            padding: 8px;
+        }
+        .review-text {
+            max-width: 150px;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="container-fluid py-4">
     <div class="row">
@@ -34,27 +88,30 @@
                                     </td>
                                     <td>{{ review.user.email }}</td>
                                     <td>
-                                        <div class="text-warning">
-                                            {% for i in range(review.rating) %}★{% endfor %}{% for i in range(5-review.rating) %}☆{% endfor %}
+                                        <div class="rating-stars">
+                                            {% for i in range(5) %}
+                                                {% if i < review.rating %}
+                                                    <i class="bi bi-star-fill text-warning"></i>
+                                                {% else %}
+                                                    <i class="bi bi-star text-muted"></i>
+                                                {% endif %}
+                                            {% endfor %}
                                         </div>
-                                        <small>({{ review.rating }}/5)</small>
                                     </td>
                                     <td>
                                         {% if review.review_text %}
-                                        <div style="max-width: 300px;">
+                                        <div class="review-text">
                                             {{ review.review_text | truncate(100) }}
                                         </div>
                                         {% else %}
                                         <em class="text-muted">No review text</em>
                                         {% endif %}
                                     </td>
-                                    <td>{{ review.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                                    <td>{{ review.created_at.strftime('%Y-%m-%d') }}</td>
                                     <td>
-                                        <form method="POST" action="{{ url_for('admin.delete_review', review_id=review.id) }}" 
-                                              style="display: inline;" 
-                                              onsubmit="return confirm('Are you sure you want to delete this review?')">
-                                            <button type="submit" class="btn btn-danger btn-sm">
-                                                <i class="bi bi-trash"></i> Delete
+                                        <form action="{{ url_for('admin.delete_review', review_id=review.id) }}" method="post" class="d-inline">
+                                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this review?')">
+                                                <i class="bi bi-trash"></i>
                                             </button>
                                         </form>
                                     </td>
