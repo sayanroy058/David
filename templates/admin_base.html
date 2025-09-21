@@ -12,15 +12,21 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
-    /* Admin-specific styling */
+    /* Custom Admin Styles */
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    
     .admin-navbar {
-      background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%) !important;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     }
     
     .admin-navbar .navbar-brand {
-      color: #fff !important;
       font-weight: 700;
+      color: white;
     }
     
     .admin-navbar .brand-text2 {
@@ -28,35 +34,32 @@
     }
     
     .admin-navbar .nav-link {
-      color: rgba(255,255,255,0.9) !important;
-      font-weight: 500;
-      transition: all 0.3s ease;
-      border-radius: 6px;
-      margin: 0 2px;
-      padding: 8px 16px !important;
+      color: rgba(255, 255, 255, 0.85);
+      transition: all 0.2s;
+      border-radius: 4px;
+      padding: 0.5rem 0.75rem;
     }
     
     .admin-navbar .nav-link:hover {
-      color: #fff !important;
-      background: rgba(255,255,255,0.1);
-      transform: translateY(-1px);
+      color: white;
+      background-color: rgba(255, 255, 255, 0.1);
     }
     
     .admin-navbar .nav-link.active {
-      background: rgba(255,255,255,0.2);
-      color: #fff !important;
+      color: white;
+      background-color: rgba(255, 255, 255, 0.15);
+      font-weight: 500;
     }
     
     .admin-badge {
-      background: linear-gradient(135deg, #e74c3c, #c0392b);
+      background-color: #ff5722;
       color: white;
       font-size: 0.7rem;
-      padding: 2px 8px;
-      border-radius: 12px;
-      margin-left: 8px;
+      padding: 0.2rem 0.5rem;
+      border-radius: 3px;
+      margin-left: 0.5rem;
       font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
     }
     
     .logout-btn {
@@ -92,37 +95,64 @@
       padding: 15px 10px;
     }
     
+    /* Footer styling */
+    footer.bg-dark {
+      background: linear-gradient(135deg, #182848 0%, #4b6cb7 100%) !important;
+      padding: 15px 0;
+    }
+    
+    footer .text-light {
+      color: #ffffff !important;
+    }
+    
+    footer a.text-light {
+      color: #ffffff !important;
+      font-weight: 500;
+    }
+    
+    footer a.text-light:hover {
+      color: #ff5722 !important;
+    }
+    
     /* Mobile responsiveness */
     @media (max-width: 991px) {
-      .admin-navbar .navbar-nav {
-        background: rgba(0,0,0,0.1);
+      .admin-navbar {
+        background: rgba(75, 108, 183, 0.98);
+        border-radius: 0;
+        padding: 0.5rem 1rem;
+      }
+      
+      .admin-navbar .navbar-collapse {
+        background: rgba(24, 40, 72, 0.98);
         border-radius: 8px;
-        padding: 10px;
-        margin-top: 10px;
+        padding: 1rem;
+        margin-top: 0.5rem;
       }
       
       .admin-navbar .nav-link {
-        padding: 10px !important;
-        margin-bottom: 5px;
+        color: #ffffff !important;
+        padding: 0.75rem 1rem !important;
+        margin-bottom: 0.25rem;
+        border-radius: 6px;
         font-size: 14px;
       }
       
       .admin-navbar .dropdown-menu {
-        background: rgba(0,0,0,0.2);
-        border: none;
+        background: rgba(24, 40, 72, 0.95);
+        border: 1px solid rgba(255, 255, 255, 0.1);
         padding: 0;
         margin-top: 5px;
         margin-bottom: 10px;
       }
       
       .admin-navbar .dropdown-item {
-        color: rgba(255,255,255,0.8) !important;
+        color: #ffffff !important;
         padding: 8px 15px;
         font-size: 13px;
       }
       
       .admin-navbar .dropdown-item:hover {
-        background: rgba(255,255,255,0.1);
+        background: rgba(75, 108, 183, 0.5);
         color: #fff !important;
       }
       
@@ -130,6 +160,7 @@
         text-align: center;
         margin: 10px 0;
         display: block;
+        color: #ffffff;
       }
       
       .logout-btn {
@@ -140,6 +171,33 @@
       .container {
         padding-left: 10px;
         padding-right: 10px;
+      }
+      
+      /* Navbar toggler styling */
+      .navbar-toggler {
+        border-color: rgba(255,255,255,0.5);
+        padding: 4px 8px;
+        color: #ffffff;
+      }
+      
+      .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.8%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+      }
+      
+      .admin-navbar .welcome-text {
+        color: #ffffff !important;
+        font-weight: 500;
+      }
+      
+      @media (max-width: 767px) {
+        footer .row {
+          text-align: center;
+        }
+        
+        footer .text-md-end {
+          text-align: center !important;
+          margin-top: 0.75rem;
+        }
       }
     }
     
@@ -155,6 +213,15 @@
       .admin-badge {
         font-size: 0.6rem;
         padding: 2px 6px;
+      }
+      
+      footer {
+        text-align: center;
+      }
+      
+      footer .text-md-end {
+        text-align: center !important;
+        margin-top: 8px;
       }
     }
   </style>
@@ -239,11 +306,11 @@
     <div class="container">
       <div class="row align-items-center">
         <div class="col-md-6">
-          <small>&copy; 2025 Easy2Learning Admin Panel. All rights reserved.</small>
+          <small class="footer-copyright">&copy; 2025 Easy2Learning Admin Panel. All rights reserved.</small>
         </div>
         <div class="col-md-6 text-md-end">
           <small>
-            <a href="/" class="text-light text-decoration-none">
+            <a href="/" class="text-light text-decoration-none back-link">
               <i class="bi bi-arrow-left me-1"></i>Back to Website
             </a>
           </small>
