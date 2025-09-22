@@ -108,13 +108,13 @@
 
             <!-- Subject -->
             <div class="col-12 col-md-6 col-lg-3">
-              <label class="form-label small fw-medium text-secondary">Subject</label>
+              <label class="form-label small fw-medium text-secondary">Sub Categories</label>
               <div class="input-group input-group-mobile">
                 <span class="input-group-text bg-light border-end-0">
                   <i class="bi bi-journal-bookmark text-muted"></i>
                 </span>
                 <select name="subject" class="form-select border-start-0">
-                  <option value="">All Subjects</option>
+                  <option value="">All Sub Categories</option>
                   {% for sub in subjects %}
                     <option value="{{ sub }}" {% if request.args.get('subject') == sub %}selected{% endif %}>{{ sub }}</option>
                   {% endfor %}
